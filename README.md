@@ -26,6 +26,7 @@ Link in **Safari** öffnen → Teilen-Symbol → **Zum Home-Bildschirm**. Danach
 - Medikamentenplan: Reiter *Medis* → **Plan**.
 - Alprazolam-Ausschleichplan: Die App berechnet die Tagesdosis selbst (inkl. welche Tablettenstücke). Wenn sich alles verschiebt: *Plan* → Alprazolam → „Heute ist Tag …“ anpassen.
 - Update 2 (Bell-Gründe + Fotos): `update_2.sql` einmal im SQL Editor ausführen. Neue Gründe legt ihr in *Bellistima* über „Neuer Grund …“ an, Fotos über ⚙️ → Fotos.
+- Update 3 (Erinnerungen): Edge Function `supabase/erinnerung.ts` anlegen (Token + Schlüssel eintragen, JWT-Prüfung aus), dann `update_3.sql` mit demselben Token ausführen. In der App: ⚙️ → Erinnerungen → aktivieren.
 - Excel-Export: Reiter *Protokoll* → **📊 Excel** → Teilen (Mail, Dateien, …). Drei Blätter: Protokoll (inkl. Bellen + Medis pro Tag), Medikamente (Soll/Ist), Bellistima.
 - Ohne Supabase-Daten in `config.js` läuft die App im Demo-Modus.
 - Kostenloses Supabase-Projekt pausiert nach ~1 Woche ohne Nutzung – bei täglicher Nutzung kein Thema.

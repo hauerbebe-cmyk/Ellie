@@ -215,7 +215,8 @@ const TABS = [
 
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
-const ui = { tab:'start', medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
+const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
+const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -418,7 +419,7 @@ function vMeds(){
       <div class="pieces">💊 ${esc(ti.step.pieces)}</div>
       <div class="muted small">Ab ${dayLabel(ti.nextStart)==='Morgen'?'morgen ('+fmtD(ti.nextStart)+')':dayLabel(ti.nextStart)}: ${ti.next?fmtMg(ti.next.mg):'0 mg – fertig ausgeschlichen 🎉'}</div></div>`:'';
     return `<div class="card med ${log?'done':''}">
-      <div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">${esc(slotLabel(slot))}${med.note?' · '+esc(med.note):''}</div></div>
+      <div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">${esc(slotLabel(slot))}${med.remind_at?' · 🔔 '+esc(med.remind_at):''}${med.note?' · '+esc(med.note):''}</div></div>
         ${log?`<span class="pill ${log.skipped?'warn':diff?'warn':'ok'}">${log.skipped?'ausgelassen':diff?'abweichend':'gegeben'}</span>`:'<span class="pill">offen</span>'}</div>
       ${taper}
       <dl class="sollist"><dt>Soll</dt><dd>${esc(soll||'–')}</dd>
@@ -543,7 +544,8 @@ const ACT = {
       <label class="f">Soll-Menge</label><input type="text" id="md" value="${esc(m.dose||'')}" placeholder="z. B. 1 Tablette, 2 ml">
       <label class="f">Wann?</label>
       <div class="chips"><button class="chip ${kind!=='bedarf'?'on':''}" id="k1">Täglich</button><button class="chip ${kind==='bedarf'?'on':''}" id="k2">Bei Bedarf</button></div>
-      <div id="tw" style="margin-top:10px;${kind==='bedarf'?'display:none':''}"><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button></div>
+      <div id="tw" style="margin-top:10px;${kind==='bedarf'?'display:none':''}"><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button>
+        ${remindField(m)}</div>
       <label class="f">Hinweis (optional)</label><input type="text" id="mo" value="${esc(m.note||'')}" placeholder="z. B. mit Futter">
       ${d.id?`<label class="row" style="margin-top:14px"><input type="checkbox" id="ma" ${m.active!==false?'checked':''} style="width:22px;height:22px"> <span>Aktiv (sonst pausiert)</span></label>`:''}
       <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
@@ -556,7 +558,7 @@ const ACT = {
       q('#k1').onclick=()=>{kind='taeglich';q('#k1').classList.add('on');q('#k2').classList.remove('on');q('#tw').style.display=''};
       q('#k2').onclick=()=>{kind='bedarf';q('#k2').classList.add('on');q('#k1').classList.remove('on');q('#tw').style.display='none'};
       q('#save').onclick=async()=>{
-        const row={name:q('#mn').value.trim(),dose:q('#md').value.trim(),kind,times:kind==='bedarf'?[]:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:d.id?q('#ma').checked:true};
+        const row={name:q('#mn').value.trim(),dose:q('#md').value.trim(),kind,times:kind==='bedarf'?[]:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:d.id?q('#ma').checked:true,...remindPatch(sh,m,kind)};
         if(!row.name){toast('Bitte einen Namen eingeben');return}
         if(d.id) await upd('meds',d.id,row); else await ins('meds',row);
         closeSheet();
@@ -572,6 +574,7 @@ const ACT = {
       <label class="f">Heute ist Tag … des Plans</label>
       <div class="row"><input type="text" inputmode="numeric" id="tday" value="${dayNow}" style="max-width:110px"><span class="muted small grow">Plan-Start: <span id="tstart">${fmtD(m.taper.start)}</span></span></div>
       <label class="f">Uhrzeit(en)</label><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button>
+      ${remindField(m)}
       <label class="f">Hinweis</label><input type="text" id="mo" value="${esc(m.note||'')}">
       <label class="row" style="margin-top:14px"><input type="checkbox" id="ma" ${m.active!==false?'checked':''} style="width:22px;height:22px"> <span>Aktiv</span></label>
       <div class="steps">${taperSteps(m)}</div>
@@ -584,7 +587,7 @@ const ACT = {
       q('#addt').onclick=()=>{times.push('08:00');redraw()};
       q('#save').onclick=async()=>{
         const start=startFor(); if(!start){toast('Bitte eine Tageszahl ab 1 eingeben');return}
-        await upd('meds',m.id,{taper:{...m.taper,start},times:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:q('#ma').checked});
+        await upd('meds',m.id,{taper:{...m.taper,start},times:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:q('#ma').checked,...remindPatch(sh,m,'taper')});
         closeSheet();
       };
     });
@@ -676,7 +679,8 @@ const ACT = {
     const nickList=()=>[...S.nicknames].sort((a,b)=>a.name.localeCompare(b.name,'de')).map(n=>`<div class="li"><span class="grow">${esc(n.name)}</span><button class="btn plain" data-dn="${n.id}">✕</button></div>`).join('')
       ||`<div class="muted small" style="margin-bottom:8px">Noch keine Spitznamen.</div><button class="btn ghost" id="seedn">Grundstock laden (${NICKS.length} Namen)</button>`;
     openSheet(`<h3>Einstellungen</h3>
-      <button class="btn block ghost" id="gophotos" style="margin-top:10px">📷 Fotos von ${esc(DOG)} (${S.photos.length})</button>
+      <button class="btn block ghost" id="gopush" style="margin-top:10px">🔔 Erinnerungen</button>
+      <button class="btn block ghost" id="gophotos" style="margin-top:8px">📷 Fotos von ${esc(DOG)} (${S.photos.length})</button>
       <button class="btn block ghost" id="goreasons" style="margin-top:8px">🗣️ Bell-Gründe (${activeReasons().length})</button>
       <label class="f" style="margin-top:20px">Spitznamen von ${esc(DOG)} (${S.nicknames.length})</label>
       <div class="row"><input type="text" id="nn" placeholder="Neuer Spitzname"><button class="btn" id="addn">+</button></div>
@@ -703,6 +707,7 @@ const ACT = {
       q('#savename').onclick=async()=>{const n=q('#myname').value.trim();if(!n)return;await setName(n);toast('Gespeichert');render()};
       const lo=q('#logout'); if(lo) lo.onclick=async()=>{await sb.auth.signOut();location.reload()};
       q('#gophotos').onclick=()=>ACT.photos();
+      q('#gopush').onclick=()=>ACT.push();
       q('#goreasons').onclick=()=>ACT.reasons();
     });
   },
@@ -716,6 +721,23 @@ const ACT = {
       sh.addEventListener('click',async e=>{const b=e.target.closest('[data-dr]');if(!b)return;
         if(activeReasons().length<=1){toast('Mindestens ein Grund muss bleiben');return}
         await upd('bark_reasons',b.dataset.dr,{active:false});sh.querySelector('#rlist').innerHTML=list()});
+    });
+  },
+  push(){
+    const st=pushState();
+    const medsWith=S.meds.filter(m=>m.active!==false&&m.remind_at);
+    openSheet(`<h3>🔔 Erinnerungen</h3>
+      <div class="muted small">Wenn ein Medikament zur eingestellten Uhrzeit noch nicht abgehakt ist, bekommt ihr beide eine Mitteilung. Die Uhrzeit stellst du pro Medikament ein: <i>Medis → Plan → Bearbeiten</i>.</div>
+      <div class="card" style="margin-top:14px">
+        <div class="row"><b class="grow">Auf diesem iPhone</b><span class="pill ${st.on?'ok':''}" id="pst2">${st.label}</span></div>
+        ${st.hint?`<div class="muted small" style="margin-top:8px">${st.hint}</div>`:''}
+        ${st.can&&!st.on?'<button class="btn block" id="pon" style="margin-top:12px">Mitteilungen aktivieren</button>':''}
+        ${st.on?'<button class="btn block ghost" id="ptest" style="margin-top:12px">Test-Mitteilung schicken</button>':''}
+      </div>
+      <label class="f">Eingestellte Erinnerungen</label>
+      <div class="card list">${medsWith.length?medsWith.map(m=>`<div class="li"><span class="grow">${esc(m.name)}</span><b>🔔 ${esc(m.remind_at)}</b></div>`).join(''):'<div class="muted small">Noch keine – bei einem Medikament „Erinnern um“ setzen.</div>'}</div>`, sh=>{
+      const on=sh.querySelector('#pon'); if(on) on.onclick=async()=>{on.disabled=true;on.textContent='Einen Moment …';const ok=await enablePush();if(ok){toast('Mitteilungen aktiv 🔔');ACT.push()}else{on.disabled=false;on.textContent='Mitteilungen aktivieren'}};
+      const t=sh.querySelector('#ptest'); if(t) t.onclick=async()=>{t.disabled=true;await sendTestPush();t.textContent='Gesendet – kommt gleich an';setTimeout(()=>{t.disabled=false;t.textContent='Test-Mitteilung schicken'},8000)};
     });
   },
   photos(){
@@ -742,6 +764,59 @@ const ACT = {
     });
   },
 };
+
+/* ====== Erinnerungen (Web Push) ====== */
+function remindField(m){
+  return `<label class="f">Erinnern um (falls bis dahin nicht gegeben)</label>
+    <div class="row"><input type="time" id="rem" value="${esc(m.remind_at||'')}" style="max-width:150px"><button class="btn plain" type="button" onclick="this.previousElementSibling.value=''">Keine</button></div>`;
+}
+function remindPatch(sh,m,kind){
+  const v=kind==='bedarf'?'':(sh.querySelector('#rem')?.value||'');
+  return v===(m.remind_at||'')?{}:{remind_at:v||null}; // nur mitschicken, wenn geändert
+}
+const isStandalone=()=>window.navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+let swReg=null, pushSub=null;
+function pushState(){
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))
+    return {can:false,label:'nicht möglich',hint:isStandalone()?'Dein iOS ist zu alt (ab iOS 16.4).':'Funktioniert nur, wenn du die App über das Pfoten-Icon auf dem Home-Bildschirm öffnest.'};
+  if(Notification.permission==='denied') return {can:false,label:'blockiert',hint:'In den iPhone-Einstellungen → Mitteilungen → Ellie erlauben.'};
+  if(Notification.permission==='granted'&&pushSub) return {can:true,on:true,label:'aktiv'};
+  return {can:true,label:'aus'};
+}
+function b64uBytes(s){const b=atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((s.length+3)%4));return Uint8Array.from(b,c=>c.charCodeAt(0))}
+async function saveSub(sub){
+  if(DEMO) return true;
+  const j=sub.toJSON();
+  const {error}=await sb.from('push_subscriptions').upsert({endpoint:j.endpoint,sub:j,author:me.name,updated_at:new Date().toISOString()},{onConflict:'endpoint'});
+  if(error){console.error(error);toast('Konnte Gerät nicht speichern – SQL-Update schon ausgeführt?');return false}
+  return true;
+}
+async function enablePush(){
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){toast('Mitteilungen nicht erlaubt');return false}
+    swReg=swReg||await navigator.serviceWorker.register('sw.js');
+    await navigator.serviceWorker.ready;
+    pushSub=await swReg.pushManager.getSubscription()||await swReg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uBytes(VAPID_PUBLIC)});
+    return await saveSub(pushSub);
+  }catch(e){console.error(e);toast('Aktivieren fehlgeschlagen: '+(e.message||e));return false}
+}
+async function initPush(){
+  if(!('serviceWorker' in navigator)||location.protocol==='file:') return;
+  try{
+    swReg=await navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.addEventListener('message',e=>{if(e.data?.tab){go(e.data.tab)}});
+    if('PushManager' in window&&Notification.permission==='granted'){
+      pushSub=await swReg.pushManager.getSubscription();
+      if(pushSub) saveSub(pushSub); // hält das Gerät aktuell
+    }
+  }catch(e){console.warn('SW',e)}
+}
+async function sendTestPush(){
+  if(DEMO){toast('Im Demo-Modus nicht möglich');return}
+  const {error}=await sb.from('push_tests').insert({endpoint:pushSub?.endpoint,author:me.name});
+  if(error){console.error(error);toast('Test fehlgeschlagen – SQL-Update schon ausgeführt?')}
+}
 
 /* ====== Fotos (privater Supabase-Speicher "fotos") ====== */
 const BUCKET='fotos';
@@ -845,7 +920,7 @@ async function boot(){
   if(DEMO){
     me.name=lsGet('ellie.name')||'Dennis';
     if(!S.nicknames.length) seedDemo();
-    render(); return;
+    render(); initPush(); return;
   }
   if(!sb){
     try{await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2')}
@@ -857,7 +932,7 @@ async function boot(){
   me.name=session.user.user_metadata?.name||'';
   if(!me.name) return askName();
   $('#app').innerHTML='<div class="empty" style="margin-top:30vh">🐾 lädt …</div>';
-  await loadAll(); render(); subscribe();
+  await loadAll(); render(); subscribe(); initPush();
 }
 // Beim Zurückkehren in die App alles neu laden (iOS trennt die Live-Verbindung im Hintergrund)
 document.addEventListener('visibilitychange',async()=>{
