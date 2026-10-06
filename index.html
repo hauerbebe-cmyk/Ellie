@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=15"></script>
+<script src="config.js?v=16"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -384,6 +384,7 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .nf-r{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
 .nf-r span{color:var(--muted);flex:none;max-width:45%}.nf-r b{text-align:right;font-weight:600;word-break:break-word}
 .nf-r a{color:var(--accent-ink)}
+.savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
 .savebar .btn.saved{background:var(--ok-soft);color:var(--ok);box-shadow:var(--shadow)}
@@ -446,7 +447,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.15'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.16'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -872,15 +873,15 @@ function vLog(){
     <div class="chips">${chipsOf('tag')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Wie war der Tag?</span></div>
     <textarea id="logText" placeholder="Spaziergang, Besuch, Besonderheiten …">${esc(f.text)}</textarea>
-    ${lg?`<div class="muted small" style="margin-top:8px">Zuletzt gespeichert von ${esc(lg.author)}</div>`:''}</div>
-  <div class="savebar"><button class="btn block ${lg&&!ui.logDirty?'saved':''}" id="savebtn" data-a="saveLog">${lg&&!ui.logDirty?'✓ Gespeichert':lg?'Änderungen speichern':'Protokoll speichern'}</button></div>
+    ${lg?`<div class="small" style="margin-top:8px;color:var(--ok);font-weight:600">✓ Gespeichert · zuletzt von ${esc(lg.author)}</div>`:''}</div>
+  <div class="savebar ${ui.logDirty?'':'hide'}" id="savebar"><button class="btn block" id="savebtn" data-a="saveLog">${lg?'Änderungen speichern':'Protokoll speichern'}</button></div>
   ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood), w=weatherOf(h.day), a=APPETITE.find(x=>x.v===h.appetite);
     const syms=(h.symptoms||[]).map(s=>optIcon('symptom',s)||'•').join('');
     return `<button class="li hist" data-a="openLog" data-day="${h.day}"><span class="hm">${m?moodFace(m.v):'·'}</span>
     <span class="grow"><b>${dayLabel(h.day)}</b>${flagIcons(w,h.day)?` <span class="small">${flagIcons(w,h.day)}</span>`:''}
       <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${h.stool?`<span class="hb">💩 ${STOOL.find(x=>x.v===h.stool)?.l||''}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
 }
-document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true;const b=$('#savebtn');if(b&&b.classList.contains('saved')){b.classList.remove('saved');b.textContent='Änderungen speichern'}}});
+document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true;$('#savebar')?.classList.remove('hide')}});
 
 
 
@@ -1431,7 +1432,10 @@ const ACT = {
   },
   async saveLog(){
     const f=ui.logForm, lg=S.daily_log.find(l=>l.day===f.day);
-    if(!f.mood&&f.appetite==null&&f.stool==null&&!f.symptoms.length&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
+    if(!f.mood&&f.appetite==null&&f.stool==null&&!f.symptoms.length&&!f.tags.length&&!f.text.trim()){
+      ui.logDirty=false;
+      if(lg){await del('daily_log',lg.id);ui.logForm=null;render();toast('Eintrag für den Tag entfernt')} else {render();toast('Noch nichts eingetragen')}
+      return}
     const row={mood:f.mood||null,appetite:f.appetite,stool:f.stool,symptoms:f.symptoms,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
     const w=S.weather[f.day]||lg?.weather; if(w) row.weather=w;
     ui.logDirty=false;
