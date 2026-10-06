@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=18"></script>
+<script src="config.js?v=19"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -450,7 +450,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.18'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.19'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -1029,8 +1029,9 @@ function trendDetail(day){
 }
 function trendPresets(){
   const t=today(), out=[{k:'7',l:'7 Tage',from:addDays(t,-6),to:t},{k:'14',l:'14 Tage',from:addDays(t,-13),to:t},{k:'28',l:'28 Tage',from:addDays(t,-27),to:t},{k:'90',l:'3 Monate',from:addDays(t,-89),to:t}];
-  const ap=S.meds.find(m=>m.kind==='taper'&&m.taper?.start&&m.taper.start<=t);
-  if(ap) out.push({k:'plan',l:`Seit Plan-Start (${fmtD(ap.taper.start)})`,from:ap.taper.start,to:t});
+  // erster Tag mit Einträgen in der App
+  const first=[...S.daily_log.map(l=>l.day),...S.med_logs.map(l=>l.day),...S.barks.map(b=>dayOf(b.created_at)),...S.walks.map(w=>w.day)].reduce((m,d)=>!m||d<m?d:m,null);
+  if(first&&first<t) out.push({k:'app',l:`Seit App-Start (${fmtD(first)})`,from:first,to:t});
   return out;
 }
 function trendRange(){
