@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=19"></script>
+<script src="config.js?v=20"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -386,7 +386,9 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .nf-r a{color:var(--accent-ink)}
 .trange{padding:12px}
 .trange label span{display:block;font-size:12px;color:var(--muted);font-weight:600;margin:0 2px 4px}
-.trange input[type=date]{padding:9px 10px;font-size:15px}
+.trange .row>label{min-width:0;flex:1 1 0}
+.trange input[type=date]{padding:9px 8px;font-size:15px;min-width:0;width:100%;max-width:100%;display:block;-webkit-appearance:none;appearance:none;text-align:left}
+.trange input[type=date]::-webkit-date-and-time-value{text-align:left}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -450,7 +452,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.19'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.20'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
