@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=5"></script>
+<script src="config.js?v=6"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#8a7f74; --line:#ece3d6;
@@ -141,6 +141,65 @@ nav button.on .i{filter:none;opacity:1}
 .chip{padding:8px 12px;border-radius:99px;background:var(--bg);border:1px solid var(--line);font-size:14px}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 
+/* Protokoll – Abschnitte */
+.lsec{padding:14px 14px 16px}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;min-height:24px}
+.sec-h>span:first-child{font-weight:800;font-size:15px;letter-spacing:-.01em}
+.sec-h .btn.plain{padding:2px 4px;font-size:13px}
+.chip .ci{margin-right:5px}
+.chip.sym.on{background:var(--danger);border-color:var(--danger);color:#fff}
+.chip.addchip{border-style:dashed;color:var(--accent);background:transparent}
+.bowls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bw{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;background:var(--bg);border:2px solid transparent;transition:transform .12s}
+.bw:active{transform:scale(.95)}
+.bw small{font-size:12px;color:var(--muted);font-weight:600}
+.bw.on{border-color:var(--accent);background:var(--accent-soft)}
+.bw.on small{color:var(--accent)}
+.bw.on.lv0,.bw.on.lv1{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.bw.on.lv0 small,.bw.on.lv1 small{color:var(--danger)}
+.bowl{width:100%;max-width:64px;height:auto}
+.bowl .bin{fill:color-mix(in srgb,var(--ink) 6%,transparent)}
+.bowl .food{fill:#d39a5b}.bowl .kib{fill:#9c6127}
+.bowl .rim{fill:none;stroke:var(--ink);stroke-opacity:.25;stroke-width:1.6}
+.bowl .lip{fill:var(--muted);opacity:.5}
+.bw.on .bowl .lip{fill:var(--accent);opacity:1}
+/* Warnungen */
+.alert{display:block;width:100%;text-align:left;border-radius:18px;padding:12px 14px;margin-bottom:12px;color:#fff;
+  background:linear-gradient(135deg,#d2553f,#e88a3c);box-shadow:0 6px 18px rgba(210,85,63,.25)}
+.alert-h{font-weight:800;font-size:15px}.alert-b{font-size:15px;margin-top:3px;font-weight:600}.alert-f{font-size:12px;opacity:.9;margin-top:4px}
+.stockalert{background:linear-gradient(135deg,#7a5af0,#b05be0);box-shadow:0 6px 18px rgba(122,90,240,.25)}
+/* Wetter */
+.wx{display:flex;flex-wrap:wrap;align-items:center;gap:12px;border-radius:20px;padding:14px 16px;margin-bottom:10px;color:#fff;position:relative;overflow:hidden}
+.wx::after{content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12)}
+.wx-sun{background:linear-gradient(135deg,#f6a03c,#f3c24b)}
+.wx-cloud{background:linear-gradient(135deg,#7f8fa6,#a3b1c2)}
+.wx-fog{background:linear-gradient(135deg,#9aa3ad,#c3c9cf)}
+.wx-rain{background:linear-gradient(135deg,#3f6fb5,#5d9bd5)}
+.wx-snow{background:linear-gradient(135deg,#7fa9d6,#bcd7f0)}
+.wx-storm{background:linear-gradient(135deg,#3a2f6b,#6b4fa8)}
+.wx-none{background:var(--card);color:var(--muted);border:1px solid var(--line);font-size:13px}
+.wx-ic{font-size:40px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+.wx-t{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1}.wx-t span{font-size:17px;opacity:.85;font-weight:600}
+.wx-l{font-size:13px;opacity:.95;margin-top:3px}
+.wx-side{font-size:13px;text-align:right;line-height:1.5;opacity:.95;z-index:1}
+.wx-flags{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;z-index:1}
+.wx-flags span{background:rgba(255,255,255,.22);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.wxchip{font-size:13px;color:var(--muted);font-weight:600}
+/* Verlauf */
+.li.hist{width:100%;text-align:left;align-items:flex-start}
+.li.hist .hm{font-size:26px;line-height:1.2}
+.hsub{display:flex;gap:8px;align-items:center;margin-top:3px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.hsub .hb{flex:none}.hsub .hs{flex:none;letter-spacing:1px}.hsub .ht{overflow:hidden;text-overflow:ellipsis}
+/* Vorrat */
+.stk .stk-n{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.stk .stk-n small{font-size:13px;color:var(--muted);font-weight:600}
+.stk-bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin:10px 0 8px}
+.stk-bar i{display:block;height:100%;border-radius:9px;background:var(--ok)}
+.stk.lv-warn .stk-bar i{background:var(--warn)}.stk.lv-red .stk-bar i{background:var(--danger)}
+.stk-t{font-weight:700;font-size:14px}
+.stk.lv-red .stk-t{color:var(--danger)}.stk.lv-warn .stk-t{color:var(--warn)}
+.stk.lv-red{border-color:color-mix(in srgb,var(--danger) 45%,var(--line))}
+
 /* Notes */
 .note .t{font-weight:700;font-size:17px}
 .note .b{white-space:pre-wrap;margin-top:4px;line-height:1.4}
@@ -197,18 +256,18 @@ const NICKS = ['Makrelenöhrchen','Gagafrosch','Schnecke','Schneckenbär','Schne
 const FLUOX_PLAN = {title:'Aufdosieren',start:null,pre:{mg:30,pieces:''},steps:[{days:14,mg:35,pieces:''},{days:null,mg:40,pieces:''}]};
 const ALPRA_TAPER = {
   title:'Ausschleichen',
-  start:'2026-10-03', pre:{mg:0.5,pieces:'1 Tbl. 0,5 mg'},
+  start:'2026-10-03', units:{'0.5':'0,5 mg Tabletten','0.25':'0,25 mg Tabletten'}, pre:{mg:0.5,pieces:'1 Tbl. 0,5 mg',use:{'0.5':1}},
   steps:[
-    {days:10,mg:0.4375,pieces:'¾ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
-    {days:10,mg:0.375, pieces:'¾ Tbl. 0,5 mg'},
-    {days:10,mg:0.3125,pieces:'½ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
-    {days:14,mg:0.25,  pieces:'½ Tbl. 0,5 mg'},
-    {days:14,mg:0.1875,pieces:'¼ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
-    {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg'},
-    {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg'},
+    {days:10,mg:0.4375,pieces:'¾ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg',use:{'0.5':0.75,'0.25':0.25}},
+    {days:10,mg:0.375, pieces:'¾ Tbl. 0,5 mg',use:{'0.5':0.75}},
+    {days:10,mg:0.3125,pieces:'½ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg',use:{'0.5':0.5,'0.25':0.25}},
+    {days:14,mg:0.25,  pieces:'½ Tbl. 0,5 mg',use:{'0.5':0.5}},
+    {days:14,mg:0.1875,pieces:'¼ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg',use:{'0.5':0.25,'0.25':0.25}},
+    {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg',use:{'0.5':0.25}},
+    {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg',use:{'0.25':0.25}},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons'];
-const OPTIONAL = ['bark_reasons']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock'];
+const OPTIONAL = ['bark_reasons','log_options','stock']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const TABS = [
   {id:'start', i:'🏠', l:'Start'},
   {id:'meds',  i:'💊', l:'Medis'},
@@ -220,7 +279,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.5'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.6'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -247,12 +306,12 @@ function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 async function loadTable(t){
   if(DEMO) return;
   let q = sb.from(t).select('*');
-  if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-60);q=q.gte('created_at',d.toISOString())}
+  if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-120);q=q.gte('created_at',d.toISOString())}
   const {data,error} = await q.order('created_at',{ascending:true});
   if(error){console.error(error);if(!OPTIONAL.includes(t))toast('Laden fehlgeschlagen');return}
   S[t]=data||[];
 }
-async function loadAll(){ await Promise.all([...TABLES.map(loadTable),loadPhotos()]); }
+async function loadAll(){ loadWeather(); await Promise.all([...TABLES.map(loadTable),loadPhotos()]); }
 function putLocal(t,row){const i=S[t].findIndex(r=>r.id===row.id); if(i>=0) S[t][i]=row; else S[t].push(row)}
 async function ins(t,row){
   row = {author:me.name, ...row};
@@ -349,10 +408,11 @@ function vStart(){
   if(!photo&&S.photos.length){photo=pickPhoto();ui.photo=photo.name}
   const t=today(), m=medStatus(t), b=S.barks.filter(x=>dayOf(x.created_at)===t).length;
   const lg=S.daily_log.find(l=>l.day===t), mood=lg&&MOODS.find(x=>x.v===lg.mood);
-  const next=m.open[0];
+  const next=m.open[0], wt=S.weather[t];
   return `
-  <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}</span>
+  <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}${wt?` · <button class="wxchip" data-go="log">${wmo(wt.code).i} ${Math.round(wt.tmax)}°</button>`:''}</span>
     <button class="iconbtn" data-a="settings" aria-label="Einstellungen">⚙️</button></div>
+  ${alertBanner()}${stockBanner()}
   <div class="hero ${photo?'withphoto':''}" data-a="reroll">
     ${photo?`<div class="photo"><img src="${esc(photo.url)}" alt="${esc(DOG)}"></div>`:''}
     <div class="hi">${greeting()}, ${esc(me.name)}! Heute ist sie unser</div>
@@ -462,7 +522,8 @@ function vMeds(){
       <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="bedarf">Gegeben</button></div>
       ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><span class="grow">${esc(l.amount)}<div class="stamp">🕒 ${hm(l.created_at)} Uhr · ${esc(l.author)}${l.note?' · '+esc(l.note):''}</div></span><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
     </div>`}).join('');
-  return `<div class="topbar"><h1>Medikamente</h1><button class="btn ghost" data-a="plan">Plan</button></div>
+  return `<div class="topbar"><h1>Medikamente</h1><div class="row" style="gap:6px"><button class="btn ghost" data-a="stock">📦 Vorrat</button><button class="btn ghost" data-a="plan">Plan</button></div></div>
+  ${stockBanner()}
   ${dateNav('medDay',day)}
   ${!S.meds.length?`<div class="card empty">Noch kein Medikamentenplan.<br><br><button class="btn" data-a="medEdit">+ Medikament anlegen</button></div>`:''}
   ${st.total?`<h2>${st.done}/${st.total} gegeben</h2>${cards}`:''}
@@ -506,27 +567,170 @@ function vBark(){
 }
 
 /* ====== Protokoll ====== */
+const APPETITE=[{v:3,l:'Alles'},{v:2,l:'Halb'},{v:1,l:'Kaum'},{v:0,l:'Nichts'}];
+const DEFAULT_OPTS={
+  symptom:[['Unruhe','😰'],['Schlecht geschlafen','😴'],['Starkes Hecheln','🥵'],['Zittern','🫨'],['Erbrechen','🤢'],['Durchfall','💩'],['Viel getrunken','💧'],['Lecken / Kratzen','🐾'],['Verstecken','🙈'],['Wackelig / benommen','😵‍💫'],['Gereizt','😠']],
+  tag:[['Verspielt','🎾'],['Verschmust','🥰'],['Entspannt','😌'],['Ruhig','🤫'],['Müde','💤'],['Aufgedreht','⚡'],['Ängstlich','😟'],['Neugierig','👀'],['Viel gebellt','🗣️']],
+};
+const OPT_ICONS={symptom:['😰','😴','🥵','🫨','🤢','💩','💧','🐾','🙈','😵‍💫','😠','🤧','🦵','👁️','👂','🩸','🌡️','❗'],tag:['🎾','🥰','😌','🤫','💤','⚡','😟','👀','🗣️','🦴','🚶','🐕','🏃','🛁','🎉','⭐']};
+const OPT_NAMES={symptom:'Auffälligkeit',tag:'Stichpunkt'};
+function optList(kind){
+  const rows=S.log_options.filter(o=>o.kind===kind);
+  const base=rows.length?rows:DEFAULT_OPTS[kind].map(([label,icon],i)=>({kind,label,icon,active:true,created_at:'0000-'+String(i).padStart(3,'0')}));
+  return [...base].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)));
+}
+function optActive(kind){return optList(kind).filter(o=>o.active!==false)}
+function optIcon(kind,label){return optList(kind).find(o=>o.label===label)?.icon||''}
+async function seedOpts(kind){ // Standardliste einmalig in die DB schreiben, bevor sie verändert wird
+  if(S.log_options.some(o=>o.kind===kind)) return;
+  const t0=Date.now()-1e6;
+  await insMany('log_options',DEFAULT_OPTS[kind].map(([label,icon],i)=>({kind,label,icon,active:true,created_at:new Date(t0+i*1000).toISOString()})));
+}
+function bowl(level){
+  const h=[0,6,12,19][level], y=34-h, id='bc'+level;
+  return `<svg viewBox="0 0 64 40" class="bowl" aria-hidden="true"><defs><clipPath id="${id}"><path d="M6 13 H58 Q56 36 32 36 Q8 36 6 13 Z"/></clipPath></defs>
+    <path d="M6 13 H58 Q56 36 32 36 Q8 36 6 13 Z" class="bin"/>
+    <g clip-path="url(#${id})"><rect x="0" y="${y}" width="64" height="${h+4}" class="food"/>${h?`<circle cx="21" cy="${y+1.5}" r="2.6" class="kib"/><circle cx="32" cy="${y+.5}" r="2.8" class="kib"/><circle cx="43" cy="${y+1.5}" r="2.6" class="kib"/><circle cx="27" cy="${y+4}" r="2.2" class="kib"/><circle cx="38" cy="${y+4}" r="2.2" class="kib"/>`:''}</g>
+    <path d="M6 13 H58 Q56 36 32 36 Q8 36 6 13 Z" class="rim"/><rect x="3" y="10" width="58" height="4.5" rx="2.2" class="lip"/></svg>`;
+}
+/* Warnung: gleiche Auffälligkeit / wenig Appetit an 2 Tagen in Folge */
+function alerts(){
+  const t=today(), get=d=>S.daily_log.find(l=>l.day===d);
+  let a=get(t), b=get(addDays(t,-1));
+  if(!a){a=b;b=get(addDays(t,-2))}
+  if(!a||!b) return [];
+  const out=(a.symptoms||[]).filter(s=>(b.symptoms||[]).includes(s)).map(s=>`${optIcon('symptom',s)} ${s}`);
+  if(a.appetite!=null&&b.appetite!=null&&a.appetite<=1&&b.appetite<=1) out.push('🥣 Wenig Appetit');
+  return out;
+}
+function alertBanner(){
+  const a=alerts(); if(!a.length) return '';
+  return `<button class="alert" data-go="log"><div class="alert-h">⚠️ Seit 2 Tagen in Folge</div><div class="alert-b">${a.map(esc).join(' · ')}</div><div class="alert-f">Bei Auffälligkeiten ggf. die Tierärztin informieren.</div></button>`;
+}
 function vLog(){
   const day=ui.logDay, lg=S.daily_log.find(l=>l.day===day);
-  const f=ui.logForm && ui.logForm.day===day ? ui.logForm : (ui.logForm={day,mood:lg?.mood||0,tags:[...(lg?.tags||[])],text:lg?.text||''});
-  const hist=[...S.daily_log].sort((a,b)=>b.day.localeCompare(a.day)).slice(0,14);
+  const f=ui.logForm&&ui.logForm.day===day?ui.logForm:(ui.logForm={day,mood:lg?.mood||0,appetite:lg?.appetite??null,symptoms:[...(lg?.symptoms||[])],tags:[...(lg?.tags||[])],text:lg?.text||''});
+  const opts=kind=>{const sel=kind==='symptom'?f.symptoms:f.tags, act=optActive(kind);
+    return [...act,...sel.filter(s=>!act.some(o=>o.label===s)).map(label=>({label,icon:optIcon(kind,label)}))]};
+  const chip=(kind,o,on)=>`<button class="chip ${kind==='symptom'?'sym':''} ${on?'on':''}" data-a="opt" data-k="${kind}" data-t="${esc(o.label)}">${o.icon?`<span class="ci">${o.icon}</span>`:''}${esc(o.label)}</button>`;
+  const ap=APPETITE.find(a=>a.v===f.appetite);
+  const hist=[...S.daily_log].sort((a,b)=>b.day.localeCompare(a.day)).slice(0,21);
   return `<div class="topbar"><h1>Protokoll</h1><button class="btn ghost" data-a="exportXlsx">📊 Excel</button></div>
   ${dateNav('logDay',day)}
-  <div class="card">
-    <label class="f" style="margin-top:2px">Wie war ${esc(DOG)} ${day===today()?'heute':'an dem Tag'}?</label>
-    <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${m.e}<small>${m.l}</small></button>`).join('')}</div>
-    <label class="f">Was trifft zu?</label>
-    <div class="chips">${TAGS.map(t=>`<button class="chip ${f.tags.includes(t)?'on':''}" data-a="tag" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
-    <label class="f">Wie hat sie sich verhalten?</label>
-    <textarea id="logText" placeholder="Spaziergang, Fressen, Besonderheiten …">${esc(f.text)}</textarea>
+  ${day===today()?alertBanner():''}
+  ${weatherCard(day)}
+  <div class="card lsec"><div class="sec-h"><span>Stimmung</span><span class="muted small">${f.mood?MOODS.find(m=>m.v===f.mood).l:'Wie war sie drauf?'}</span></div>
+    <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${m.e}<small>${m.l}</small></button>`).join('')}</div></div>
+  <div class="card lsec"><div class="sec-h"><span>Appetit</span><span class="muted small">${ap?ap.l+' gefressen':'Wie viel hat sie gefressen?'}</span></div>
+    <div class="bowls">${APPETITE.map(a=>`<button class="bw ${f.appetite===a.v?'on':''} lv${a.v}" data-a="appetite" data-v="${a.v}">${bowl(a.v)}<small>${a.l}</small></button>`).join('')}</div></div>
+  <div class="card lsec"><div class="sec-h"><span>Auffälligkeiten</span><button class="btn plain small" data-a="optEdit" data-k="symptom">Bearbeiten</button></div>
+    <div class="chips">${opts('symptom').map(o=>chip('symptom',o,f.symptoms.includes(o.label))).join('')}<button class="chip addchip" data-a="optNew" data-k="symptom">＋ Neu</button></div>
+    <div class="muted small" style="margin-top:10px">${f.symptoms.length?`${f.symptoms.length} ausgewählt`:'Nichts auffällig? Super – einfach leer lassen ✨'}</div></div>
+  <div class="card lsec"><div class="sec-h"><span>Was trifft zu?</span><button class="btn plain small" data-a="optEdit" data-k="tag">Bearbeiten</button></div>
+    <div class="chips">${opts('tag').map(o=>chip('tag',o,f.tags.includes(o.label))).join('')}<button class="chip addchip" data-a="optNew" data-k="tag">＋ Neu</button></div></div>
+  <div class="card lsec"><div class="sec-h"><span>Wie war der Tag?</span></div>
+    <textarea id="logText" placeholder="Spaziergang, Besuch, Besonderheiten …">${esc(f.text)}</textarea>
     <button class="btn block" data-a="saveLog" style="margin-top:12px">${lg?'Aktualisieren':'Speichern'}</button>
-    ${lg?`<div class="muted small" style="text-align:center;margin-top:8px">Zuletzt von ${esc(lg.author)}</div>`:''}
-  </div>
-  ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood);
-    return `<button class="li" style="width:100%;text-align:left" data-a="openLog" data-day="${h.day}"><span style="font-size:24px">${m?m.e:'·'}</span>
-    <span class="grow"><b>${dayLabel(h.day)}</b><div class="muted small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc([...(h.tags||[])].join(', ')||h.text||'')}</div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
+    ${lg?`<div class="muted small" style="text-align:center;margin-top:8px">Zuletzt von ${esc(lg.author)}</div>`:''}</div>
+  ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood), w=weatherOf(h.day), a=APPETITE.find(x=>x.v===h.appetite);
+    const syms=(h.symptoms||[]).map(s=>optIcon('symptom',s)||'•').join('');
+    return `<button class="li hist" data-a="openLog" data-day="${h.day}"><span class="hm">${m?m.e:'·'}</span>
+    <span class="grow"><b>${dayLabel(h.day)}</b>${w?` <span class="muted small">${wmo(w.code).i} ${Math.round(w.tmax)}°</span>`:''}
+      <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
 }
 document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true}});
+
+/* ====== Wetter Köln-Lövenich (Open-Meteo, ohne Schlüssel) ====== */
+const LOC={lat:50.947,lon:6.832,name:'Lövenich'};
+const EVENTS={'12-31':'🎆 Silvester','01-01':'🎆 Neujahr','11-11':'🎉 Karnevalsauftakt'};
+S.weather={}; let weatherAt=0;
+async function loadWeather(){
+  if(Date.now()-weatherAt<36e5) return; weatherAt=Date.now();
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LOC.lat}&longitude=${LOC.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&timezone=Europe%2FBerlin&past_days=92&forecast_days=2`);
+    if(!r.ok) throw new Error(r.status);
+    const d=(await r.json()).daily;
+    d.time.forEach((t,i)=>S.weather[t]={code:d.weather_code[i],tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],rain:d.precipitation_sum[i],gust:d.wind_gusts_10m_max[i]});
+    render(true);
+  }catch(e){weatherAt=0;console.warn('Wetter',e)}
+}
+function wmo(c){
+  if(c==null) return {i:'·',l:'',t:'cloud'};
+  if(c===0) return {i:'☀️',l:'Sonnig',t:'sun'};
+  if(c<=2) return {i:c===1?'🌤️':'⛅',l:c===1?'Überwiegend sonnig':'Teils bewölkt',t:'sun'};
+  if(c===3) return {i:'☁️',l:'Bewölkt',t:'cloud'};
+  if(c<=48) return {i:'🌫️',l:'Nebel',t:'fog'};
+  if(c<=57) return {i:'🌦️',l:'Nieselregen',t:'rain'};
+  if(c<=67) return {i:'🌧️',l:'Regen',t:'rain'};
+  if(c<=77) return {i:'🌨️',l:'Schnee',t:'snow'};
+  if(c<=82) return {i:'🌧️',l:'Regenschauer',t:'rain'};
+  if(c<=86) return {i:'🌨️',l:'Schneeschauer',t:'snow'};
+  return {i:'⛈️',l:'Gewitter',t:'storm'};
+}
+function weatherOf(day){return S.weather[day]||S.daily_log.find(l=>l.day===day)?.weather||null}
+function weatherFlags(w,day){
+  const f=[]; if(EVENTS[day.slice(5)]) f.push(EVENTS[day.slice(5)]);
+  if(!w) return f;
+  if(w.code>=95) f.push('⛈️ Gewitter');
+  if(w.gust>=62) f.push('💨 Sturmböen'); else if(w.gust>=45) f.push('🌬️ Windig');
+  if(w.rain>=10) f.push('🌧️ Starkregen');
+  if(w.tmax>=28) f.push('🥵 Hitze');
+  if(w.tmin<=-3) f.push('🥶 Frost');
+  return f;
+}
+const n1=x=>Number(x||0).toLocaleString('de-DE',{maximumFractionDigits:1});
+function weatherCard(day){
+  const w=weatherOf(day), fl=weatherFlags(w,day);
+  if(!w) return `<div class="wx wx-none">📍 ${LOC.name} · ${daysBetween(day,today())>90?'Kein Wetter für diesen Tag':'Wetter wird geladen …'}${fl.length?' · '+fl.join(' · '):''}</div>`;
+  const x=wmo(w.code);
+  return `<div class="wx wx-${x.t}"><div class="wx-ic">${x.i}</div>
+    <div class="grow"><div class="wx-t">${Math.round(w.tmax)}°<span> / ${Math.round(w.tmin)}°</span></div><div class="wx-l">${x.l} · 📍 ${LOC.name}</div></div>
+    <div class="wx-side"><div>💧 ${n1(w.rain)} mm</div><div>💨 ${Math.round(w.gust||0)} km/h</div></div>
+    ${fl.length?`<div class="wx-flags">${fl.map(t=>`<span>${t}</span>`).join('')}</div>`:''}</div>`;
+}
+
+/* ====== Tablettenvorrat ====== */
+const QF={0:'',0.25:'¼',0.5:'½',0.75:'¾'};
+function fmtQty(x){const q=Math.round(Math.max(0,x)*4)/4,w=Math.floor(q),f=QF[+(q-w).toFixed(2)];return (w||!f?String(w):'')+f}
+const num=v=>parseFloat(String(v).replace(',','.'));
+function taperUnits(m){const t=m?.taper,k=new Set();if(!t)return[];[t.pre,...(t.steps||[])].forEach(s=>s?.use&&Object.keys(s.use).forEach(x=>k.add(x)));return [...k]}
+function useOn(s,m,day){ // geplanter Verbrauch an einem Tag
+  if(!m||m.active===false||m.kind==='bedarf') return 0;
+  if(m.kind==='taper'){const ti=taperInfo(m,day);if(!ti||!ti.step)return 0;
+    if(s.use_key) return +(ti.step.use?.[s.use_key]||0);
+    return s.mg_per_unit?ti.step.mg/s.mg_per_unit:0}
+  return +(s.per_day||0);
+}
+function stockStatus(s){
+  const m=S.meds.find(x=>x.id===s.med_id), slots=Math.max(1,slotsOf(m||{}).length), since=new Date(s.counted_at);
+  const logs=S.med_logs.filter(l=>l.med_id===s.med_id&&!l.skipped&&new Date(l.created_at)>since);
+  const used=logs.reduce((a,l)=>a+(m?.kind==='bedarf'?+(s.per_day||1):useOn(s,m,l.day)/slots),0);
+  const left=Math.max(0,+s.count-used);
+  const doneToday=S.med_logs.filter(l=>l.med_id===s.med_id&&l.day===today()).length;
+  let rest=left,d=today(),empty=null;
+  for(let i=0;i<400;i++){
+    let u=useOn(s,m,d); if(i===0) u=u*Math.max(0,slots-doneToday)/slots;
+    if(u>0&&rest+1e-9<u){empty=d;break}
+    rest-=u; d=addDays(d,1);
+  }
+  const daysLeft=empty?daysBetween(today(),empty):null;
+  const lvl=m?.kind==='bedarf'?(left<1?'red':left<3?'warn':'ok'):daysLeft==null?'ok':daysLeft<=7?'red':daysLeft<=14?'warn':'ok';
+  return {m,left,empty,daysLeft,lvl,rest,today:useOn(s,m,today())};
+}
+function stockText(s,st){
+  if(st.m?.kind==='bedarf') return st.left<1?'Leer – nachkaufen!':`Für ca. ${Math.floor(st.left/(+s.per_day||1))} Gaben`;
+  if(!st.empty){const ti=st.m?.kind==='taper'?taperInfo(st.m,today()):null;
+    if(ti?.done) return 'Wird nicht mehr gebraucht';
+    if(st.m?.kind==='taper'&&ti&&ti.totalDays&&ti.step) return `Reicht bis zum Planende ✅ · danach übrig: ${fmtQty(st.rest)}`;
+    return 'Reicht über ein Jahr';}
+  if(st.daysLeft<=0) return 'Reicht heute nicht mehr – nachkaufen!';
+  return `Reicht bis ${dayLabel(addDays(st.empty,-1))} (${fmtD(addDays(st.empty,-1))}) · noch ${st.daysLeft} Tag${st.daysLeft>1?'e':''}`;
+}
+function lowStock(){return S.stock.map(s=>({s,st:stockStatus(s)})).filter(x=>x.st.lvl==='red')}
+function stockBanner(){
+  const l=lowStock(); if(!l.length) return '';
+  return `<button class="alert stockalert" data-a="stock"><div class="alert-h">📦 Vorrat wird knapp</div><div class="alert-b">${l.map(({s,st})=>`${esc(st.m?.name||'?')} ${esc(s.label)}: ${st.m?.kind==='bedarf'?fmtQty(st.left)+' übrig':st.daysLeft<=0?'heute leer':'noch '+st.daysLeft+' T.'}`).join(' · ')}</div></button>`;
+}
 
 /* ====== Notizen ====== */
 function vNotes(){
@@ -657,15 +861,126 @@ const ACT = {
     });
   },
   delBark(d){del('barks',d.id)},
-  mood(d){ui.logForm.mood=+d.v;ui.logDirty=true;render()},
-  tag(d){const t=ui.logForm.tags,i=t.indexOf(d.t);i>=0?t.splice(i,1):t.push(d.t);ui.logDirty=true;render()},
+  mood(d){ui.logForm.mood=ui.logForm.mood===+d.v?0:+d.v;ui.logDirty=true;render()},
+  appetite(d){ui.logForm.appetite=ui.logForm.appetite===+d.v?null:+d.v;ui.logDirty=true;render()},
+  opt(d){const arr=d.k==='symptom'?ui.logForm.symptoms:ui.logForm.tags,i=arr.indexOf(d.t);i>=0?arr.splice(i,1):arr.push(d.t);ui.logDirty=true;render()},
+  optNew(d){
+    const kind=d.k; let icon=OPT_ICONS[kind][0];
+    openSheet(`<h3>Neue ${OPT_NAMES[kind]}</h3>
+      <label class="f">Name</label><input type="text" id="ol" placeholder="${kind==='symptom'?'z. B. Humpeln, Augen tränen':'z. B. Hundeschule, Besuch, Lange Runde'}">
+      <label class="f">Symbol</label>
+      <div class="chips" id="oi">${OPT_ICONS[kind].map(i=>`<button class="chip iconchip ${i===icon?'on':''}" data-i="${i}">${i}</button>`).join('')}</div>
+      <button class="btn block" id="save" style="margin-top:16px">Anlegen & auswählen</button>`, sh=>{
+      const q=s=>sh.querySelector(s);
+      q('#oi').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(!b)return;icon=b.dataset.i;q('#oi').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b))});
+      q('#save').onclick=async()=>{
+        const label=q('#ol').value.trim(); if(!label){toast('Bitte einen Namen eingeben');return}
+        const ex=optList(kind).find(o=>o.label.toLowerCase()===label.toLowerCase());
+        await seedOpts(kind);
+        if(ex){const row=S.log_options.find(o=>o.kind===kind&&o.label===ex.label);if(row&&row.active===false)await upd('log_options',row.id,{active:true})}
+        else{const r=await ins('log_options',{kind,label,icon,active:true});if(!r)return}
+        const lbl=ex?ex.label:label, arr=kind==='symptom'?ui.logForm.symptoms:ui.logForm.tags;
+        if(!arr.includes(lbl)) arr.push(lbl); ui.logDirty=true;
+        closeSheet(); render(); toast(`„${lbl}“ hinzugefügt`);
+      };
+      setTimeout(()=>q('#ol').focus(),300);
+    });
+  },
+  optEdit(d){
+    const kind=d.k;
+    const list=()=>optActive(kind).map(o=>`<div class="li"><span style="font-size:22px">${o.icon||'•'}</span><span class="grow">${esc(o.label)}</span><button class="btn plain" data-del="${esc(o.label)}">✕</button></div>`).join('')||'<div class="muted small">Keine Einträge</div>';
+    openSheet(`<h3>${kind==='symptom'?'Auffälligkeiten':'Stichpunkte'} bearbeiten</h3>
+      <div class="muted small">Entfernte Punkte bleiben in alten Einträgen erhalten.</div>
+      <div class="list" id="ol" style="margin-top:8px">${list()}</div>
+      <button class="btn block" id="add" style="margin-top:14px">+ Neu anlegen</button>`, sh=>{
+      sh.querySelector('#add').onclick=()=>ACT.optNew({k:kind});
+      sh.addEventListener('click',async e=>{const b=e.target.closest('[data-del]');if(!b)return;
+        await seedOpts(kind);
+        const row=S.log_options.find(o=>o.kind===kind&&o.label===b.dataset.del); if(row) await upd('log_options',row.id,{active:false});
+        sh.querySelector('#ol').innerHTML=list();});
+    });
+  },
   async saveLog(){
     const f=ui.logForm, lg=S.daily_log.find(l=>l.day===f.day);
-    if(!f.mood&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
-    const row={mood:f.mood||null,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
+    if(!f.mood&&f.appetite==null&&!f.symptoms.length&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
+    const row={mood:f.mood||null,appetite:f.appetite,symptoms:f.symptoms,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
+    const w=S.weather[f.day]||lg?.weather; if(w) row.weather=w;
     ui.logDirty=false;
     if(lg) await upd('daily_log',lg.id,row); else await ins('daily_log',{day:f.day,...row});
     toast('Protokoll gespeichert 📖');
+  },
+  stock(){
+    const items=()=>S.stock.length?S.stock.map(s=>{const st=stockStatus(s), pct=st.m?.kind==='bedarf'?Math.min(100,st.left*20):st.daysLeft==null?100:Math.max(4,Math.min(100,st.daysLeft/30*100));
+      return `<div class="card stk lv-${st.lvl}"><div class="row"><div class="grow"><b>${esc(st.m?.name||'?')}</b><div class="muted small">${esc(s.label)}</div></div>
+        <div class="stk-n">${fmtQty(st.left)}<small> ${esc(s.unit||'Stk.')}</small></div></div>
+        <div class="stk-bar"><i style="width:${pct}%"></i></div>
+        <div class="stk-t">${stockText(s,st)}</div>
+        <div class="muted small">Gezählt am ${fmtD(dayOf(s.counted_at))}${st.m?.kind!=='bedarf'?` · Verbrauch heute ${fmtQty(st.today)||'0'}`:''}</div>
+        <div class="actions" style="margin-top:10px"><button class="btn ghost" data-sc="${s.id}">Neu gezählt</button><button class="btn ghost" data-sa="${s.id}">+ Packung</button></div></div>`}).join('')
+      :`<div class="card empty">Noch kein Vorrat erfasst.<br>Trag ein, wie viele Tabletten ihr habt – die App rechnet mit.</div>`;
+    openSheet(`<h3>📦 Vorrat</h3><div class="muted small">Die App zieht jede abgehakte Gabe ab und rechnet mit dem Dosisplan voraus.</div>
+      <div id="sl" style="margin-top:12px">${items()}</div>
+      <button class="btn block" id="new" style="margin-top:6px">+ Vorrat erfassen</button>`, sh=>{
+      sh.querySelector('#new').onclick=()=>ACT.stockNew();
+      sh.addEventListener('click',e=>{const c=e.target.closest('[data-sc]'),a=e.target.closest('[data-sa]');
+        if(c) ACT.stockCount({id:c.dataset.sc}); if(a) ACT.stockAdd({id:a.dataset.sa});});
+    });
+  },
+  stockNew(){
+    const meds=S.meds.filter(m=>m.active!==false);
+    if(!meds.length){toast('Erst ein Medikament anlegen');return}
+    let mid=meds[0].id, key=null;
+    const fields=()=>{const m=S.meds.find(x=>x.id===mid), units=taperUnits(m);
+      if(m.kind==='taper'&&units.length){key=key&&units.includes(key)?key:units[0];
+        return `<label class="f">Welche Tabletten?</label><div class="chips">${units.map(u=>`<button class="chip ${u===key?'on':''}" data-u="${u}">${esc(m.taper.units?.[u]||u+' mg')}</button>`).join('')}</div>`}
+      if(m.kind==='taper') return `<label class="f">Wie viel mg hat eine Tablette/Kapsel?</label><input type="text" inputmode="decimal" id="mpu" placeholder="z. B. 20">`;
+      if(m.kind==='bedarf') return `<label class="f">Stück pro Gabe</label><input type="text" inputmode="decimal" id="pd" value="1">`;
+      return `<label class="f">Stück pro Tag</label><input type="text" inputmode="decimal" id="pd" value="${Math.max(1,slotsOf(m).length)}">`;
+    };
+    openSheet(`<h3>Vorrat erfassen</h3>
+      <label class="f">Medikament</label><div class="chips" id="ms">${meds.map(m=>`<button class="chip ${m.id===mid?'on':''}" data-m="${m.id}">${esc(m.name)}</button>`).join('')}</div>
+      <div id="ff">${fields()}</div>
+      <label class="f">Wie viele habt ihr gerade?</label>
+      <div class="row"><input type="text" inputmode="decimal" id="cnt" placeholder="z. B. 30" style="max-width:140px"><input type="text" id="unit" value="Tbl." style="max-width:100px"></div>
+      <div class="muted small" style="margin-top:6px">Angebrochene Tabletten als Kommazahl, z. B. 12,5</div>
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>`, sh=>{
+      const q=s=>sh.querySelector(s);
+      sh.addEventListener('click',e=>{const mb=e.target.closest('[data-m]'),ub=e.target.closest('[data-u]');
+        if(mb){mid=mb.dataset.m;key=null;q('#ms').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===mb));q('#ff').innerHTML=fields();
+          const m=S.meds.find(x=>x.id===mid);q('#unit').value=/b12|kapsel/i.test(m.name+m.dose)?'Kps.':'Tbl.'}
+        if(ub){key=ub.dataset.u;q('#ff').innerHTML=fields()}});
+      q('#save').onclick=async()=>{
+        const m=S.meds.find(x=>x.id===mid), count=num(q('#cnt').value);
+        if(!(count>=0)){toast('Bitte die Anzahl eingeben');return}
+        const row={med_id:mid,count,unit:q('#unit').value.trim()||'Stk.',counted_at:new Date().toISOString()};
+        if(m.kind==='taper'&&key){row.use_key=key;row.label=m.taper.units?.[key]||key+' mg'}
+        else if(m.kind==='taper'){const v=num(q('#mpu').value);if(!(v>0)){toast('Bitte mg pro Tablette eingeben');return}row.mg_per_unit=v;row.label=`${n1(v)} mg`}
+        else{const v=num(q('#pd').value);row.per_day=v>0?v:1;row.label=m.kind==='bedarf'?`${n1(row.per_day)} pro Gabe`:`${n1(row.per_day)} pro Tag`}
+        const r=await ins('stock',row); if(!r)return;
+        ACT.stock();
+      };
+    });
+  },
+  stockCount(d){
+    const s=S.stock.find(x=>x.id===d.id), st=stockStatus(s);
+    openSheet(`<h3>Neu gezählt</h3><div class="muted">${esc(st.m?.name||'')} · ${esc(s.label)} · laut App noch ${fmtQty(st.left)}</div>
+      <label class="f">Wie viele sind es wirklich?</label><input type="text" inputmode="decimal" id="cnt" value="${n1(Math.round(st.left*4)/4)}" style="max-width:140px">
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      <button class="btn block danger" id="del" style="margin-top:4px">Vorrat löschen</button>`, sh=>{
+      sh.querySelector('#save').onclick=async()=>{const v=num(sh.querySelector('#cnt').value);if(!(v>=0)){toast('Bitte eine Zahl eingeben');return}
+        await upd('stock',s.id,{count:v,counted_at:new Date().toISOString()});ACT.stock()};
+      sh.querySelector('#del').onclick=async()=>{if(confirm('Diesen Vorrat löschen?')){await del('stock',s.id);ACT.stock()}};
+    });
+  },
+  stockAdd(d){
+    const s=S.stock.find(x=>x.id===d.id), st=stockStatus(s);
+    openSheet(`<h3>+ Neue Packung</h3><div class="muted">${esc(st.m?.name||'')} · ${esc(s.label)}</div>
+      <label class="f">Wie viele kommen dazu?</label><input type="text" inputmode="decimal" id="cnt" placeholder="z. B. 30" style="max-width:140px">
+      <button class="btn block" id="save" style="margin-top:16px">Hinzufügen</button>`, sh=>{
+      sh.querySelector('#save').onclick=async()=>{const v=num(sh.querySelector('#cnt').value);if(!(v>0)){toast('Bitte eine Zahl eingeben');return}
+        await upd('stock',s.id,{count:+s.count+v});toast(`+${n1(v)} ${s.unit||''} 📦`);ACT.stock()};
+      setTimeout(()=>sh.querySelector('#cnt').focus(),300);
+    });
   },
   async exportXlsx(){
     const sh=openSheet(`<h3>Excel-Export</h3><div class="muted" id="xs">Wird erstellt …</div>`);
@@ -903,7 +1218,9 @@ function buildExport(dlogs,meds,mlogs,barks){
   const protokoll=days.map(day=>{
     const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood);
     const bs=barks.filter(b=>dayOf(b.created_at)===day);
-    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'','Gebellt':bs.length};
+    const w=lg?.weather||S.weather[day], ap=APPETITE.find(a=>a.v===lg?.appetite);
+    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
+      'Wetter':w?wmo(w.code).l:'','Temp. max (°C)':w?Math.round(w.tmax):'','Regen (mm)':w?w.rain:'','Böen (km/h)':w?Math.round(w.gust||0):'','Ereignis':weatherFlags(w,day).join(', '),'Gebellt':bs.length};
     RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length);
     row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
     row['Eingetragen von']=lg?.author||'';
@@ -915,7 +1232,7 @@ function buildExport(dlogs,meds,mlogs,barks){
   const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason).label,'Von':b.author||''}));
   const sheet=(rows,widths)=>{const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true,dateNF:'dd.mm.yyyy'});ws['!cols']=widths.map(w=>({wch:w}));return ws};
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,32,50,8,...RS.map(()=>14),40,14]),'Protokoll');
+  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,8,30,28,45,14,12,10,11,22,8,...RS.map(()=>14),40,14]),'Protokoll');
   XLSX.utils.book_append_sheet(wb,sheet(medis,[11,16,12,12,14,13,30,10,14]),'Medikamente');
   XLSX.utils.book_append_sheet(wb,sheet(bell,[11,8,22,10]),'Bellistima');
   const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});
@@ -954,7 +1271,7 @@ async function boot(){
   if(DEMO){
     me.name=lsGet('ellie.name')||'Dennis';
     if(!S.nicknames.length) seedDemo();
-    render(); initPush(); return;
+    render(); initPush(); loadWeather(); return;
   }
   if(!sb){
     try{await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2')}
@@ -998,8 +1315,11 @@ function seedDemo(){
   [1,2,3].forEach(i=>{const d=addDays(t,-i);S.med_logs.push({id:uid(),med_id:m1.id,day:d,slot:'taeglich',amount:sollOf(m1,d),author:i%2?'Jana':'Dennis',created_at:iso(now-i*864e5)})});
   const rs=['hausflur','draussen','hausflur','draussen','hausflur'];
   for(let d=0;d<7;d++){const n=[3,1,4,2,0,5,2][d];for(let i=0;i<n;i++)S.barks.push({id:uid(),reason:rs[(i+d)%5],author:i%2?'Jana':'Dennis',created_at:iso(now-d*864e5-i*2400e3)})}
-  S.daily_log.push({id:uid(),day:addDays(t,-1),mood:4,tags:['Verspielt','Gut gefressen'],text:'Langer Spaziergang im Wald, danach total platt.',author:'Jana',created_at:iso(now-864e5)});
-  S.daily_log.push({id:uid(),day:addDays(t,-2),mood:2,tags:['Ängstlich','Viel gebellt'],text:'Handwerker im Haus.',author:'Dennis',created_at:iso(now-2*864e5)});
+  S.daily_log.push({id:uid(),day:addDays(t,-1),mood:3,appetite:1,symptoms:['Unruhe','Starkes Hecheln'],tags:['Müde'],text:'Langer Spaziergang im Wald, danach total platt.',author:'Jana',created_at:iso(now-864e5)});
+  S.daily_log.push({id:uid(),day:addDays(t,-2),mood:2,appetite:1,symptoms:['Unruhe'],tags:['Ängstlich','Viel gebellt'],text:'Handwerker im Haus.',author:'Dennis',created_at:iso(now-2*864e5)});
+  S.stock.push({id:uid(),med_id:m1.id,label:'0,5 mg Tabletten',unit:'Tbl.',count:40,use_key:'0.5',counted_at:iso(now-4*864e5)});
+  S.stock.push({id:uid(),med_id:m1.id,label:'0,25 mg Tabletten',unit:'Tbl.',count:30,use_key:'0.25',counted_at:iso(now-4*864e5)});
+  const b12=S.meds.find(m=>m.name==='Vitamin B12'); S.stock.push({id:uid(),med_id:b12.id,label:'1 pro Tag',unit:'Kps.',count:6,per_day:1,counted_at:iso(now-864e5)});
   S.notes.push({id:uid(),title:'Tierarzt',body:'Kontrolle Haut: nächster Termin in 4 Wochen.\nPraxis fragt nach Gewicht.',pinned:true,author:'Jana',created_at:iso(now-3*864e5)});
 }
 
