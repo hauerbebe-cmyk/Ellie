@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=20"></script>
+<script src="config.js?v=21"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -389,6 +389,9 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .trange .row>label{min-width:0;flex:1 1 0}
 .trange input[type=date]{padding:9px 8px;font-size:15px;min-width:0;width:100%;max-width:100%;display:block;-webkit-appearance:none;appearance:none;text-align:left}
 .trange input[type=date]::-webkit-date-and-time-value{text-align:left}
+.fact{margin-top:10px;background:linear-gradient(135deg,var(--accent-soft),var(--card) 70%)}
+.fact .btn.plain{padding:2px 4px;font-size:13px;color:var(--accent-ink)}
+.fact-t{margin-top:6px;font-size:15px;line-height:1.45}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -452,7 +455,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.20'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.21'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -544,7 +547,7 @@ function closeSheet(now){
 }
 
 /* ====== Navigation & Rendern ====== */
-function go(tab){ui.tab=tab;if(tab==='start'){ui.nick=null;ui.photo=null}render();window.scrollTo(0,0)}
+function go(tab){ui.tab=tab;if(tab==='start'){ui.nick=null;ui.photo=null;ui.factOff=0}render();window.scrollTo(0,0)}
 function renderNav(){
   const n=$('#nav');n.hidden=false;
   n.innerHTML=TABS.map(t=>`<button class="${ui.tab===t.id?'on':''}" data-go="${t.id}"><span class="i">${NAV_ICONS[t.id]}</span>${t.l}</button>`).join('');
@@ -562,6 +565,11 @@ document.addEventListener('click',e=>{
 });
 
 /* ====== Start ====== */
+const DOG_FACTS=["Hundenasen haben bis zu 300 Millionen Riechzellen – Menschen nur etwa 5 bis 6 Millionen.", "Jeder Nasenabdruck eines Hundes ist einzigartig, ähnlich wie ein menschlicher Fingerabdruck.", "Hunde können mit jedem Nasenloch getrennt riechen – so erkennen sie, aus welcher Richtung ein Geruch kommt.", "Hunde schwitzen fast nur über die Pfotenballen. Abkühlen tun sie vor allem durchs Hecheln.", "Hunde hören Töne bis etwa 45.000 Hertz – Menschen nur bis rund 20.000 Hertz.", "Ein Hundeohr wird von rund 18 Muskeln bewegt. Deshalb können Hunde ihre Ohren so fein ausrichten.", "Welpen kommen blind und taub zur Welt. Die Augen öffnen sich erst nach etwa zwei Wochen.", "Hunde sehen nicht schwarz-weiß: Sie erkennen vor allem Blau- und Gelbtöne, Rot und Grün dagegen kaum.", "Hunde haben ein drittes Augenlid, die Nickhaut. Sie schützt das Auge und hält es feucht.", "Hunde träumen wahrscheinlich: Im REM-Schlaf zucken viele mit den Pfoten oder bellen leise.", "Erwachsene Hunde haben 42 Zähne – Menschen 32. Welpen starten mit 28 Milchzähnen.", "Die normale Körpertemperatur eines Hundes liegt bei etwa 38 bis 39 °C – also höher als unsere.", "Hunde sind die ältesten Haustiere des Menschen: Sie wurden vor mindestens 15.000 Jahren domestiziert.", "Hunde verstehen menschliche Zeigegesten besser als Schimpansen – sie haben sich über Jahrtausende auf uns eingestellt.", "Die Border-Collie-Hündin Chaser lernte die Namen von über 1.000 Spielzeugen.", "Laut Forscher Stanley Coren verstehen Hunde im Schnitt rund 165 Wörter und Gesten.", "Wedelt ein Hund eher nach rechts, ist er meist positiv gestimmt – eher nach links eher unsicher. Das zeigte eine italienische Studie.", "Gähnen ist ansteckend – auch zwischen Mensch und Hund.", "Wenn Hund und Mensch sich liebevoll anschauen, steigt bei beiden das Bindungshormon Oxytocin.", "Hunde trinken, indem sie die Zungenspitze nach hinten zu einer kleinen Kelle formen.", "Schokolade ist für Hunde giftig – schuld ist der Stoff Theobromin. Je dunkler, desto gefährlicher.", "Weintrauben und Rosinen können bei Hunden schon in kleinen Mengen zu Nierenversagen führen.", "Xylit (Birkenzucker) aus zuckerfreiem Kaugummi ist für Hunde hochgiftig.", "Der Basenji bellt kaum – stattdessen macht er jodelartige Laute.", "Greyhounds gehören zu den schnellsten Hunden und erreichen rund 70 km/h.", "Dalmatiner-Welpen werden komplett weiß geboren. Die Punkte kommen erst nach ein paar Wochen.", "Der Chow-Chow hat eine blauschwarze Zunge.", "Der Norwegische Lundehund hat an jeder Pfote sechs Zehen – ideal zum Klettern auf Felsen.", "Das Kreiseln vor dem Hinlegen ist vermutlich ein altes Erbe: So haben Wildhunde ihr Lager zurechtgetreten.", "Das Scharren nach dem Geschäft ist Markieren: An den Pfoten sitzen Duftdrüsen.", "Hunde können fröhliche und wütende menschliche Gesichter auseinanderhalten, das zeigen Studien aus Wien.", "Die Tasthaare an der Schnauze spüren feinste Luftbewegungen – praktisch im Dunkeln.", "Kleine Hunde leben im Schnitt deutlich länger als große.", "Hunde haben rund 1.700 Geschmacksknospen – Menschen etwa 9.000.", "Ellies halbe Herkunft, der Australian Shepherd, stammt trotz des Namens aus den USA.", "Der Labradoodle wurde 1989 in Australien als Blindenführhund für Allergiker gezüchtet – der Start der Doodle-Welle.", "Der Pudel war ursprünglich ein Wasserapportierhund. Der Name kommt vom alten Wort „pudeln“: im Wasser plantschen.", "Das Merle-Muster kommt von einem eigenen Gen. Zwei Merle-Hunde miteinander zu verpaaren ist in Deutschland als Qualzucht verboten.", "Hunde richten sich beim Geschäft gern in Nord-Süd-Richtung aus – sie spüren wohl das Magnetfeld der Erde.", "Hunde können am Geruch erkennen, ob ein Mensch Angst hat oder entspannt ist.", "Schnüffeln ist für Hunde echte Kopfarbeit und wirkt beruhigend – gerade für ängstliche Hunde super.", "Lecken und Kauen kann Hunde beruhigen, weil dabei Wohlfühl-Hormone ausgeschüttet werden.", "Erwachsene Hunde schlafen rund 12 bis 14 Stunden am Tag, Welpen und Senioren noch mehr.", "Die feuchte Hundenase fängt Duftmoleküle besser ein.", "Mit dem Jacobson-Organ im Gaumen können Hunde Pheromone wahrnehmen – eine Art zweiter Geruchssinn.", "Speziell ausgebildete Hunde erschnüffeln bei Diabetikern eine Unterzuckerung, oft bevor der Mensch sie selbst merkt.", "Die Spielverbeugung – Vorderkörper runter, Po hoch – heißt: „Alles nur Spaß!“", "Gähnen, Wegschauen und über die Nase lecken sind oft Beschwichtigungssignale: Der Hund ist gestresst oder will deeskalieren.", "Menschen können am Klang des Bellens erkennen, ob ein Hund aufgeregt, ängstlich oder verspielt ist.", "Die „Hundstage“ im Hochsommer heißen nach dem Sternbild Großer Hund mit seinem hellsten Stern Sirius.", "Eine warme, trockene Nase ist kein verlässliches Krankheitszeichen – sie kann zum Beispiel nach dem Schlafen ganz normal sein.", "Schlappohren sind ein typisches Merkmal domestizierter Tiere – Wölfe haben fast immer Stehohren.", "Hunde haben ein feines Zeitgefühl: Viele merken genau, wann Herrchen oder Frauchen normalerweise nach Hause kommen.", "Ein Hundenapf voll Wasser? Hunde brauchen pro Tag ungefähr 50 bis 60 ml Wasser pro Kilo Körpergewicht – bei Ellie also grob 0,7 bis 0,9 Liter.", "Laika war 1957 das erste Lebewesen, das die Erde im Orbit umkreiste – eine Hündin aus Moskau."];
+function factOfDay(off){const i=(daysBetween('2026-01-01',today())+(off||0))%DOG_FACTS.length;return DOG_FACTS[(i+DOG_FACTS.length)%DOG_FACTS.length]}
+function factCard(){const off=ui.factOff||0;
+  return `<div class="card fact"><div class="row"><b class="grow">🐾 ${off?'Noch ein Hunde-Funfact':'Hunde-Funfact des Tages'}</b><button class="btn plain small" data-a="nextFact">Noch einer ›</button></div><div class="fact-t">${esc(factOfDay(off))}</div></div>`}
+
 function pickNick(){
   const list=S.nicknames.map(n=>n.name);
   if(!list.length) return DOG;
@@ -601,7 +609,8 @@ function vStart(){
     </button>
     <button class="tile" data-go="bark"><div class="lbl">🗣️ Bellistima</div><div class="big">${b}×</div><div class="lbl">heute gebellt</div></button>
     <button class="tile" data-go="log"><div class="lbl">📖 Protokoll</div><div class="big">${mood?'<span class="mfbig">'+moodFace(mood.v)+'</span>':'✍️'}</div><div class="lbl">${mood?mood.l:'noch offen'}</div></button>
-  </div>`;
+  </div>
+  ${factCard()}`;
 }
 
 /* ====== Medikamente ====== */
@@ -1682,6 +1691,7 @@ const ACT = {
       const dl=q('#del'); if(dl) dl.onclick=()=>{if(confirm('Runde löschen?')){del('walks',d.id);closeSheet()}};
     });
   },
+  nextFact(){ui.factOff=(ui.factOff||0)+1;render()},
   notesTab(d){ui.notesTab=d.k;render();window.scrollTo(0,0)},
   togglePast(){ui.showPast=!ui.showPast;render()},
   apptEdit(d){
