@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=17"></script>
+<script src="config.js?v=18"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -450,7 +450,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.17'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.18'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -2085,7 +2085,12 @@ async function checkUpdate(){
   try{
     const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return false;
     const v=(await r.text()).trim();
-    if(v&&v!==APP_VERSION&&!document.querySelector('.sheet')&&!ui.logDirty){location.reload();return true}
+    if(v&&v!==APP_VERSION&&!document.querySelector('.sheet')&&!ui.logDirty){
+      // nur 1× pro Version versuchen (verhindert Neulade-Schleifen), mit frischer URL am Zwischenspeicher vorbei
+      let tried=null; try{tried=sessionStorage.getItem('ellie.upd')}catch(e){}
+      if(tried===v) return false;
+      try{sessionStorage.setItem('ellie.upd',v)}catch(e){}
+      const u=new URL(location.href); u.searchParams.set('v',v); location.replace(u.toString()); return true}
   }catch(e){}
   return false;
 }
