@@ -1,7 +1,6 @@
-// Hier die zwei Werte aus Supabase eintragen (Project Settings → API).
-// Solange hier nichts Echtes steht, läuft die App im Demo-Modus.
+// Supabase-Verbindung (der Publishable Key darf öffentlich sein – ohne Login sieht man nichts)
 window.ELLIE_CONFIG = {
-  supabaseUrl: "https://DEIN-PROJEKT.supabase.co",
-  supabaseKey: "DEIN-PUBLISHABLE-ODER-ANON-KEY",
+  supabaseUrl: "https://jqxlygkyclebhbhdnclg.supabase.co",
+  supabaseKey: "sb_publishable_Z6IMzMjJaheLXQSX2fTHPQ_QYORbXvF",
   dogName: "Ellie",
 };
