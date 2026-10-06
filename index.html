@@ -70,7 +70,16 @@ nav button.on .i{filter:none;opacity:1}
 .hero .hi{color:var(--muted);font-size:15px}
 .hero .nick{font-size:clamp(34px,11vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:10px 0 8px;
   color:var(--accent);word-break:break-word;transition:opacity .2s,transform .2s}
-.hero .nick.swap{opacity:0;transform:scale(.94)}
+.hero .photo,.hero .nick{transition:opacity .18s,transform .18s}
+.hero.swap .photo,.hero.swap .nick{opacity:0;transform:scale(.96)}
+.hero.withphoto{padding-top:6px}
+.hero .photo{width:100%;aspect-ratio:4/5;max-height:42vh;border-radius:24px;overflow:hidden;margin:0 auto 16px;background:var(--line);box-shadow:var(--shadow)}
+.hero .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.addphoto{width:100%;text-align:center;color:var(--accent);font-weight:600;border-style:dashed;margin-bottom:14px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.pgrid .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--line)}
+.pgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.pgrid button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:12px}
 .hero .tip{font-size:12px;color:var(--muted)}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tile{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r);padding:14px;text-align:left}
@@ -117,6 +126,8 @@ nav button.on .i{filter:none;opacity:1}
 .bars .b em{font-style:normal;font-weight:700;color:var(--ink);font-size:12px}
 .reason{width:100%;text-align:left;padding:16px;border-radius:14px;background:var(--bg);border:1px solid var(--line);margin-bottom:8px;font-size:17px;font-weight:600;display:flex;gap:12px;align-items:center}
 .reason:active{background:var(--accent-soft)}
+.reason.newreason{background:transparent;border-style:dashed;color:var(--accent)}
+.chip.iconchip{font-size:22px;padding:6px 10px}
 .list .li{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .list .li:first-child{border-top:0}
 
@@ -162,11 +173,19 @@ nav button.on .i{filter:none;opacity:1}
 const CFG = window.ELLIE_CONFIG || {};
 const DEMO = !CFG.supabaseUrl || !CFG.supabaseKey || CFG.supabaseUrl.includes('DEIN-PROJEKT');
 const DOG = CFG.dogName || 'Ellie';
-const BARK_REASONS = CFG.barkReasons || [
-  {id:'hausflur', label:'Geräusch im Hausflur', icon:'🚪'},
-  {id:'draussen', label:'Geräusch draußen', icon:'🌳'},
-  {id:'anderes',  label:'Anderer Grund', icon:'❓'},
+const DEFAULT_REASONS = [
+  {key:'hausflur', label:'Geräusch im Hausflur', icon:'🚪'},
+  {key:'draussen', label:'Geräusch draußen', icon:'🌳'},
+  {key:'anderes',  label:'Anderer Grund', icon:'❓'},
 ];
+const REASON_ICONS = ['🔔','🚪','🌳','🐕','🐈','🚗','📦','👤','🧑‍🔧','🔊','📺','🌙','🍖','🎆','❓'];
+// Bell-Gründe kommen aus der Datenbank (gemeinsam), sonst die Standard-Gründe
+function allReasons(){
+  const r=S.bark_reasons.length?[...S.bark_reasons]:DEFAULT_REASONS.map(x=>({...x,active:true}));
+  return r.sort((a,b)=>(a.key==='anderes')-(b.key==='anderes')||String(a.created_at||'').localeCompare(String(b.created_at||'')));
+}
+function activeReasons(){return allReasons().filter(r=>r.active!==false)}
+function reasonOf(k){return allReasons().find(r=>r.key===k)||{key:k,label:k||'?',icon:'❓'}}
 const MOODS = [
   {v:1,e:'😣',l:'Schlecht'},{v:2,e:'😕',l:'Naja'},{v:3,e:'😐',l:'Okay'},{v:4,e:'🙂',l:'Gut'},{v:5,e:'🤩',l:'Super'}
 ];
@@ -184,7 +203,8 @@ const ALPRA_TAPER = {
     {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg'},
     {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg'},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes'];
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons'];
+const OPTIONAL = ['bark_reasons']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const TABS = [
   {id:'start', i:'🏠', l:'Start'},
   {id:'meds',  i:'💊', l:'Medis'},
@@ -194,7 +214,7 @@ const TABS = [
 ];
 
 let sb = null, me = {name:''};
-const S = Object.fromEntries(TABLES.map(t=>[t,[]]));
+const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:'start', medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
 
 const $ = s => document.querySelector(s);
@@ -223,10 +243,10 @@ async function loadTable(t){
   let q = sb.from(t).select('*');
   if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-60);q=q.gte('created_at',d.toISOString())}
   const {data,error} = await q.order('created_at',{ascending:true});
-  if(error){console.error(error);toast('Laden fehlgeschlagen');return}
+  if(error){console.error(error);if(!OPTIONAL.includes(t))toast('Laden fehlgeschlagen');return}
   S[t]=data||[];
 }
-async function loadAll(){ await Promise.all(TABLES.map(loadTable)); }
+async function loadAll(){ await Promise.all([...TABLES.map(loadTable),loadPhotos()]); }
 function putLocal(t,row){const i=S[t].findIndex(r=>r.id===row.id); if(i>=0) S[t][i]=row; else S[t].push(row)}
 async function ins(t,row){
   row = {author:me.name, ...row};
@@ -286,7 +306,7 @@ function closeSheet(now){
 }
 
 /* ====== Navigation & Rendern ====== */
-function go(tab){ui.tab=tab;if(tab==='start') ui.nick=null;render();window.scrollTo(0,0)}
+function go(tab){ui.tab=tab;if(tab==='start'){ui.nick=null;ui.photo=null}render();window.scrollTo(0,0)}
 function renderNav(){
   const n=$('#nav');n.hidden=false;
   n.innerHTML=TABS.map(t=>`<button class="${ui.tab===t.id?'on':''}" data-go="${t.id}"><span class="i">${t.i}</span>${t.l}</button>`).join('');
@@ -311,20 +331,29 @@ function pickNick(){
   let n; do{n=list[Math.floor(Math.random()*list.length)]}while(n===ui.nick);
   return n;
 }
+function pickPhoto(){
+  const l=S.photos; if(l.length<2) return l[0];
+  let p; do{p=l[Math.floor(Math.random()*l.length)]}while(p.name===ui.photo);
+  return p;
+}
 function greeting(){const h=new Date().getHours();return h<5?'Gute Nacht':h<11?'Guten Morgen':h<17?'Hallo':h<22?'Guten Abend':'Gute Nacht'}
 function vStart(){
   if(!ui.nick) ui.nick=pickNick();
+  let photo=S.photos.find(p=>p.name===ui.photo);
+  if(!photo&&S.photos.length){photo=pickPhoto();ui.photo=photo.name}
   const t=today(), m=medStatus(t), b=S.barks.filter(x=>dayOf(x.created_at)===t).length;
   const lg=S.daily_log.find(l=>l.day===t), mood=lg&&MOODS.find(x=>x.v===lg.mood);
   const next=m.open[0];
   return `
   <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}</span>
     <button class="iconbtn" data-a="settings" aria-label="Einstellungen">⚙️</button></div>
-  <div class="hero" data-a="reroll">
+  <div class="hero ${photo?'withphoto':''}" data-a="reroll">
+    ${photo?`<div class="photo"><img src="${esc(photo.url)}" alt="${esc(DOG)}"></div>`:''}
     <div class="hi">${greeting()}, ${esc(me.name)}! Heute ist sie unser</div>
     <div class="nick" id="nick">${esc(ui.nick)}</div>
-    <div class="tip">${S.nicknames.length>1?'Tippen für einen anderen Spitznamen':'Spitznamen in den Einstellungen ⚙️ hinzufügen'}</div>
+    <div class="tip">${S.nicknames.length>1||S.photos.length>1?'Tippen für Neues':'Spitznamen in den Einstellungen ⚙️ hinzufügen'}</div>
   </div>
+  ${photo?'':`<button class="card addphoto" data-a="photos">📷 Fotos von ${esc(DOG)} hinzufügen</button>`}
   <div class="tiles">
     <button class="tile wide" data-go="meds">
       <div class="lbl">💊 Medikamente heute</div>
@@ -432,16 +461,17 @@ function vBark(){
   const t=today(), todays=S.barks.filter(b=>dayOf(b.created_at)===t).sort((a,b)=>b.created_at.localeCompare(a.created_at));
   const days=[...Array(7)].map((_,i)=>addDays(t,i-6));
   const counts=days.map(d=>S.barks.filter(b=>dayOf(b.created_at)===d).length), max=Math.max(1,...counts);
-  const byReason=BARK_REASONS.map(r=>({...r,n:todays.filter(b=>b.reason===r.id).length})).filter(r=>r.n);
+  const byReason=allReasons().map(r=>({...r,n:todays.filter(b=>b.reason===r.key).length})).filter(r=>r.n);
   return `<h1>Bellistima</h1>
   <div class="card barkhero">
     <div class="muted small">Heute gebellt</div><div class="barkcount">${todays.length}×</div>
     <button class="barkbtn" data-a="bark">+1<span>Wuff!</span></button>
+    <div><button class="btn plain small" data-a="reasons">Gründe bearbeiten</button></div>
     ${byReason.length?`<div class="chips" style="justify-content:center;margin-top:10px">${byReason.map(r=>`<span class="pill">${r.icon} ${esc(r.label)}: <b>${r.n}</b></span>`).join('')}</div>`:''}
   </div>
   <h2>Letzte 7 Tage</h2>
   <div class="card"><div class="bars">${days.map((d,i)=>`<div class="b ${d===t?'today':''}"><em>${counts[i]||''}</em><i style="height:${counts[i]/max*80}%"></i>${d===t?'heute':wd(d)}</div>`).join('')}</div></div>
-  ${todays.length?`<h2>Heute</h2><div class="card list">${todays.map(b=>{const r=BARK_REASONS.find(x=>x.id===b.reason)||{icon:'❓',label:b.reason};
+  ${todays.length?`<h2>Heute</h2><div class="card list">${todays.map(b=>{const r=reasonOf(b.reason);
     return `<div class="li"><span style="font-size:20px">${r.icon}</span><span class="grow">${esc(r.label)}<div class="muted small">${hm(b.created_at)} · ${esc(b.author)}</div></span>
     <button class="btn plain" data-a="delBark" data-id="${b.id}">✕</button></div>`}).join('')}</div>`:''}`;
 }
@@ -482,7 +512,12 @@ function vNotes(){
 
 /* ====== Aktionen ====== */
 const ACT = {
-  reroll(){const el=$('#nick');if(!el||S.nicknames.length<2)return;el.classList.add('swap');setTimeout(()=>{ui.nick=pickNick();el.textContent=ui.nick;el.classList.remove('swap')},180)},
+  reroll(){
+    const h=document.querySelector('.hero'); if(!h||(S.nicknames.length<2&&S.photos.length<2))return;
+    h.classList.add('swap');
+    setTimeout(()=>{ui.nick=pickNick();if(S.photos.length>1)ui.photo=pickPhoto().name;render();
+      const n=document.querySelector('.hero');n.classList.add('swap');requestAnimationFrame(()=>requestAnimationFrame(()=>n.classList.remove('swap')))},180);
+  },
   dayShift(d){const k=d.k;ui[k]=addDays(ui[k],+d.n);if(ui[k]>today())ui[k]=today();if(k==='logDay'){ui.logForm=null;ui.logDirty=false}render()},
   plan(){ui.editPlan=!ui.editPlan;render()},
   async giveAsPlanned(d){const m=S.meds.find(x=>x.id===d.med);await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} eingetragen ✅`)},
@@ -556,8 +591,32 @@ const ACT = {
   },
   bark(){
     openSheet(`<h3>Warum hat ${esc(DOG)} gebellt?</h3><div class="muted" style="margin-bottom:14px">Tippen zum Eintragen</div>
-      ${BARK_REASONS.map(r=>`<button class="reason" data-r="${r.id}"><span style="font-size:26px">${r.icon}</span>${esc(r.label)}</button>`).join('')}`, sh=>{
+      ${activeReasons().map(r=>`<button class="reason" data-r="${esc(r.key)}"><span style="font-size:26px">${r.icon||'❓'}</span>${esc(r.label)}</button>`).join('')}
+      <button class="reason newreason" id="nr"><span style="font-size:26px">＋</span>Neuer Grund …</button>`, sh=>{
       sh.querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{closeSheet();if(navigator.vibrate)navigator.vibrate(30);await ins('barks',{reason:b.dataset.r});toast('Wuff gezählt 🐶')});
+      sh.querySelector('#nr').onclick=()=>ACT.reasonNew({andBark:true});
+    });
+  },
+  reasonNew(o={}){
+    let icon='🔔';
+    openSheet(`<h3>Neuer Bell-Grund</h3>
+      <label class="f">Name</label><input type="text" id="rl" placeholder="z. B. Klingel, Postbote, anderer Hund">
+      <label class="f">Symbol</label>
+      <div class="chips" id="ri">${REASON_ICONS.map(i=>`<button class="chip iconchip ${i===icon?'on':''}" data-i="${i}">${i}</button>`).join('')}</div>
+      <button class="btn block" id="save" style="margin-top:16px">${o.andBark?'Anlegen & Bellen zählen':'Anlegen'}</button>`, sh=>{
+      const q=s=>sh.querySelector(s);
+      q('#ri').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(!b)return;icon=b.dataset.i;q('#ri').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b))});
+      q('#save').onclick=async()=>{
+        const label=q('#rl').value.trim(); if(!label){toast('Bitte einen Namen eingeben');return}
+        const dupe=allReasons().find(r=>r.label.toLowerCase()===label.toLowerCase());
+        let key=dupe?.key;
+        if(dupe&&dupe.active===false&&dupe.id) await upd('bark_reasons',dupe.id,{active:true,icon});
+        if(!dupe&&!S.bark_reasons.length) await insMany('bark_reasons',DEFAULT_REASONS.map(r=>({...r,active:true})));
+        if(!dupe){key='r'+Date.now().toString(36);const row=await ins('bark_reasons',{key,label,icon,active:true});if(!row)return}
+        closeSheet();
+        if(o.andBark){await ins('barks',{reason:key});toast('Wuff gezählt 🐶')} else toast(`„${label}“ angelegt`);
+      };
+      setTimeout(()=>q('#rl').focus(),300);
     });
   },
   delBark(d){del('barks',d.id)},
@@ -617,7 +676,9 @@ const ACT = {
     const nickList=()=>[...S.nicknames].sort((a,b)=>a.name.localeCompare(b.name,'de')).map(n=>`<div class="li"><span class="grow">${esc(n.name)}</span><button class="btn plain" data-dn="${n.id}">✕</button></div>`).join('')
       ||`<div class="muted small" style="margin-bottom:8px">Noch keine Spitznamen.</div><button class="btn ghost" id="seedn">Grundstock laden (${NICKS.length} Namen)</button>`;
     openSheet(`<h3>Einstellungen</h3>
-      <label class="f">Spitznamen von ${esc(DOG)} (${S.nicknames.length})</label>
+      <button class="btn block ghost" id="gophotos" style="margin-top:10px">📷 Fotos von ${esc(DOG)} (${S.photos.length})</button>
+      <button class="btn block ghost" id="goreasons" style="margin-top:8px">🗣️ Bell-Gründe (${activeReasons().length})</button>
+      <label class="f" style="margin-top:20px">Spitznamen von ${esc(DOG)} (${S.nicknames.length})</label>
       <div class="row"><input type="text" id="nn" placeholder="Neuer Spitzname"><button class="btn" id="addn">+</button></div>
       <div class="muted small" style="margin:6px 2px">Tipp: mehrere auf einmal mit Komma trennen</div>
       <div class="list" id="nl">${nickList()}</div>
@@ -641,20 +702,100 @@ const ACT = {
         const b=e.target.closest('[data-dn]');if(b){await del('nicknames',b.dataset.dn);ui.nick=null;redraw()}});
       q('#savename').onclick=async()=>{const n=q('#myname').value.trim();if(!n)return;await setName(n);toast('Gespeichert');render()};
       const lo=q('#logout'); if(lo) lo.onclick=async()=>{await sb.auth.signOut();location.reload()};
+      q('#gophotos').onclick=()=>ACT.photos();
+      q('#goreasons').onclick=()=>ACT.reasons();
+    });
+  },
+  reasons(){
+    const list=()=>activeReasons().map(r=>`<div class="li"><span style="font-size:22px">${r.icon||'❓'}</span><span class="grow">${esc(r.label)}</span>
+      ${r.id?`<button class="btn plain" data-dr="${r.id}">✕</button>`:''}</div>`).join('')||'<div class="muted small">Keine Gründe</div>';
+    openSheet(`<h3>Bell-Gründe</h3><div class="muted small">Entfernte Gründe bleiben in alten Einträgen und im Export erhalten.</div>
+      <div class="list" id="rlist" style="margin-top:8px">${list()}</div>
+      <button class="btn block" id="add" style="margin-top:14px">+ Neuer Grund</button>`, sh=>{
+      sh.querySelector('#add').onclick=()=>ACT.reasonNew();
+      sh.addEventListener('click',async e=>{const b=e.target.closest('[data-dr]');if(!b)return;
+        if(activeReasons().length<=1){toast('Mindestens ein Grund muss bleiben');return}
+        await upd('bark_reasons',b.dataset.dr,{active:false});sh.querySelector('#rlist').innerHTML=list()});
+    });
+  },
+  photos(){
+    const grid=()=>S.photos.length?`<div class="pgrid">${S.photos.map(p=>`<div class="ph"><img src="${esc(p.url)}" loading="lazy" alt=""><button data-dp="${esc(p.name)}" aria-label="Löschen">✕</button></div>`).join('')}</div>`
+      :`<div class="empty">Noch keine Fotos 📷</div>`;
+    openSheet(`<h3>Fotos von ${esc(DOG)}</h3><div class="muted small">Auf der Startseite erscheint immer ein zufälliges Foto. Ihr seht beide alle Fotos.</div>
+      <label class="btn block" style="display:block;margin:14px 0 8px;text-align:center">+ Fotos hinzufügen<input type="file" id="pf" accept="image/*" multiple hidden></label>
+      <div id="pst" class="muted small" style="text-align:center"></div>
+      <div id="pgr">${grid()}</div>`, sh=>{
+      const q=s=>sh.querySelector(s), redraw=()=>{q('#pgr').innerHTML=grid()};
+      q('#pf').onchange=async e=>{
+        const files=[...e.target.files]; e.target.value=''; if(!files.length) return;
+        let ok=0;
+        for(const [i,f] of files.entries()){
+          q('#pst').textContent=`Lade hoch … ${i+1}/${files.length}`;
+          try{await uploadPhoto(f);ok++;redraw()}catch(err){console.error(err)}
+        }
+        q('#pst').textContent=ok===files.length?`${ok} Foto${ok>1?'s':''} hinzugefügt 🎉`:`${ok} von ${files.length} hochgeladen – Rest fehlgeschlagen`;
+        ui.photo=null;
+      };
+      sh.addEventListener('click',async e=>{const b=e.target.closest('[data-dp]');if(!b)return;
+        if(!confirm('Foto löschen? Es ist dann für euch beide weg.'))return;
+        await deletePhoto(b.dataset.dp);redraw();ui.photo=null;});
     });
   },
 };
 
+/* ====== Fotos (privater Supabase-Speicher "fotos") ====== */
+const BUCKET='fotos';
+const urlCache={};
+async function loadPhotos(){
+  if(DEMO) return;
+  const {data,error}=await sb.storage.from(BUCKET).list('',{limit:1000,sortBy:{column:'created_at',order:'desc'}});
+  if(error||!data){S.photos=[];return}
+  const files=data.filter(f=>f.id&&!f.name.startsWith('.'));
+  const fresh=c=>c&&Date.now()-c.t<5*864e5; // Links gelten 7 Tage, nach 5 erneuern
+  const need=files.filter(f=>!fresh(urlCache[f.name])).map(f=>f.name);
+  if(need.length){
+    const {data:urls}=await sb.storage.from(BUCKET).createSignedUrls(need,60*60*24*7);
+    (urls||[]).forEach((u,i)=>{if(u.signedUrl) urlCache[need[i]]={url:u.signedUrl,t:Date.now()}});
+  }
+  S.photos=files.filter(f=>urlCache[f.name]).map(f=>({name:f.name,url:urlCache[f.name].url}));
+}
+function shrink(file,max=1600){
+  return new Promise((ok,no)=>{
+    const img=new Image(), u=URL.createObjectURL(file);
+    img.onload=()=>{const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+      const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);
+      c.toBlob(b=>b?ok(b):no(new Error('toBlob')),'image/jpeg',0.85)};
+    img.onerror=()=>{URL.revokeObjectURL(u);no(new Error('Bild nicht lesbar'))};
+    img.src=u;
+  });
+}
+async function uploadPhoto(file){
+  const blob=await shrink(file), name=`${Date.now()}-${Math.random().toString(36).slice(2,7)}.jpg`;
+  if(DEMO){S.photos.unshift({name,url:URL.createObjectURL(blob)});return}
+  const {error}=await sb.storage.from(BUCKET).upload(name,blob,{contentType:'image/jpeg'});
+  if(error) throw error;
+  const {data}=await sb.storage.from(BUCKET).createSignedUrl(name,60*60*24*7);
+  urlCache[name]={url:data.signedUrl,t:Date.now()}; S.photos.unshift({name,url:data.signedUrl});
+}
+async function deletePhoto(name){
+  S.photos=S.photos.filter(p=>p.name!==name);
+  if(DEMO) return;
+  const {error}=await sb.storage.from(BUCKET).remove([name]);
+  if(error){toast('Löschen fehlgeschlagen');await loadPhotos()}
+}
+
 /* ====== Excel-Export ====== */
 function buildExport(dlogs,meds,mlogs,barks){
   const D=day=>new Date(day+'T12:00:00'), medById=Object.fromEntries(meds.map(m=>[m.id,m]));
-  const reasonOf=id=>(BARK_REASONS.find(r=>r.id===id)||{label:id||''}).label;
+  const usedKeys=new Set(barks.map(b=>b.reason));
+  const RS=allReasons().filter(r=>r.active!==false||usedKeys.has(r.key));
   const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at))])].sort();
   const protokoll=days.map(day=>{
     const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood);
     const bs=barks.filter(b=>dayOf(b.created_at)===day);
     const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'','Gebellt':bs.length};
-    BARK_REASONS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.id).length);
+    RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length);
     row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
     row['Eingetragen von']=lg?.author||'';
     return row;
@@ -662,10 +803,10 @@ function buildExport(dlogs,meds,mlogs,barks){
   const medis=[...mlogs].sort((a,b)=>(a.day+a.slot).localeCompare(b.day+b.slot)).map(l=>{const m=medById[l.med_id];const soll=m?sollOf(m,l.day):'';
     return {'Datum':D(l.day),'Medikament':m?.name||'(gelöscht)','Zeitpunkt':slotLabel(l.slot),'Soll':soll||'','Ist':l.skipped?'nicht gegeben':l.amount,
       'Status':l.skipped?'ausgelassen':l.amount===soll?'wie geplant':'abweichend','Notiz':l.note||'','Von':l.author||'','Eingetragen um':hm(l.created_at)}});
-  const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason),'Von':b.author||''}));
+  const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason).label,'Von':b.author||''}));
   const sheet=(rows,widths)=>{const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true,dateNF:'dd.mm.yyyy'});ws['!cols']=widths.map(w=>({wch:w}));return ws};
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,32,50,8,...BARK_REASONS.map(()=>14),40,14]),'Protokoll');
+  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,32,50,8,...RS.map(()=>14),40,14]),'Protokoll');
   XLSX.utils.book_append_sheet(wb,sheet(medis,[11,16,12,12,14,13,30,10,14]),'Medikamente');
   XLSX.utils.book_append_sheet(wb,sheet(bell,[11,8,22,10]),'Bellistima');
   const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});
@@ -726,6 +867,7 @@ document.addEventListener('visibilitychange',async()=>{
 
 function seedDemo(){
   const now=Date.now(), iso=ms=>new Date(ms).toISOString(), t=today();
+  DEFAULT_REASONS.forEach((r,i)=>S.bark_reasons.push({...r,id:uid(),active:true,created_at:iso(now-9e8+i)}));
   NICKS.forEach(name=>S.nicknames.push({id:uid(),name,author:'Dennis',created_at:iso(now)}));
   const m1={id:uid(),name:'Alprazolam',dose:null,kind:'taper',times:[],taper:ALPRA_TAPER,note:'Auffälligkeiten sofort Dr. Feist melden',active:true,author:'Jana'};
   S.meds.push(m1);
