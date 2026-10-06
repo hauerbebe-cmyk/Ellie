@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ellie">
+<meta name="theme-color" content="#fbf6ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1915" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<title>Ellie</title>
+<script src="config.js"></script>
+<style>
+:root{
+  --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#8a7f74; --line:#ece3d6;
+  --accent:#d9733b; --accent-soft:#fbe6d6; --ok:#3f9a5d; --ok-soft:#dff1e4;
+  --warn:#c98a12; --warn-soft:#fbefd2; --danger:#c24a3a;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 4px 14px rgba(60,40,20,.06);
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1c1915; --card:#29241f; --ink:#f3ece3; --muted:#a39888; --line:#3a332c;
+  --accent:#f0915a; --accent-soft:#4a3020; --ok:#6cc58a; --ok-soft:#1f3a28;
+  --warn:#e8b34a; --warn-soft:#45381a; --danger:#ef7a68;
+  --shadow:none;
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:ui-rounded,-apple-system,"SF Pro Rounded",system-ui,sans-serif;font-size:16px;
+  -webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+#app{padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 96px);max-width:560px;margin:0 auto}
+h1{font-size:28px;margin:4px 0 14px;letter-spacing:-.02em}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 4px 8px;font-weight:600}
+.card{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:10px}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.btn{background:var(--accent);color:#fff;border-radius:12px;padding:10px 14px;font-weight:600;white-space:nowrap}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.plain{background:transparent;color:var(--muted);padding:8px}
+.btn.ok{background:var(--ok);}
+.btn.block{width:100%;padding:14px;font-size:17px}
+.btn.danger{background:transparent;color:var(--danger)}
+.pill{display:inline-block;padding:3px 9px;border-radius:99px;font-size:13px;background:var(--line);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);font-size:19px}
+input[type=text],input[type=email],input[type=password],input[type=time],textarea{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);outline:none;font-size:16px}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus{border-color:var(--accent)}
+label.f{display:block;font-size:13px;color:var(--muted);margin:12px 2px 6px}
+
+/* Tabbar */
+nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 88%,transparent);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  padding:6px 6px calc(env(safe-area-inset-bottom) + 6px);display:flex;justify-content:space-around;z-index:10}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:4px 0}
+nav button .i{font-size:23px;line-height:1.1;filter:grayscale(1);opacity:.6}
+nav button.on{color:var(--accent);font-weight:600}
+nav button.on .i{filter:none;opacity:1}
+
+/* Start */
+.hero{text-align:center;padding:30px 10px 26px}
+.hero .hi{color:var(--muted);font-size:15px}
+.hero .nick{font-size:clamp(34px,11vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:10px 0 8px;
+  color:var(--accent);word-break:break-word;transition:opacity .2s,transform .2s}
+.hero .nick.swap{opacity:0;transform:scale(.94)}
+.hero .tip{font-size:12px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r);padding:14px;text-align:left}
+.tile .big{font-size:28px;font-weight:800;margin:4px 0 0}
+.tile .lbl{font-size:13px;color:var(--muted)}
+.tile.wide{grid-column:1/-1}
+
+/* Date nav */
+.datenav{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:12px}
+.datenav button{width:40px;height:36px;border-radius:10px;font-size:20px;color:var(--accent)}
+.datenav button:disabled{opacity:.25}
+.datenav .d{font-weight:600}
+
+/* Meds */
+.med.done{border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.med .name{font-weight:700;font-size:17px}
+.med .slot{font-size:13px;color:var(--muted)}
+.sollist{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0 10px;font-size:15px}
+.sollist dt{color:var(--muted)} .sollist dd{margin:0;font-weight:600}
+.actions{display:flex;gap:8px}
+.taper{background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0 4px}
+.prog{height:6px;border-radius:9px;background:var(--line);margin:8px 0;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.pieces{font-weight:600;font-size:15px;margin-bottom:4px}
+.steps{margin-top:10px}
+.steps .st{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.steps .st.past{opacity:.4}
+.steps .st.now{color:var(--accent)}
+.steps .st.now b{font-weight:800}
+.actions .btn{flex:1}
+
+/* Bark */
+.barkhero{text-align:center;padding:10px 0 4px}
+.barkcount{font-size:64px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.barkbtn{width:170px;height:170px;border-radius:50%;background:var(--accent);color:#fff;font-size:34px;font-weight:800;
+  box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 45%,transparent);margin:18px auto 8px;display:grid;place-items:center;
+  transition:transform .12s}
+.barkbtn:active{transform:scale(.94)}
+.barkbtn span{display:block;font-size:14px;font-weight:600;opacity:.9}
+.bars{display:flex;align-items:flex-end;gap:8px;height:110px;padding-top:6px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;font-size:11px;color:var(--muted)}
+.bars .b i{display:block;width:100%;border-radius:6px 6px 3px 3px;background:var(--accent);min-height:3px;opacity:.85}
+.bars .b.today i{opacity:1}
+.bars .b em{font-style:normal;font-weight:700;color:var(--ink);font-size:12px}
+.reason{width:100%;text-align:left;padding:16px;border-radius:14px;background:var(--bg);border:1px solid var(--line);margin-bottom:8px;font-size:17px;font-weight:600;display:flex;gap:12px;align-items:center}
+.reason:active{background:var(--accent-soft)}
+.list .li{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.list .li:first-child{border-top:0}
+
+/* Protokoll */
+.moods{display:flex;justify-content:space-between;gap:6px}
+.moods button{flex:1;padding:10px 0 8px;border-radius:14px;background:var(--bg);border:2px solid transparent;font-size:28px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.moods button small{font-size:10px;color:var(--muted)}
+.moods button.on{border-color:var(--accent);background:var(--accent-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;border-radius:99px;background:var(--bg);border:1px solid var(--line);font-size:14px}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Notes */
+.note .t{font-weight:700;font-size:17px}
+.note .b{white-space:pre-wrap;margin-top:4px;line-height:1.4}
+
+/* Sheet */
+.backdrop{position:fixed;inset:0;background:rgba(20,12,4,.38);z-index:20;opacity:0;transition:opacity .2s}
+.backdrop.show{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--card);border-radius:22px 22px 0 0;
+  padding:10px 18px calc(env(safe-area-inset-bottom) + 18px);max-height:88vh;overflow:auto;transform:translateY(100%);transition:transform .25s ease;max-width:560px;margin:0 auto}
+.sheet.show{transform:none}
+.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
+.sheet h3{margin:0 0 6px;font-size:21px;padding-right:40px}
+.sheetx{position:absolute;top:12px;right:14px;width:32px;height:32px;border-radius:50%;background:var(--line);color:var(--muted);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:10px 16px;border-radius:12px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1}
+.empty{text-align:center;color:var(--muted);padding:22px 10px}
+.demo{background:var(--warn-soft);color:var(--warn);font-size:13px;padding:8px 12px;border-radius:12px;margin-bottom:10px;text-align:center}
+.login{max-width:380px;margin:12vh auto 0;text-align:center}
+.login .paw{font-size:64px}
+.login form{text-align:left;margin-top:20px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav" hidden></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== Grundgerüst ====== */
+const CFG = window.ELLIE_CONFIG || {};
+const DEMO = !CFG.supabaseUrl || !CFG.supabaseKey || CFG.supabaseUrl.includes('DEIN-PROJEKT');
+const DOG = CFG.dogName || 'Ellie';
+const BARK_REASONS = CFG.barkReasons || [
+  {id:'hausflur', label:'Geräusch im Hausflur', icon:'🚪'},
+  {id:'draussen', label:'Geräusch draußen', icon:'🌳'},
+  {id:'anderes',  label:'Anderer Grund', icon:'❓'},
+];
+const MOODS = [
+  {v:1,e:'😣',l:'Schlecht'},{v:2,e:'😕',l:'Naja'},{v:3,e:'😐',l:'Okay'},{v:4,e:'🙂',l:'Gut'},{v:5,e:'🤩',l:'Super'}
+];
+const TAGS = CFG.dayTags || ['Verspielt','Verschmust','Ruhig','Müde','Aufgedreht','Ängstlich','Gut gefressen','Wenig gefressen','Magen-Darm','Viel gebellt'];
+const NICKS = ['Makrelenöhrchen','Gagafrosch','Schnecke','Schneckenbär','Schneckentiger','Schneckerich','Schnecki Zimtzucker','Schnecki Süßsauer','Fürst von Schneckerich','Kröti','Kröterich','Krötofferus','Elsbeth(i)','Elsbethbär','Eleonore','Elisabeth','Ellie Elsbethson','Mausebär','Ed von Schneck','Krötentiger','Troll','Schneckennudel','Babyratte','Trollnase','Krümelbärchen','Maus','Mauserich','Stinketroll','Torfnase','Supermaus','Zaubermaus','Made','Made im Speckmantel','Quatschbär','Wutz','Zuckermaus','Seehund','Seeigel','Wurst','Wiener Würstchen','Pockenschweinchen','winkelfreund','Winkelenthusiatin','Fauchi 3','Schnuffnase','Quatschkröte','Schneckerinchen','Perfekter kleiner Winkel','Springpferd','El Kröterich','Trüffelnase','Mausezahn','Eierkopf','Zwiebelhexe','Eiertanzbär','Knödelmaus','Kanalratte','Hohle Fritte','Schneckeroncinii'];
+// Ausschleichplan Alprazolam (Dr. Feist, 28.09.2026)
+const ALPRA_TAPER = {
+  start:'2026-10-03', pre:{mg:0.5,pieces:'1 Tbl. 0,5 mg'},
+  steps:[
+    {days:10,mg:0.4375,pieces:'¾ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
+    {days:10,mg:0.375, pieces:'¾ Tbl. 0,5 mg'},
+    {days:10,mg:0.3125,pieces:'½ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
+    {days:14,mg:0.25,  pieces:'½ Tbl. 0,5 mg'},
+    {days:14,mg:0.1875,pieces:'¼ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
+    {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg'},
+    {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg'},
+  ]};
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes'];
+const TABS = [
+  {id:'start', i:'🏠', l:'Start'},
+  {id:'meds',  i:'💊', l:'Medis'},
+  {id:'bark',  i:'🗣️', l:'Bellistima'},
+  {id:'log',   i:'📖', l:'Protokoll'},
+  {id:'notes', i:'📝', l:'Notizen'},
+];
+
+let sb = null, me = {name:''};
+const S = Object.fromEntries(TABLES.map(t=>[t,[]]));
+const ui = { tab:'start', medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'x'+Date.now()+Math.random().toString(16).slice(2));
+function pad(n){return String(n).padStart(2,'0')}
+function today(){return dayOf(new Date())}
+function dayOf(d){d=new Date(d);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function addDays(day,n){const d=new Date(day+'T12:00:00');d.setDate(d.getDate()+n);return dayOf(d)}
+function hm(ts){const d=new Date(ts);return `${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function dayLabel(day){
+  const t=today(); if(day===t) return 'Heute'; if(day===addDays(t,-1)) return 'Gestern'; if(day===addDays(t,1)) return 'Morgen';
+  return new Date(day+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});
+}
+function daysBetween(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)}
+function fmtD(day){return new Date(day+'T12:00:00').toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})}
+function fmtMg(x){return Number(x).toLocaleString('de-DE',{maximumFractionDigits:4})+' mg'}
+function wd(day){return new Date(day+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short'}).replace('.','')}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+/* ====== Daten ====== */
+async function loadTable(t){
+  if(DEMO) return;
+  let q = sb.from(t).select('*');
+  if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-60);q=q.gte('created_at',d.toISOString())}
+  const {data,error} = await q.order('created_at',{ascending:true});
+  if(error){console.error(error);toast('Laden fehlgeschlagen');return}
+  S[t]=data||[];
+}
+async function loadAll(){ await Promise.all(TABLES.map(loadTable)); }
+function putLocal(t,row){const i=S[t].findIndex(r=>r.id===row.id); if(i>=0) S[t][i]=row; else S[t].push(row)}
+async function ins(t,row){
+  row = {author:me.name, ...row};
+  if(DEMO){row.id=uid();row.created_at=row.created_at||new Date().toISOString();S[t].push(row);render();return row}
+  const {data,error} = await sb.from(t).insert(row).select().single();
+  if(error){console.error(error);toast('Speichern fehlgeschlagen');return null}
+  putLocal(t,data);render();return data;
+}
+async function insMany(t,rows){
+  rows=rows.map(r=>({author:me.name,...r}));
+  if(DEMO){rows.forEach(r=>{r.id=uid();r.created_at=new Date().toISOString();S[t].push(r)});render();return}
+  const {data,error}=await sb.from(t).insert(rows).select();
+  if(error){console.error(error);toast('Speichern fehlgeschlagen');return}
+  data.forEach(r=>putLocal(t,r));render();
+}
+async function upd(t,id,patch){
+  if(DEMO){Object.assign(S[t].find(r=>r.id===id),patch);render();return}
+  const {data,error} = await sb.from(t).update(patch).eq('id',id).select().single();
+  if(error){console.error(error);toast('Speichern fehlgeschlagen');return}
+  putLocal(t,data);render();
+}
+async function del(t,id){
+  S[t]=S[t].filter(r=>r.id!==id);
+  if(t==='meds') S.med_logs=S.med_logs.filter(l=>l.med_id!==id);
+  render();
+  if(DEMO) return;
+  const {error} = await sb.from(t).delete().eq('id',id);
+  if(error){console.error(error);toast('Löschen fehlgeschlagen');loadTable(t).then(render)}
+}
+function subscribe(){
+  if(DEMO) return;
+  const ch = sb.channel('ellie');
+  TABLES.forEach(t=>ch.on('postgres_changes',{event:'*',schema:'public',table:t},p=>{
+    if(p.eventType==='DELETE') S[t]=S[t].filter(r=>r.id!==p.old.id); else putLocal(t,p.new);
+    render(true);
+  }));
+  ch.subscribe();
+}
+
+/* ====== Sheet ====== */
+function openSheet(html, mount){
+  closeSheet(true);
+  const bd=document.createElement('div');bd.className='backdrop';
+  const sh=document.createElement('div');sh.className='sheet';sh.innerHTML='<div class="grab"></div><button class="sheetx" aria-label="Schließen">✕</button>'+html;
+  sh.querySelector('.sheetx').onclick=()=>closeSheet();
+  bd.onclick=()=>closeSheet();
+  document.body.append(bd,sh);
+  requestAnimationFrame(()=>{bd.classList.add('show');sh.classList.add('show')});
+  mount && mount(sh);
+  return sh;
+}
+function closeSheet(now){
+  document.querySelectorAll('.sheet,.backdrop').forEach(el=>{
+    if(now){el.remove();return}
+    el.classList.remove('show');setTimeout(()=>el.remove(),260);
+  });
+}
+
+/* ====== Navigation & Rendern ====== */
+function go(tab){ui.tab=tab;if(tab==='start') ui.nick=null;render();window.scrollTo(0,0)}
+function renderNav(){
+  const n=$('#nav');n.hidden=false;
+  n.innerHTML=TABS.map(t=>`<button class="${ui.tab===t.id?'on':''}" data-go="${t.id}"><span class="i">${t.i}</span>${t.l}</button>`).join('');
+}
+function render(fromRemote){
+  if(!me.name) return;
+  if(fromRemote && ui.tab==='log' && ui.logDirty) return; // nicht beim Tippen überschreiben
+  renderNav();
+  const v={start:vStart,meds:vMeds,bark:vBark,log:vLog,notes:vNotes}[ui.tab]();
+  $('#app').innerHTML=(DEMO?'<div class="demo">Demo-Modus – Einträge werden nicht gespeichert</div>':'')+v;
+}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){go(g.dataset.go);return}
+  const a=e.target.closest('[data-a]'); if(a){ACT[a.dataset.a]?.(a.dataset, a, e)}
+});
+
+/* ====== Start ====== */
+function pickNick(){
+  const list=S.nicknames.map(n=>n.name);
+  if(!list.length) return DOG;
+  if(list.length===1) return list[0];
+  let n; do{n=list[Math.floor(Math.random()*list.length)]}while(n===ui.nick);
+  return n;
+}
+function greeting(){const h=new Date().getHours();return h<5?'Gute Nacht':h<11?'Guten Morgen':h<17?'Hallo':h<22?'Guten Abend':'Gute Nacht'}
+function vStart(){
+  if(!ui.nick) ui.nick=pickNick();
+  const t=today(), m=medStatus(t), b=S.barks.filter(x=>dayOf(x.created_at)===t).length;
+  const lg=S.daily_log.find(l=>l.day===t), mood=lg&&MOODS.find(x=>x.v===lg.mood);
+  const next=m.open[0];
+  return `
+  <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}</span>
+    <button class="iconbtn" data-a="settings" aria-label="Einstellungen">⚙️</button></div>
+  <div class="hero" data-a="reroll">
+    <div class="hi">${greeting()}, ${esc(me.name)}! Heute ist sie unser</div>
+    <div class="nick" id="nick">${esc(ui.nick)}</div>
+    <div class="tip">${S.nicknames.length>1?'Tippen für einen anderen Spitznamen':'Spitznamen in den Einstellungen ⚙️ hinzufügen'}</div>
+  </div>
+  <div class="tiles">
+    <button class="tile wide" data-go="meds">
+      <div class="lbl">💊 Medikamente heute</div>
+      <div class="big">${m.total? `${m.done}/${m.total}`:'–'}</div>
+      <div class="lbl">${!m.total?'Noch kein Plan angelegt':next?`Als nächstes: ${esc(next.med.name)} · ${esc(slotLabel(next.slot))}`:'Alles gegeben ✅'}</div>
+    </button>
+    <button class="tile" data-go="bark"><div class="lbl">🗣️ Bellistima</div><div class="big">${b}×</div><div class="lbl">heute gebellt</div></button>
+    <button class="tile" data-go="log"><div class="lbl">📖 Protokoll</div><div class="big">${mood?mood.e:'✍️'}</div><div class="lbl">${mood?mood.l:'noch offen'}</div></button>
+  </div>`;
+}
+
+/* ====== Medikamente ====== */
+function slotLabel(s){return s==='bedarf'?'bei Bedarf':s==='taeglich'?'1× täglich':s+' Uhr'}
+function slotsOf(m){return m.kind==='bedarf'?[]:(m.times&&m.times.length?[...m.times].sort():['taeglich'])}
+/* Ausschleichplan: welche Stufe gilt an einem Tag? */
+function taperInfo(m,day){
+  const t=m.taper; if(!t||!t.start||!t.steps) return null;
+  const n=daysBetween(t.start,day), totalDays=t.steps.reduce((s,x)=>s+x.days,0);
+  if(n<0) return {before:true,startsIn:-n,step:t.pre||{mg:0,pieces:''},next:t.steps[0],nextStart:t.start,totalDays};
+  let acc=0;
+  for(let i=0;i<t.steps.length;i++){
+    const s=t.steps[i];
+    if(n<acc+s.days) return {i,step:s,total:t.steps.length,dayInStep:n-acc+1,dayTotal:n+1,totalDays,
+      stepEnd:addDays(t.start,acc+s.days-1),next:t.steps[i+1]||null,nextStart:addDays(t.start,acc+s.days)};
+    acc+=s.days;
+  }
+  return {done:true,endDay:addDays(t.start,acc),totalDays};
+}
+function sollOf(m,day){
+  if(m.kind!=='taper') return m.dose??'';
+  const ti=taperInfo(m,day); return ti&&ti.step?fmtMg(ti.step.mg):null;
+}
+function taperSteps(m){
+  const t=m.taper,td=today(); let acc=0;
+  return t.steps.map((s,i)=>{const a=addDays(t.start,acc),b=addDays(t.start,acc+s.days-1);acc+=s.days;
+    const cls=b<td?'past':a<=td?'now':'';
+    return `<div class="st ${cls}"><span>${i+1}. ${fmtD(a)}–${fmtD(b)} <span class="muted">(${s.days} T.)</span><div class="muted small">${esc(s.pieces)}</div></span><b>${fmtMg(s.mg)}</b></div>`}).join('')
+    +`<div class="st ${addDays(t.start,acc)<=td?'now':''}"><span>Ende ab ${fmtD(addDays(t.start,acc))}</span><b>0 mg 🎉</b></div>`;
+}
+function medStatus(day){
+  const items=[];
+  S.meds.filter(m=>m.active!==false&&m.kind!=='bedarf').forEach(m=>{
+    const soll=sollOf(m,day); if(soll==null) return;
+    slotsOf(m).forEach(slot=>{
+      const log=S.med_logs.find(l=>l.med_id===m.id&&l.day===day&&l.slot===slot);
+      items.push({med:m,slot,log,soll});
+    });
+  });
+  items.sort((a,b)=>a.slot.localeCompare(b.slot));
+  return {items,total:items.length,done:items.filter(i=>i.log).length,open:items.filter(i=>!i.log)};
+}
+function vMeds(){
+  if(ui.editPlan) return vPlan();
+  const day=ui.medDay, st=medStatus(day), bedarf=S.meds.filter(m=>m.active!==false&&m.kind==='bedarf');
+  const cards=st.items.map(({med,slot,log,soll})=>{
+    const diff=log&&log.amount!==soll;
+    const ti=med.kind==='taper'?taperInfo(med,day):null;
+    const taper=ti&&ti.step?`<div class="taper">
+      <div class="row small"><b class="grow">${ti.before?`Ausschleichen startet in ${ti.startsIn} Tagen`:`Stufe ${ti.i+1}/${ti.total} · Tag ${ti.dayInStep} von ${ti.step.days}`}</b>
+        ${ti.before?'':`<span class="muted">Tag ${ti.dayTotal}/${ti.totalDays}</span>`}</div>
+      <div class="prog"><i style="width:${ti.before?0:Math.round(ti.dayTotal/ti.totalDays*100)}%"></i></div>
+      <div class="pieces">💊 ${esc(ti.step.pieces)}</div>
+      <div class="muted small">Ab ${dayLabel(ti.nextStart)==='Morgen'?'morgen ('+fmtD(ti.nextStart)+')':dayLabel(ti.nextStart)}: ${ti.next?fmtMg(ti.next.mg):'0 mg – fertig ausgeschlichen 🎉'}</div></div>`:'';
+    return `<div class="card med ${log?'done':''}">
+      <div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">${esc(slotLabel(slot))}${med.note?' · '+esc(med.note):''}</div></div>
+        ${log?`<span class="pill ${log.skipped?'warn':diff?'warn':'ok'}">${log.skipped?'ausgelassen':diff?'abweichend':'gegeben'}</span>`:'<span class="pill">offen</span>'}</div>
+      ${taper}
+      <dl class="sollist"><dt>Soll</dt><dd>${esc(soll||'–')}</dd>
+        ${log?`<dt>Ist</dt><dd>${log.skipped?'nicht gegeben':esc(log.amount)}</dd><dt></dt><dd class="muted small" style="font-weight:400">${esc(log.author)} um ${hm(log.created_at)}${log.note?' · '+esc(log.note):''}</dd>`:''}</dl>
+      ${log?`<div class="actions"><button class="btn plain" data-a="undoLog" data-id="${log.id}">Rückgängig</button></div>`:
+      `<div class="actions"><button class="btn ok" data-a="giveAsPlanned" data-med="${med.id}" data-slot="${esc(slot)}">✓ Wie geplant</button>
+        <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="${esc(slot)}">Andere Menge</button></div>`}
+    </div>`}).join('');
+  const bed=bedarf.map(med=>{
+    const logs=S.med_logs.filter(l=>l.med_id===med.id&&l.day===day);
+    return `<div class="card med"><div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">Soll: ${esc(med.dose||'–')}${med.note?' · '+esc(med.note):''}</div></div>
+      <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="bedarf">Gegeben</button></div>
+      ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><span class="grow">${esc(l.amount)} <span class="muted small">· ${esc(l.author)} um ${hm(l.created_at)}${l.note?' · '+esc(l.note):''}</span></span><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
+    </div>`}).join('');
+  return `<div class="topbar"><h1>Medikamente</h1><button class="btn ghost" data-a="plan">Plan</button></div>
+  ${dateNav('medDay',day)}
+  ${!S.meds.length?`<div class="card empty">Noch kein Medikamentenplan.<br><br><button class="btn" data-a="medEdit">+ Medikament anlegen</button></div>`:''}
+  ${st.total?`<h2>${st.done}/${st.total} gegeben</h2>${cards}`:''}
+  ${S.meds.filter(m=>m.kind==='taper'&&m.active!==false&&taperInfo(m,day)?.done).map(m=>`<div class="card"><b>${esc(m.name)}</b> ist ausgeschlichen 🎉<div class="muted small">seit ${fmtD(taperInfo(m,day).endDay)}</div></div>`).join('')}
+  ${bedarf.length?`<h2>Bei Bedarf</h2>${bed}`:''}`;
+}
+function dateNav(key,day){
+  return `<div class="datenav"><button data-a="dayShift" data-k="${key}" data-n="-1">‹</button>
+    <span class="d">${dayLabel(day)}</span>
+    <button data-a="dayShift" data-k="${key}" data-n="1" ${day>=today()?'disabled':''}>›</button></div>`;
+}
+function vPlan(){
+  const list=S.meds.map(m=>`<div class="card"><div class="row"><div class="grow">
+      <div style="font-weight:700">${esc(m.name)} ${m.active===false?'<span class="pill">pausiert</span>':''}</div>
+      <div class="muted small">${m.kind==='taper'?'Ausschleichplan':esc(m.dose||'–')} · ${m.kind==='bedarf'?'bei Bedarf':slotsOf(m).map(slotLabel).join(', ')}</div></div>
+      <button class="btn ghost" data-a="medEdit" data-id="${m.id}">Bearbeiten</button></div>
+      ${m.kind==='taper'&&m.taper?`<div class="steps">${taperSteps(m)}</div>`:''}</div>`).join('');
+  return `<div class="topbar"><h1>Plan</h1><button class="btn ghost" data-a="plan">Fertig</button></div>
+    ${list||'<div class="card empty">Noch nichts eingetragen</div>'}
+    <button class="btn block" data-a="medEdit" style="margin-top:8px">+ Medikament hinzufügen</button>`;
+}
+
+/* ====== Bellistima ====== */
+function vBark(){
+  const t=today(), todays=S.barks.filter(b=>dayOf(b.created_at)===t).sort((a,b)=>b.created_at.localeCompare(a.created_at));
+  const days=[...Array(7)].map((_,i)=>addDays(t,i-6));
+  const counts=days.map(d=>S.barks.filter(b=>dayOf(b.created_at)===d).length), max=Math.max(1,...counts);
+  const byReason=BARK_REASONS.map(r=>({...r,n:todays.filter(b=>b.reason===r.id).length})).filter(r=>r.n);
+  return `<h1>Bellistima</h1>
+  <div class="card barkhero">
+    <div class="muted small">Heute gebellt</div><div class="barkcount">${todays.length}×</div>
+    <button class="barkbtn" data-a="bark">+1<span>Wuff!</span></button>
+    ${byReason.length?`<div class="chips" style="justify-content:center;margin-top:10px">${byReason.map(r=>`<span class="pill">${r.icon} ${esc(r.label)}: <b>${r.n}</b></span>`).join('')}</div>`:''}
+  </div>
+  <h2>Letzte 7 Tage</h2>
+  <div class="card"><div class="bars">${days.map((d,i)=>`<div class="b ${d===t?'today':''}"><em>${counts[i]||''}</em><i style="height:${counts[i]/max*80}%"></i>${d===t?'heute':wd(d)}</div>`).join('')}</div></div>
+  ${todays.length?`<h2>Heute</h2><div class="card list">${todays.map(b=>{const r=BARK_REASONS.find(x=>x.id===b.reason)||{icon:'❓',label:b.reason};
+    return `<div class="li"><span style="font-size:20px">${r.icon}</span><span class="grow">${esc(r.label)}<div class="muted small">${hm(b.created_at)} · ${esc(b.author)}</div></span>
+    <button class="btn plain" data-a="delBark" data-id="${b.id}">✕</button></div>`}).join('')}</div>`:''}`;
+}
+
+/* ====== Protokoll ====== */
+function vLog(){
+  const day=ui.logDay, lg=S.daily_log.find(l=>l.day===day);
+  const f=ui.logForm && ui.logForm.day===day ? ui.logForm : (ui.logForm={day,mood:lg?.mood||0,tags:[...(lg?.tags||[])],text:lg?.text||''});
+  const hist=[...S.daily_log].sort((a,b)=>b.day.localeCompare(a.day)).slice(0,14);
+  return `<div class="topbar"><h1>Protokoll</h1><button class="btn ghost" data-a="exportXlsx">📊 Excel</button></div>
+  ${dateNav('logDay',day)}
+  <div class="card">
+    <label class="f" style="margin-top:2px">Wie war ${esc(DOG)} ${day===today()?'heute':'an dem Tag'}?</label>
+    <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${m.e}<small>${m.l}</small></button>`).join('')}</div>
+    <label class="f">Was trifft zu?</label>
+    <div class="chips">${TAGS.map(t=>`<button class="chip ${f.tags.includes(t)?'on':''}" data-a="tag" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+    <label class="f">Wie hat sie sich verhalten?</label>
+    <textarea id="logText" placeholder="Spaziergang, Fressen, Besonderheiten …">${esc(f.text)}</textarea>
+    <button class="btn block" data-a="saveLog" style="margin-top:12px">${lg?'Aktualisieren':'Speichern'}</button>
+    ${lg?`<div class="muted small" style="text-align:center;margin-top:8px">Zuletzt von ${esc(lg.author)}</div>`:''}
+  </div>
+  ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood);
+    return `<button class="li" style="width:100%;text-align:left" data-a="openLog" data-day="${h.day}"><span style="font-size:24px">${m?m.e:'·'}</span>
+    <span class="grow"><b>${dayLabel(h.day)}</b><div class="muted small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc([...(h.tags||[])].join(', ')||h.text||'')}</div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
+}
+document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true}});
+
+/* ====== Notizen ====== */
+function vNotes(){
+  const list=[...S.notes].sort((a,b)=>(b.pinned-a.pinned)||(b.updated_at||b.created_at).localeCompare(a.updated_at||a.created_at));
+  return `<div class="topbar"><h1>Notizen</h1><button class="btn" data-a="noteEdit">+ Neu</button></div>
+  ${list.length?list.map(n=>`<button class="card note" style="display:block;width:100%;text-align:left" data-a="noteEdit" data-id="${n.id}">
+    <div class="row"><div class="t grow">${n.pinned?'📌 ':''}${esc(n.title||'Ohne Titel')}</div></div>
+    ${n.body?`<div class="b">${esc(n.body.length>220?n.body.slice(0,220)+' …':n.body)}</div>`:''}
+    <div class="muted small" style="margin-top:8px">${esc(n.author)} · ${new Date(n.updated_at||n.created_at).toLocaleDateString('de-DE',{day:'numeric',month:'short'})}</div></button>`).join('')
+  :'<div class="card empty">Noch keine Notizen.<br>Z. B. Tierarzt-Termine, Futter, Tricks …</div>'}`;
+}
+
+/* ====== Aktionen ====== */
+const ACT = {
+  reroll(){const el=$('#nick');if(!el||S.nicknames.length<2)return;el.classList.add('swap');setTimeout(()=>{ui.nick=pickNick();el.textContent=ui.nick;el.classList.remove('swap')},180)},
+  dayShift(d){const k=d.k;ui[k]=addDays(ui[k],+d.n);if(ui[k]>today())ui[k]=today();if(k==='logDay'){ui.logForm=null;ui.logDirty=false}render()},
+  plan(){ui.editPlan=!ui.editPlan;render()},
+  async giveAsPlanned(d){const m=S.meds.find(x=>x.id===d.med);await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} eingetragen ✅`)},
+  giveOther(d){
+    const m=S.meds.find(x=>x.id===d.med), soll=sollOf(m,ui.medDay)||'';
+    openSheet(`<h3>${esc(m.name)}</h3><div class="muted">${esc(slotLabel(d.slot))} · Soll: ${esc(soll||'–')}</div>
+      <label class="f">Tatsächlich gegeben</label><input type="text" id="amt" value="${esc(soll)}">
+      <label class="f">Notiz (optional)</label><input type="text" id="nt" placeholder="z. B. halbe Tablette ausgespuckt">
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      ${d.slot!=='bedarf'?'<button class="btn block plain" id="skip" style="margin-top:4px">Heute nicht gegeben</button>':''}`, sh=>{
+      sh.querySelector('#save').onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sh.querySelector('#amt').value.trim()||'–',note:sh.querySelector('#nt').value.trim()||null});closeSheet()};
+      const sk=sh.querySelector('#skip'); if(sk) sk.onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:'0',skipped:true,note:sh.querySelector('#nt').value.trim()||null});closeSheet()};
+    });
+  },
+  undoLog(d){del('med_logs',d.id)},
+  medEdit(d){
+    if(d.id&&S.meds.find(x=>x.id===d.id)?.kind==='taper') return ACT.taperEdit(d);
+    const m=d.id?S.meds.find(x=>x.id===d.id):{name:'',dose:'',kind:'taeglich',times:['08:00'],note:'',active:true};
+    let times=[...(m.times||[])], kind=m.kind||'taeglich';
+    const timesHtml=()=>times.map((t,i)=>`<div class="row" style="margin-bottom:6px"><input type="time" value="${t}" data-i="${i}" class="tm"><button class="btn plain" data-rm="${i}">✕</button></div>`).join('');
+    openSheet(`<h3>${d.id?'Medikament bearbeiten':'Neues Medikament'}</h3>
+      <label class="f">Name</label><input type="text" id="mn" value="${esc(m.name)}" placeholder="z. B. Apoquel">
+      <label class="f">Soll-Menge</label><input type="text" id="md" value="${esc(m.dose||'')}" placeholder="z. B. 1 Tablette, 2 ml">
+      <label class="f">Wann?</label>
+      <div class="chips"><button class="chip ${kind!=='bedarf'?'on':''}" id="k1">Täglich</button><button class="chip ${kind==='bedarf'?'on':''}" id="k2">Bei Bedarf</button></div>
+      <div id="tw" style="margin-top:10px;${kind==='bedarf'?'display:none':''}"><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button></div>
+      <label class="f">Hinweis (optional)</label><input type="text" id="mo" value="${esc(m.note||'')}" placeholder="z. B. mit Futter">
+      ${d.id?`<label class="row" style="margin-top:14px"><input type="checkbox" id="ma" ${m.active!==false?'checked':''} style="width:22px;height:22px"> <span>Aktiv (sonst pausiert)</span></label>`:''}
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      ${d.id?'<button class="btn block danger" id="del" style="margin-top:4px">Löschen</button>':''}`, sh=>{
+      const q=s=>sh.querySelector(s);
+      const redraw=()=>{q('#tl').innerHTML=timesHtml()};
+      sh.addEventListener('input',e=>{if(e.target.classList.contains('tm'))times[+e.target.dataset.i]=e.target.value});
+      sh.addEventListener('click',e=>{const r=e.target.closest('[data-rm]');if(r){times.splice(+r.dataset.rm,1);redraw()}});
+      q('#addt').onclick=()=>{times.push('20:00');redraw()};
+      q('#k1').onclick=()=>{kind='taeglich';q('#k1').classList.add('on');q('#k2').classList.remove('on');q('#tw').style.display=''};
+      q('#k2').onclick=()=>{kind='bedarf';q('#k2').classList.add('on');q('#k1').classList.remove('on');q('#tw').style.display='none'};
+      q('#save').onclick=async()=>{
+        const row={name:q('#mn').value.trim(),dose:q('#md').value.trim(),kind,times:kind==='bedarf'?[]:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:d.id?q('#ma').checked:true};
+        if(!row.name){toast('Bitte einen Namen eingeben');return}
+        if(d.id) await upd('meds',d.id,row); else await ins('meds',row);
+        closeSheet();
+      };
+      const dl=q('#del'); if(dl) dl.onclick=()=>{if(confirm(`${m.name} wirklich löschen? Die Einträge dazu werden auch gelöscht.`)){del('meds',d.id);closeSheet()}};
+    });
+  },
+  taperEdit(d){
+    const m=S.meds.find(x=>x.id===d.id); let times=[...(m.times||[])];
+    const dayNow=daysBetween(m.taper.start,today())+1;
+    const timesHtml=()=>times.map((t,i)=>`<div class="row" style="margin-bottom:6px"><input type="time" value="${t}" data-i="${i}" class="tm"><button class="btn plain" data-rm="${i}">✕</button></div>`).join('')||'<div class="muted small" style="margin-bottom:6px">Keine feste Uhrzeit (1× täglich)</div>';
+    openSheet(`<h3>${esc(m.name)} – Ausschleichplan</h3>
+      <label class="f">Heute ist Tag … des Plans</label>
+      <div class="row"><input type="text" inputmode="numeric" id="tday" value="${dayNow}" style="max-width:110px"><span class="muted small grow">Plan-Start: <span id="tstart">${fmtD(m.taper.start)}</span></span></div>
+      <label class="f">Uhrzeit(en)</label><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button>
+      <label class="f">Hinweis</label><input type="text" id="mo" value="${esc(m.note||'')}">
+      <label class="row" style="margin-top:14px"><input type="checkbox" id="ma" ${m.active!==false?'checked':''} style="width:22px;height:22px"> <span>Aktiv</span></label>
+      <div class="steps">${taperSteps(m)}</div>
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>`, sh=>{
+      const q=s=>sh.querySelector(s), redraw=()=>{q('#tl').innerHTML=timesHtml()};
+      const startFor=()=>{const n=parseInt(q('#tday').value,10);return n>0?addDays(today(),-(n-1)):null};
+      q('#tday').addEventListener('input',()=>{const s=startFor();q('#tstart').textContent=s?fmtD(s):'–'});
+      sh.addEventListener('input',e=>{if(e.target.classList.contains('tm'))times[+e.target.dataset.i]=e.target.value});
+      sh.addEventListener('click',e=>{const r=e.target.closest('[data-rm]');if(r){times.splice(+r.dataset.rm,1);redraw()}});
+      q('#addt').onclick=()=>{times.push('08:00');redraw()};
+      q('#save').onclick=async()=>{
+        const start=startFor(); if(!start){toast('Bitte eine Tageszahl ab 1 eingeben');return}
+        await upd('meds',m.id,{taper:{...m.taper,start},times:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:q('#ma').checked});
+        closeSheet();
+      };
+    });
+  },
+  bark(){
+    openSheet(`<h3>Warum hat ${esc(DOG)} gebellt?</h3><div class="muted" style="margin-bottom:14px">Tippen zum Eintragen</div>
+      ${BARK_REASONS.map(r=>`<button class="reason" data-r="${r.id}"><span style="font-size:26px">${r.icon}</span>${esc(r.label)}</button>`).join('')}`, sh=>{
+      sh.querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{closeSheet();if(navigator.vibrate)navigator.vibrate(30);await ins('barks',{reason:b.dataset.r});toast('Wuff gezählt 🐶')});
+    });
+  },
+  delBark(d){del('barks',d.id)},
+  mood(d){ui.logForm.mood=+d.v;ui.logDirty=true;render()},
+  tag(d){const t=ui.logForm.tags,i=t.indexOf(d.t);i>=0?t.splice(i,1):t.push(d.t);ui.logDirty=true;render()},
+  async saveLog(){
+    const f=ui.logForm, lg=S.daily_log.find(l=>l.day===f.day);
+    if(!f.mood&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
+    const row={mood:f.mood||null,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
+    ui.logDirty=false;
+    if(lg) await upd('daily_log',lg.id,row); else await ins('daily_log',{day:f.day,...row});
+    toast('Protokoll gespeichert 📖');
+  },
+  async exportXlsx(){
+    const sh=openSheet(`<h3>Excel-Export</h3><div class="muted" id="xs">Wird erstellt …</div>`);
+    try{
+      if(!window.XLSX) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+      let mlogs=S.med_logs, barks=S.barks;
+      if(!DEMO){ // alles holen, nicht nur die letzten 60 Tage
+        const [a,b]=await Promise.all([sb.from('med_logs').select('*').order('created_at'),sb.from('barks').select('*').order('created_at')]);
+        if(a.error||b.error) throw a.error||b.error;
+        mlogs=a.data; barks=b.data;
+      }
+      const {file,stats}=buildExport(S.daily_log,S.meds,mlogs,barks);
+      sh.querySelector('#xs').innerHTML=`${stats.days} Tage · ${stats.logs} Protokolle · ${stats.meds} Medi-Einträge · ${stats.barks}× gebellt
+        <button class="btn block" id="xsh" style="margin-top:16px">Teilen / In Dateien sichern</button>`;
+      sh.querySelector('#xsh').onclick=async()=>{
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          try{await navigator.share({files:[file],title:file.name});closeSheet();return}
+          catch(e){if(e.name==='AbortError')return}
+        }
+        const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;document.body.append(a);a.click();a.remove();
+      };
+    }catch(e){console.error(e);sh.querySelector('#xs').textContent='Export fehlgeschlagen – Internet prüfen und nochmal versuchen.'}
+  },
+  openLog(d){ui.logDay=d.day;ui.logForm=null;ui.logDirty=false;render();window.scrollTo(0,0)},
+  noteEdit(d){
+    const n=d.id?S.notes.find(x=>x.id===d.id):{title:'',body:'',pinned:false};
+    openSheet(`<h3>${d.id?'Notiz':'Neue Notiz'}</h3>
+      <label class="f">Titel</label><input type="text" id="nt" value="${esc(n.title||'')}">
+      <label class="f">Text</label><textarea id="nb" style="min-height:180px">${esc(n.body||'')}</textarea>
+      <label class="row" style="margin-top:12px"><input type="checkbox" id="np" ${n.pinned?'checked':''} style="width:22px;height:22px"> <span>Oben anpinnen</span></label>
+      ${d.id?`<div class="muted small" style="margin-top:10px">Von ${esc(n.author)}</div>`:''}
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      ${d.id?'<button class="btn block danger" id="del" style="margin-top:4px">Löschen</button>':''}`, sh=>{
+      const q=s=>sh.querySelector(s);
+      q('#save').onclick=async()=>{
+        const row={title:q('#nt').value.trim(),body:q('#nb').value,pinned:q('#np').checked,updated_at:new Date().toISOString()};
+        if(!row.title&&!row.body.trim()){toast('Notiz ist leer');return}
+        if(d.id) await upd('notes',d.id,row); else await ins('notes',row);
+        closeSheet();
+      };
+      const dl=q('#del'); if(dl) dl.onclick=()=>{if(confirm('Notiz löschen?')){del('notes',d.id);closeSheet()}};
+    });
+  },
+  settings(){
+    const nickList=()=>[...S.nicknames].sort((a,b)=>a.name.localeCompare(b.name,'de')).map(n=>`<div class="li"><span class="grow">${esc(n.name)}</span><button class="btn plain" data-dn="${n.id}">✕</button></div>`).join('')
+      ||`<div class="muted small" style="margin-bottom:8px">Noch keine Spitznamen.</div><button class="btn ghost" id="seedn">Grundstock laden (${NICKS.length} Namen)</button>`;
+    openSheet(`<h3>Einstellungen</h3>
+      <label class="f">Spitznamen von ${esc(DOG)} (${S.nicknames.length})</label>
+      <div class="row"><input type="text" id="nn" placeholder="Neuer Spitzname"><button class="btn" id="addn">+</button></div>
+      <div class="muted small" style="margin:6px 2px">Tipp: mehrere auf einmal mit Komma trennen</div>
+      <div class="list" id="nl">${nickList()}</div>
+      <label class="f" style="margin-top:22px">Du bist</label>
+      <div class="row"><input type="text" id="myname" value="${esc(me.name)}"><button class="btn ghost" id="savename">Ändern</button></div>
+      ${DEMO?'':'<button class="btn block plain" id="logout" style="margin-top:22px">Abmelden</button>'}`, sh=>{
+      const q=s=>sh.querySelector(s);
+      const redraw=()=>{q('#nl').innerHTML=nickList()};
+      q('#addn').onclick=async()=>{
+        const names=q('#nn').value.split(',').map(s=>s.trim()).filter(Boolean); if(!names.length) return;
+        q('#nn').value='';
+        const have=new Set(S.nicknames.map(n=>n.name.toLowerCase()));
+        const fresh=[...new Set(names)].filter(n=>!have.has(n.toLowerCase()));
+        if(!fresh.length){toast('Gibt’s schon 😉');return}
+        await insMany('nicknames',fresh.map(name=>({name})));
+        ui.nick=null;redraw();toast(fresh.length>1?`${fresh.length} Spitznamen hinzugefügt`:`„${fresh[0]}“ hinzugefügt`);
+      };
+      q('#nn').addEventListener('keydown',e=>{if(e.key==='Enter')q('#addn').click()});
+      sh.addEventListener('click',async e=>{
+        if(e.target.id==='seedn'){e.target.disabled=true;await insMany('nicknames',NICKS.map(name=>({name})));ui.nick=null;redraw();return}
+        const b=e.target.closest('[data-dn]');if(b){await del('nicknames',b.dataset.dn);ui.nick=null;redraw()}});
+      q('#savename').onclick=async()=>{const n=q('#myname').value.trim();if(!n)return;await setName(n);toast('Gespeichert');render()};
+      const lo=q('#logout'); if(lo) lo.onclick=async()=>{await sb.auth.signOut();location.reload()};
+    });
+  },
+};
+
+/* ====== Excel-Export ====== */
+function buildExport(dlogs,meds,mlogs,barks){
+  const D=day=>new Date(day+'T12:00:00'), medById=Object.fromEntries(meds.map(m=>[m.id,m]));
+  const reasonOf=id=>(BARK_REASONS.find(r=>r.id===id)||{label:id||''}).label;
+  const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at))])].sort();
+  const protokoll=days.map(day=>{
+    const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood);
+    const bs=barks.filter(b=>dayOf(b.created_at)===day);
+    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'','Gebellt':bs.length};
+    BARK_REASONS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.id).length);
+    row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
+    row['Eingetragen von']=lg?.author||'';
+    return row;
+  });
+  const medis=[...mlogs].sort((a,b)=>(a.day+a.slot).localeCompare(b.day+b.slot)).map(l=>{const m=medById[l.med_id];const soll=m?sollOf(m,l.day):'';
+    return {'Datum':D(l.day),'Medikament':m?.name||'(gelöscht)','Zeitpunkt':slotLabel(l.slot),'Soll':soll||'','Ist':l.skipped?'nicht gegeben':l.amount,
+      'Status':l.skipped?'ausgelassen':l.amount===soll?'wie geplant':'abweichend','Notiz':l.note||'','Von':l.author||'','Eingetragen um':hm(l.created_at)}});
+  const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason),'Von':b.author||''}));
+  const sheet=(rows,widths)=>{const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true,dateNF:'dd.mm.yyyy'});ws['!cols']=widths.map(w=>({wch:w}));return ws};
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,32,50,8,...BARK_REASONS.map(()=>14),40,14]),'Protokoll');
+  XLSX.utils.book_append_sheet(wb,sheet(medis,[11,16,12,12,14,13,30,10,14]),'Medikamente');
+  XLSX.utils.book_append_sheet(wb,sheet(bell,[11,8,22,10]),'Bellistima');
+  const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});
+  const file=new File([buf],`${DOG}_Protokoll_${today()}.xlsx`,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  return {file,stats:{days:days.length,logs:dlogs.length,meds:mlogs.length,barks:barks.length}};
+}
+
+/* ====== Login & Start ====== */
+async function setName(n){
+  me.name=n; lsSet('ellie.name',n);
+  if(!DEMO) await sb.auth.updateUser({data:{name:n}});
+}
+function showLogin(err){
+  $('#nav').hidden=true;
+  $('#app').innerHTML=`<div class="login"><div class="paw">🐾</div><h1>${esc(DOG)}</h1>
+    <form id="lf"><label class="f">E-Mail</label><input type="email" id="le" autocomplete="username" required>
+    <label class="f">Passwort</label><input type="password" id="lp" autocomplete="current-password" required>
+    ${err?`<div style="color:var(--danger);margin-top:10px" class="small">${esc(err)}</div>`:''}
+    <button class="btn block" style="margin-top:16px">Anmelden</button></form></div>`;
+  $('#lf').onsubmit=async e=>{e.preventDefault();
+    const {error}=await sb.auth.signInWithPassword({email:$('#le').value.trim(),password:$('#lp').value});
+    if(error) showLogin('Anmeldung fehlgeschlagen – E-Mail oder Passwort falsch?'); else boot();
+  };
+}
+function askName(){
+  $('#nav').hidden=true;
+  $('#app').innerHTML=`<div class="login"><div class="paw">👋</div><h1>Wer bist du?</h1>
+    <div class="muted">Damit der andere sieht, wer was eingetragen hat.</div>
+    <form id="nf"><input type="text" id="nm" placeholder="Dein Name" required style="margin-top:20px">
+    <button class="btn block" style="margin-top:12px">Weiter</button></form></div>`;
+  $('#nf').onsubmit=async e=>{e.preventDefault();const n=$('#nm').value.trim();if(n){await setName(n);boot()}};
+}
+function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.append(s)})}
+
+async function boot(){
+  if(DEMO){
+    me.name=lsGet('ellie.name')||'Dennis';
+    if(!S.nicknames.length) seedDemo();
+    render(); return;
+  }
+  if(!sb){
+    try{await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2')}
+    catch(e){$('#app').innerHTML='<div class="login"><div class="paw">📡</div><h1>Keine Verbindung</h1><div class="muted">Bitte Internet prüfen und neu öffnen.</div></div>';return}
+    sb=supabase.createClient(CFG.supabaseUrl,CFG.supabaseKey,{auth:{persistSession:true,autoRefreshToken:true}});
+  }
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session) return showLogin();
+  me.name=session.user.user_metadata?.name||'';
+  if(!me.name) return askName();
+  $('#app').innerHTML='<div class="empty" style="margin-top:30vh">🐾 lädt …</div>';
+  await loadAll(); render(); subscribe();
+}
+// Beim Zurückkehren in die App alles neu laden (iOS trennt die Live-Verbindung im Hintergrund)
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState!=='visible'||DEMO||!sb||!me.name) return;
+  await loadAll(); render(true);
+});
+
+function seedDemo(){
+  const now=Date.now(), iso=ms=>new Date(ms).toISOString(), t=today();
+  NICKS.forEach(name=>S.nicknames.push({id:uid(),name,author:'Dennis',created_at:iso(now)}));
+  const m1={id:uid(),name:'Alprazolam',dose:null,kind:'taper',times:[],taper:ALPRA_TAPER,note:'Auffälligkeiten sofort Dr. Feist melden',active:true,author:'Jana'};
+  S.meds.push(m1);
+  [1,2,3].forEach(i=>{const d=addDays(t,-i);S.med_logs.push({id:uid(),med_id:m1.id,day:d,slot:'taeglich',amount:sollOf(m1,d),author:i%2?'Jana':'Dennis',created_at:iso(now-i*864e5)})});
+  const rs=['hausflur','draussen','hausflur','draussen','hausflur'];
+  for(let d=0;d<7;d++){const n=[3,1,4,2,0,5,2][d];for(let i=0;i<n;i++)S.barks.push({id:uid(),reason:rs[(i+d)%5],author:i%2?'Jana':'Dennis',created_at:iso(now-d*864e5-i*2400e3)})}
+  S.daily_log.push({id:uid(),day:addDays(t,-1),mood:4,tags:['Verspielt','Gut gefressen'],text:'Langer Spaziergang im Wald, danach total platt.',author:'Jana',created_at:iso(now-864e5)});
+  S.daily_log.push({id:uid(),day:addDays(t,-2),mood:2,tags:['Ängstlich','Viel gebellt'],text:'Handwerker im Haus.',author:'Dennis',created_at:iso(now-2*864e5)});
+  S.notes.push({id:uid(),title:'Tierarzt',body:'Kontrolle Haut: nächster Termin in 4 Wochen.\nPraxis fragt nach Gewicht.',pinned:true,author:'Jana',created_at:iso(now-3*864e5)});
+}
+
+boot();
+</script>
+</body>
+</html>
