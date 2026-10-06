@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=14"></script>
+<script src="config.js?v=15"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -217,6 +217,13 @@ nav button.on .i{background:var(--accent-soft)}
 .wx-side{font-size:13px;text-align:right;line-height:1.5;opacity:.95;z-index:1}
 .wx-flags{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;z-index:1}
 .wx-flags span{background:rgba(255,255,255,.22);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.wx2{border-radius:16px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+.wx2.calm{display:flex;align-items:center;gap:10px;font-size:14px}
+.wx2 .wi{font-size:20px;width:26px;text-align:center;flex:none}
+.wx2.red{background:color-mix(in srgb,var(--danger) 9%,var(--card));border-color:color-mix(in srgb,var(--danger) 30%,var(--line));border-left:5px solid var(--danger)}
+.wx2.warn{background:color-mix(in srgb,var(--warn) 10%,var(--card));border-left:5px solid var(--warn)}
+.wf{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;font-weight:600}
+.wf.red{color:var(--danger)}
 .wxchip{font-size:13px;color:var(--muted);font-weight:600}
 /* Verlauf */
 .li.hist{width:100%;text-align:left;align-items:flex-start}
@@ -338,6 +345,45 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .wuff-h .t{text-align:right;font-weight:600;white-space:nowrap}
 .wuff-a{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .wuff-a .btn{text-align:center;text-decoration:none;font-size:15px}
+.walk{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 0;border-top:1px solid var(--line)}
+.walk:first-of-type{border-top:0;padding-top:0}
+.walk .wk-t{font-weight:800;font-size:15px;width:48px;flex:none}
+.walk b{display:block;font-size:15px}
+.ttiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.ttile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:var(--shadow)}
+.ttile .lbl{font-size:12px;color:var(--muted);font-weight:600}
+.ttile .v{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:2px}.ttile .v small{font-size:12px;color:var(--muted);font-weight:600}
+.ttile .s{font-size:12px;color:var(--muted)}
+.dg{color:var(--ok);font-weight:700}.db{color:var(--danger);font-weight:700}
+.tchart{width:100%;height:auto;display:block;overflow:visible}
+.tchart .tc-t{font-size:11px;font-weight:700;fill:var(--ink)}
+.tchart .tc-ax{font-size:9.5px;fill:var(--muted)}
+.tchart .tc-base{stroke:var(--line);stroke-width:1}
+.tchart .tc-grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+.tchart .tc-line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.tchart .tc-dot{fill:var(--accent);stroke:var(--card);stroke-width:2}
+.tchart .tc-bar{fill:var(--accent)}
+.tchart .tc-bad{fill:var(--danger)}
+.tchart .tc-st{stroke:var(--card);stroke-width:2}.tchart .sok{fill:var(--ok)}.tchart .swarn{fill:var(--warn)}.tchart .sbad{fill:var(--danger)}
+.tchart .tc-dose{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:3 3;opacity:.8}
+.tchart .tc-dl{font-size:10px}.tchart .tc-wx{font-size:11px}
+.tchart .tc-sel{fill:var(--accent-soft)}
+.tleg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--muted);padding:6px 4px 4px;border-top:1px solid var(--line);margin-top:6px}
+.tleg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.tleg .lg-ok{background:var(--ok)}.tleg .lg-warn{background:var(--warn)}.tleg .lg-bad{background:var(--danger)}
+.tleg .lg-dose{width:12px;height:0;border-radius:0;border-top:2px dashed var(--muted)}
+.tdet .td-r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.tdet .td-r span{color:var(--muted)}.tdet .td-r b{text-align:right}
+.tdet .mfbig .mf{width:40px}
+.seg button{font-size:13px}
+.doc{display:flex;align-items:center;gap:6px;padding:10px 8px 10px 14px}
+.doc .dic{font-size:26px;width:34px;text-align:center;flex:none}
+.iconbtn.sos{font-size:17px}
+.nf-h{display:flex;gap:12px;align-items:center;margin-bottom:6px}.nf-h>span{font-size:34px}
+.nf-sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 4px}
+.nf-r{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.nf-r span{color:var(--muted);flex:none;max-width:45%}.nf-r b{text-align:right;font-weight:600;word-break:break-word}
+.nf-r a{color:var(--accent-ink)}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
 .savebar .btn.saved{background:var(--ok-soft);color:var(--ok);box-shadow:var(--shadow)}
@@ -386,8 +432,8 @@ const ALPRA_TAPER = {
     {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg',use:{'0.5':0.25}},
     {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg',use:{'0.25':0.25}},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links'];
-const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info'];
+const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const NAV_ICONS = {"start": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3.5 10.5 12 4l8.5 6.5\"/><path d=\"M5.5 9v10.5h13V9\"/><path d=\"M10 19.5v-5h4v5\"/></svg>", "meds": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2.8\" y=\"8.2\" width=\"18.4\" height=\"7.6\" rx=\"3.8\" transform=\"rotate(-40 12 12)\"/><path d=\"m9.2 9.6 5.2 4.8\"/></svg>", "bark": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 20 17h-8l-4.5 3.5V17H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z\"/><path d=\"M8 11.2h.01M12 11.2h.01M16 11.2h.01\" stroke-width=\"2.6\"/></svg>", "log": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4.5 5.5A1.5 1.5 0 0 1 6 4h12.5v14H6a1.5 1.5 0 0 0-1.5 1.5Z\"/><path d=\"M4.5 19.5A1.5 1.5 0 0 0 6 21h12.5v-3\"/><path d=\"M8.5 8.5h6M8.5 12h4\"/></svg>", "notes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-10Z\"/><path d=\"M14.5 3.5v5h5\"/><path d=\"M8.5 13h7M8.5 16.5h5\"/></svg>"};
 const TABS = [
   {id:'start', l:'Start'},
@@ -400,7 +446,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.14'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.15'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -531,8 +577,8 @@ function vStart(){
   const lg=S.daily_log.find(l=>l.day===t), mood=lg&&MOODS.find(x=>x.v===lg.mood);
   const next=m.open[0], wt=S.weather[t];
   return `
-  <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}${wt?` · <button class="wxchip" data-go="log">${wmo(wt.code).i} ${Math.round(wt.tmax)}°</button>`:''}</span>
-    <button class="iconbtn" data-a="settings" aria-label="Einstellungen">⚙️</button></div>
+  <div class="topbar"><span class="muted small">${new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}${wt?` · <button class="wxchip" data-go="log">${flagIcons(wt,t)||wmo(wt.code).i} ${Math.round(wt.tmax)}°</button>`:''}</span>
+    <div class="row" style="gap:8px"><button class="iconbtn sos" data-a="notfall" aria-label="Notfall-Karte">🆘</button><button class="iconbtn" data-a="settings" aria-label="Einstellungen">⚙️</button></div></div>
   <div class="hero ${photo?'withphoto':''}" data-a="reroll">
     ${photo?`<div class="photo"><img src="${esc(photo.url)}" alt="${esc(DOG)}"></div>`:''}
     <div class="hi">${greeting()}, ${esc(me.name)}! Heute ist sie unser</div>
@@ -739,6 +785,7 @@ function stoolIcon(v){
   return `<svg viewBox="0 0 64 46" class="st" aria-hidden="true">${body}</svg>`;
 }
 
+const CALM=[{v:1,e:'😣',l:'Sehr gestresst'},{v:2,e:'😟',l:'Gestresst'},{v:3,e:'😐',l:'Okay'},{v:4,e:'🙂',l:'Entspannt'},{v:5,e:'😌',l:'Sehr entspannt'}];
 const STOOL=[{v:1,l:'Hart'},{v:2,l:'Normal'},{v:3,l:'Weich'},{v:4,l:'Breiig'},{v:5,l:'Flüssig'}];
 const APPETITE=[{v:3,l:'Alles'},{v:2,l:'Halb'},{v:1,l:'Kaum'},{v:0,l:'Nichts'}];
 const DEFAULT_OPTS={
@@ -781,7 +828,17 @@ function alertBanner(){
   const a=alerts(); if(!a.length) return '';
   return `<button class="alert" data-go="log"><div class="alert-h">⚠️ Seit 2 Tagen in Folge</div><div class="alert-b">${a.map(esc).join(' · ')}</div><div class="alert-f">Bei Auffälligkeiten ggf. die Tierärztin informieren.</div></button>`;
 }
+function logSeg(){const v=ui.logView||'entry';return `<div class="seg">${[['entry','✍️ Eintrag'],['trend','📈 Verlauf']].map(([k,l])=>`<button class="${v===k?'on':''}" data-a="logView" data-k="${k}">${l}</button>`).join('')}</div>`}
+function walkSection(day){
+  const ws=S.walks.filter(w=>w.day===day).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
+  const tot=ws.reduce((a,w)=>a+(+w.minutes||0),0);
+  return `<div class="card lsec"><div class="sec-h"><span>Gassi</span><span class="muted small">${ws.length?`${ws.length} Runde${ws.length>1?'n':''} · ${tot} Min.`:'Noch keine Runde'}</span></div>
+    ${ws.map(w=>{const c=CALM.find(x=>x.v===w.calm);return `<button class="walk" data-a="walkEdit" data-id="${w.id}"><span class="wk-t">${esc(w.time||'–')}</span>
+      <span class="grow"><b>${w.minutes||'?'} Min.${w.place?' · '+esc(w.place):''}</b><span class="muted small">${c?c.e+' '+c.l:''}${w.note?' · '+esc(w.note):''}</span></span><span class="muted">›</span></button>`}).join('')}
+    <button class="btn ghost block" data-a="walkEdit" data-day="${day}" style="margin-top:${ws.length?8:0}px">＋ Gassi-Runde</button></div>`;
+}
 function vLog(){
+  if(ui.logView==='trend') return `<div class="topbar pagehead"><h1>Protokoll</h1><button class="btn ghost" data-a="exportXlsx">📊 Excel</button></div>${logSeg()}${vTrend()}`;
   const day=ui.logDay, lg=S.daily_log.find(l=>l.day===day);
   const f=ui.logForm&&ui.logForm.day===day?ui.logForm:(ui.logForm={day,mood:lg?.mood||0,appetite:lg?.appetite??null,stool:lg?.stool??null,symptoms:[...(lg?.symptoms||[])],tags:[...(lg?.tags||[])],text:lg?.text||''});
   const opts=kind=>{const sel=kind==='symptom'?f.symptoms:f.tags, act=optActive(kind);
@@ -797,6 +854,7 @@ function vLog(){
   const ap=APPETITE.find(a=>a.v===f.appetite), stl=STOOL.find(x=>x.v===f.stool);
   const hist=[...S.daily_log].sort((a,b)=>b.day.localeCompare(a.day)).slice(0,21);
   return `<div class="topbar pagehead"><h1>Protokoll</h1><button class="btn ghost" data-a="exportXlsx">📊 Excel</button></div>
+  ${logSeg()}
   ${dateNav('logDay',day)}
   ${day===today()?alertBanner():''}
   ${weatherCard(day)}
@@ -806,6 +864,7 @@ function vLog(){
     <div class="bowls">${APPETITE.map(a=>`<button class="bw ${f.appetite===a.v?'on':''} lv${a.v}" data-a="appetite" data-v="${a.v}">${bowl(a.v)}<small>${a.l}</small></button>`).join('')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Kot</span><span class="muted small">${stl?stl.l:'Wie war die Konsistenz?'}</span></div>
     <div class="stools">${STOOL.map(x=>`<button class="sb ${f.stool===x.v?'on':''} sv${x.v}" data-a="stool" data-v="${x.v}">${stoolIcon(x.v)}<small>${x.l}</small></button>`).join('')}</div></div>
+  ${walkSection(day)}
   <div class="card lsec"><div class="sec-h"><span>Auffälligkeiten</span><button class="btn plain small" data-a="optEdit" data-k="symptom">Bearbeiten</button></div>
     <div class="chips">${chipsOf('symptom')}</div>
     <div class="muted small" style="margin-top:10px">${f.symptoms.length?`${f.symptoms.length} ausgewählt`:'Nichts auffällig? Super – einfach leer lassen ✨'}</div></div>
@@ -818,22 +877,222 @@ function vLog(){
   ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood), w=weatherOf(h.day), a=APPETITE.find(x=>x.v===h.appetite);
     const syms=(h.symptoms||[]).map(s=>optIcon('symptom',s)||'•').join('');
     return `<button class="li hist" data-a="openLog" data-day="${h.day}"><span class="hm">${m?moodFace(m.v):'·'}</span>
-    <span class="grow"><b>${dayLabel(h.day)}</b>${w?` <span class="muted small">${wmo(w.code).i} ${Math.round(w.tmax)}°</span>`:''}
+    <span class="grow"><b>${dayLabel(h.day)}</b>${flagIcons(w,h.day)?` <span class="small">${flagIcons(w,h.day)}</span>`:''}
       <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${h.stool?`<span class="hb">💩 ${STOOL.find(x=>x.v===h.stool)?.l||''}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
 }
 document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true;const b=$('#savebtn');if(b&&b.classList.contains('saved')){b.classList.remove('saved');b.textContent='Änderungen speichern'}}});
 
-/* ====== Wetter Köln-Lövenich (Open-Meteo, ohne Schlüssel) ====== */
+
+
+/* ====== Dokumente (privater Speicher "dokumente") ====== */
+const DOC_CATS=['Befund','Rezept','Impfpass','Versicherung','Rechnung','Sonstiges'];
+function vDocs(){
+  const list=[...S.documents].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  const cats=[...new Set(list.map(d=>d.category||'Sonstiges'))];
+  return (list.length?cats.map(c=>`<div class="medsec"><h2>${esc(c)}</h2></div>`+list.filter(d=>(d.category||'Sonstiges')===c).map(d=>`<div class="card doc">
+      <button class="grow row" data-a="docOpen" data-id="${d.id}" style="text-align:left;min-width:0"><span class="dic">${/pdf/.test(d.mime)?'📕':'🖼️'}</span>
+        <span class="grow" style="min-width:0"><b class="ell" style="display:block">${esc(d.title||'Dokument')}</b><span class="muted small">${fmtD(dayOf(d.created_at))}${dayOf(d.created_at).slice(0,4)} · ${esc(d.author||'')}${d.size?' · '+Math.max(1,Math.round(d.size/1024))+' KB':''}</span></span></button>
+      <button class="btn plain" data-a="docDel" data-id="${d.id}" aria-label="Löschen">✕</button></div>`).join('')).join('')
+    :'<div class="card empty">Noch keine Dokumente.<br>Tierarzt-Briefe, Impfpass, Befunde – als Foto oder PDF.</div>');
+}
+async function docUrl(d){
+  if(DEMO) return d.demoUrl||null;
+  const {data,error}=await sb.storage.from('dokumente').createSignedUrl(d.path,600); if(error) throw error; return data.signedUrl;
+}
+
+/* ====== Notfall-Karte ====== */
+const NOTFALL_FIELDS=[
+  ['Über Ellie',[['name','Name'],['rasse','Rasse / Geschlecht'],['geburt','Geboren'],['gewicht','Gewicht'],['chip','Chipnummer'],['besonders','Besonderheiten','area']]],
+  ['Tierärzte',[['ta_name','Haustierarzt'],['ta_tel','Telefon Haustierarzt','tel'],['nd_name','Tierklinik / Notdienst'],['nd_tel','Telefon Notdienst','tel'],['feist','Verhaltenstierärztin'],['feistTel','Telefon Verhaltenstierärztin','tel'],['feistMail','E-Mail Verhaltenstierärztin']]],
+  ['Versicherung & Kontakte',[['vers','Versicherung'],['versNr','Versicherungsnummer'],['k1','Kontakt 1 (Name)'],['k1tel','Telefon Kontakt 1','tel'],['k2','Kontakt 2 (Name)'],['k2tel','Telefon Kontakt 2','tel']]],
+];
+const NOTFALL_DEFAULT={name:'Ellie',rasse:'Aussie-Doodle-Mix, Hündin',geburt:'04.08.2022',gewicht:'14,3 kg (Stand 28.09.2026)',
+  feist:'Dr. med. vet. Andrea Feist (ALPINVET, Frutigen CH)',feistTel:'+41 33 671 15 60',feistMail:'alpinvet@bluewin.ch'};
+function notfallData(){return {...NOTFALL_DEFAULT,...(S.info.find(i=>i.id==='notfall')?.data||{})}}
+function notfallText(){
+  const d=notfallData(), L=[`🆘 NOTFALL-KARTE ${d.name||DOG}`];
+  NOTFALL_FIELDS.forEach(([sec,fs])=>{const rows=fs.filter(([k])=>d[k]).map(([k,l])=>`${l}: ${d[k]}`); if(rows.length) L.push('',sec.toUpperCase(),...rows)});
+  const meds=S.meds.filter(m=>m.active!==false);
+  if(meds.length) L.push('','MEDIKAMENTE',...meds.map(m=>`${m.name}: ${m.kind==='bedarf'?'nur bei Bedarf'+(m.dose?' ('+m.dose+')':''):(sollOf(m,today())||m.dose||'')+' täglich'}`));
+  return L.join('\n');
+}
+
+/* ====== Verlauf (kleine Diagramme mit gemeinsamer Zeitachse) ====== */
+function dayStats(day){
+  const lg=S.daily_log.find(l=>l.day===day);
+  const bs=S.barks.filter(b=>dayOf(b.created_at)===day), ws=S.walks.filter(w=>w.day===day);
+  return {day,lg,mood:lg?.mood||null,appetite:lg?.appetite??null,stool:lg?.stool??null,barks:bs.length,bs,
+    walk:ws.reduce((a,w)=>a+(+w.minutes||0),0),ws,symptoms:lg?.symptoms||[],w:weatherOf(day)};
+}
+function doseMarkers(from,to){
+  const out=[];
+  S.meds.filter(m=>m.kind==='taper'&&m.taper?.start&&m.taper.steps).forEach(m=>{
+    let acc=0; const st=m.taper.start, short=m.name.length>6?m.name.slice(0,5)+'.':m.name;
+    m.taper.steps.forEach(s=>{const d=addDays(st,acc); if(d>=from&&d<=to) out.push({day:d,label:`${short} ${fmtMg(s.mg)}`,med:m.name}); if(s.days!=null) acc+=s.days});
+    if(!m.taper.steps.some(s=>s.days==null)){const e=addDays(st,acc); if(e>=from&&e<=to) out.push({day:e,label:`${short} 0 mg`,med:m.name})}
+  });
+  return out;
+}
+function medAdherence(from,to){
+  let exp=0,given=0,skipped=0;
+  const first=S.med_logs.reduce((m,l)=>!m||l.day<m?l.day:m,null); if(!first) return {exp,given,skipped};
+  if(first>from) from=first; if(from>to) return {exp,given,skipped};
+  const days=daysBetween(from,to)+1;
+  for(let i=0;i<days;i++){const d=addDays(from,i);
+    S.meds.filter(m=>m.active!==false&&m.kind!=='bedarf').forEach(m=>{
+      if(m.created_at&&d<dayOf(m.created_at)) return;
+      if(sollOf(m,d)==null) return;
+      exp+=Math.max(1,slotsOf(m).length);
+      S.med_logs.filter(l=>l.med_id===m.id&&l.day===d).forEach(l=>l.skipped?skipped++:given++);
+    })}
+  return {exp,given,skipped};
+}
+function periodStats(from,to){
+  const n=daysBetween(from,to)+1, D=[...Array(n)].map((_,i)=>dayStats(addDays(from,i)));
+  const logged=D.filter(x=>x.lg), moods=D.filter(x=>x.mood).map(x=>x.mood);
+  const avg=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:null;
+  const cnt=(arr,f)=>arr.filter(f).length;
+  return {n,D,logged:logged.length,moodAvg:avg(moods),moodN:moods.length,
+    barksPerDay:D.reduce((s,x)=>s+x.barks,0)/n, walkPerDay:D.reduce((s,x)=>s+x.walk,0)/n,
+    apN:cnt(D,x=>x.appetite!=null), apAll:cnt(D,x=>x.appetite===3), apHalf:cnt(D,x=>x.appetite===2), apLow:cnt(D,x=>x.appetite!=null&&x.appetite<=1),
+    stN:cnt(D,x=>x.stool!=null), stNorm:cnt(D,x=>x.stool===2), stSoft:cnt(D,x=>x.stool===3), stBad:cnt(D,x=>x.stool>=4), stHard:cnt(D,x=>x.stool===1),
+    calm:avg(D.flatMap(x=>x.ws.map(w=>w.calm).filter(Boolean)))};
+}
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const de1=x=>x==null?'–':x.toLocaleString('de-DE',{maximumFractionDigits:1,minimumFractionDigits:1});
+function trendChart(from,n){
+  const W=358, X0=6, X1=W-6, cw=(X1-X0)/n, days=[...Array(n)].map((_,i)=>dayStats(addDays(from,i)));
+  const cx=i=>X0+cw*i+cw/2, bw=Math.max(2,cw-2), r=Math.min(3,bw/2);
+  const rows=[{k:'mood',t:'Stimmung',h:52},{k:'appetite',t:'Appetit',h:40},{k:'stool',t:'Kot',h:44},{k:'barks',t:'Bellen',h:44},{k:'walk',t:'Gassi (Min.)',h:40}];
+  let y=34, svg='', TOP=30;
+  const sel=ui.trendDay;
+  // Spalten-Hervorhebung
+  const H=TOP+rows.reduce((s,r)=>s+r.h+20,0)+6;
+  days.forEach((d,i)=>{ if(d.day===sel) svg+=`<rect x="${X0+cw*i}" y="0" width="${cw}" height="${H}" rx="4" class="tc-sel"/>`; });
+  // Marker: Dosiswechsel + Unwetter
+  doseMarkers(from,addDays(from,n-1)).forEach(m=>{const i=daysBetween(from,m.day);
+    svg+=`<line x1="${X0+cw*i}" x2="${X0+cw*i}" y1="14" y2="${H}" class="tc-dose"/><text x="${X0+cw*i+2}" y="11" class="tc-dl">💊</text>`});
+  days.forEach((d,i)=>{const f=weatherFlags(d.w,d.day).filter(x=>x.lvl==='red'); if(f.length) svg+=`<text x="${cx(i)}" y="26" text-anchor="middle" class="tc-wx">${f[0].i}</text>`});
+  rows.forEach(row=>{
+    const y0=y+16, y1=y0+row.h; svg+=`<text x="${X0}" y="${y0-5}" class="tc-t">${row.t}</text><line x1="${X0}" x2="${X1}" y1="${y1}" y2="${y1}" class="tc-base"/>`;
+    if(row.k==='mood'){
+      const Y=v=>y1-4-(v-1)/4*(row.h-10); let path='';
+      days.forEach((d,i)=>{ if(d.mood){ const prev=i>0&&days[i-1].mood; path+=`${prev?'L':'M'}${cx(i).toFixed(1)} ${Y(d.mood).toFixed(1)}`; } });
+      svg+=`<line x1="${X0}" x2="${X1}" y1="${Y(3)}" y2="${Y(3)}" class="tc-grid"/><path d="${path}" class="tc-line"/>`;
+      days.forEach((d,i)=>{ if(d.mood) svg+=`<circle cx="${cx(i)}" cy="${Y(d.mood)}" r="4" class="tc-dot"/>`; });
+      svg+=`<text x="${X1}" y="${y0+4}" text-anchor="end" class="tc-ax">super</text><text x="${X1}" y="${y1-2}" text-anchor="end" class="tc-ax">schlecht</text>`;
+    } else if(row.k==='stool'){
+      const Y=v=>y0+4+(v-1)/4*(row.h-10);
+      days.forEach((d,i)=>{ if(d.stool) svg+=`<circle cx="${cx(i)}" cy="${Y(d.stool)}" r="4" class="tc-st s${d.stool===2?'ok':d.stool===3?'warn':'bad'}"/>`; });
+      svg+=`<text x="${X1}" y="${y0+4}" text-anchor="end" class="tc-ax">hart</text><text x="${X1}" y="${y1-2}" text-anchor="end" class="tc-ax">flüssig</text>`;
+    } else {
+      const vals=days.map(d=>row.k==='appetite'?d.appetite:d[row.k]), max=row.k==='appetite'?3:Math.max(1,...vals.map(v=>v||0));
+      days.forEach((d,i)=>{const v=vals[i]; if(v==null) return;
+        if(row.k==='appetite'&&v===0){svg+=`<rect x="${cx(i)-bw/2}" y="${y1-3}" width="${bw}" height="3" rx="1.5" class="tc-bad"/>`;return}
+        if(!v) return; const h=Math.max(2,v/max*(row.h-6));
+        svg+=`<rect x="${(cx(i)-bw/2).toFixed(1)}" y="${(y1-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${r}" class="${row.k==='appetite'&&v===1?'tc-bad':'tc-bar'}"/>`});
+      if(row.k!=='appetite') svg+=`<text x="${X1}" y="${y0+4}" text-anchor="end" class="tc-ax">max ${max}</text>`;
+      else svg+=`<text x="${X1}" y="${y0+4}" text-anchor="end" class="tc-ax">alles</text>`;
+    }
+    y=y1+4;
+  });
+  // Datumsachse
+  const step=n<=14?2:n<=28?7:14; let ax='';
+  days.forEach((d,i)=>{ if((n-1-i)%step===0) ax+=`<text x="${cx(i)}" y="${H+12}" text-anchor="middle" class="tc-ax">${fmtD(d.day).slice(0,6)}</text>`; });
+  // Tipp-Flächen
+  let hit=''; days.forEach((d,i)=>{hit+=`<rect x="${X0+cw*i}" y="0" width="${cw}" height="${H}" fill="transparent" data-a="trendDay" data-day="${d.day}"/>`});
+  return `<svg viewBox="0 0 ${W} ${H+16}" class="tchart" role="img" aria-label="Verlauf der letzten ${n} Tage">${svg}${ax}${hit}</svg>`;
+}
+function trendDetail(day){
+  const d=dayStats(day), m=MOODS.find(x=>x.v===d.mood), a=APPETITE.find(x=>x.v===d.appetite), st=STOOL.find(x=>x.v===d.stool);
+  const ad=medAdherence(day,day), dm=doseMarkers(day,day), fl=weatherFlags(d.w,day);
+  const reasons=[...new Set(d.bs.map(b=>reasonOf(b.reason).label))];
+  const row=(k,v)=>`<div class="td-r"><span>${k}</span><b>${v}</b></div>`;
+  return `<div class="card tdet"><div class="row"><b class="grow">${apptWhen({day})}</b>${m?`<span class="mfbig">${moodFace(m.v)}</span>`:''}</div>
+    ${row('Stimmung',m?m.l:'–')}${row('Appetit',a?a.l:'–')}${row('Kot',st?st.l:'–')}
+    ${row('Bellen',d.barks?d.barks+'×'+(reasons.length?' · '+esc(reasons.join(', ')):''):'–')}
+    ${row('Gassi',d.ws.length?`${d.walk} Min. (${d.ws.length}×)`:'–')}
+    ${row('Medis',ad.exp?`${ad.given}/${ad.exp} gegeben${ad.skipped?` · ${ad.skipped}× ausgelassen`:''}`:'–')}
+    ${dm.length?row('Dosiswechsel',esc(dm.map(x=>x.label).join(', '))):''}
+    ${d.symptoms.length?row('Auffällig',esc(d.symptoms.join(', '))):''}
+    ${fl.length?row('Wetter',esc(fl.map(f=>f.i+' '+f.t).join(' · '))):''}
+    ${d.lg?.text?`<div class="small" style="margin-top:8px">${esc(d.lg.text)}</div>`:''}</div>`;
+}
+function vTrend(){
+  const n=ui.trendN||28, to=today(), from=addDays(to,-(n-1));
+  const P=periodStats(from,to), Q=periodStats(addDays(from,-n),addDays(from,-1));
+  const delta=(a,b,inv)=>{if(b==null||!b||a==null)return'';const c=Math.round((a-b)/b*100);if(!c)return'<span class="muted">±0 %</span>';const good=inv?c<0:c>0;return `<span class="${good?'dg':'db'}">${c>0?'+':''}${c} %</span>`};
+  const tile=(lbl,val,sub)=>`<div class="ttile"><div class="lbl">${lbl}</div><div class="v">${val}</div><div class="s">${sub||'&nbsp;'}</div></div>`;
+  const mAvg=P.moodAvg;
+  return `<div class="chips" style="margin-bottom:12px">${[14,28,56].map(k=>`<button class="chip ${n===k?'on':''}" data-a="trendN" data-n="${k}">${k} Tage</button>`).join('')}</div>
+  <div class="ttiles">
+    ${tile('Stimmung Ø',mAvg?`${de1(mAvg)}<small>/5</small>`:'–',mAvg?delta(mAvg,Q.moodAvg):'')}
+    ${tile('Bellen / Tag',de1(P.barksPerDay),delta(P.barksPerDay,Q.barksPerDay,true))}
+    ${tile('Gassi / Tag',Math.round(P.walkPerDay)+'<small> Min.</small>',delta(P.walkPerDay,Q.walkPerDay))}
+    ${tile('Alles gefressen',P.apN?pct(P.apAll,P.apN)+'<small> %</small>':'–',P.apN?`an ${P.apAll} von ${P.apN} Tagen`:'')}
+    ${tile('Kot normal',P.stN?pct(P.stNorm,P.stN)+'<small> %</small>':'–',P.stN?`an ${P.stNorm} von ${P.stN} Tagen`:'')}
+    ${tile('Protokolliert',`${P.logged}<small>/${n}</small>`,'Tage')}
+  </div>
+  <div class="card" style="padding:12px 10px 6px">${trendChart(from,n)}
+    <div class="tleg"><span><i class="lg-dose"></i>Dosiswechsel</span><span>⛈️ Unwetter</span><span><i class="lg-ok"></i>normal</span><span><i class="lg-warn"></i>weich</span><span><i class="lg-bad"></i>auffällig</span></div></div>
+  ${ui.trendDay&&ui.trendDay>=from?trendDetail(ui.trendDay):'<div class="muted small" style="text-align:center;margin:-2px 0 12px">Tipp auf einen Tag für Details</div>'}
+  <button class="btn block" data-a="vetReport" style="margin-top:4px">✉️ Tierarzt-Update erstellen</button>`;
+}
+/* ====== Tierarzt-Update ====== */
+function vetReport(n){
+  const to=today(), from=addDays(to,-(n-1)), P=periodStats(from,to), Q=periodStats(addDays(from,-n),addDays(from,-1));
+  const L=[]; const dd=x=>fmtD(x)+x.slice(0,4);
+  L.push(`Liebe Frau Dr. Feist,`,'',`hier ein Update zu ${DOG} für den Zeitraum ${dd(from)} bis ${dd(to)} (${n} Tage):`,'','MEDIKATION');
+  S.meds.filter(m=>m.active!==false&&m.kind!=='bedarf').forEach(m=>{
+    if(m.kind==='taper'){const ti=taperInfo(m,to);
+      if(ti?.done) L.push(`- ${m.name}: ausgeschlichen seit ${dd(ti.endDay)}`);
+      else if(ti?.step){let t=`- ${m.name}: aktuell ${fmtMg(ti.step.mg)}/Tag`;
+        if(!ti.before&&!ti.permanent) t+=` (Stufe ${ti.i+1} von ${ti.total}, Tag ${ti.dayInStep} von ${ti.step.days})`;
+        if(ti.nextStart) t+=`. Nächste Stufe ab ${dd(ti.nextStart)}: ${ti.next?fmtMg(ti.next.mg):'0 mg'}`;
+        L.push(t)}
+      doseMarkers(from,to).filter(x=>x.med===m.name&&x.day>from).forEach(x=>L.push(`  · Reduziert am ${dd(x.day)} auf ${x.label.split(' ').slice(1).join(' ')}`));
+    } else L.push(`- ${m.name}: ${m.dose||'–'}${slotsOf(m).length>1?' ('+slotsOf(m).map(slotLabel).join(', ')+')':' täglich'}`);
+  });
+  const ad=medAdherence(from,to);
+  if(ad.exp) L.push(`- Gaben: ${ad.given} von ${ad.exp} eingetragen${ad.skipped?`, ${ad.skipped}× ausgelassen`:''}`);
+  S.meds.filter(m=>m.kind==='bedarf').forEach(m=>{const ls=S.med_logs.filter(l=>l.med_id===m.id&&l.day>=from&&l.day<=to&&!l.skipped);
+    L.push(`- ${m.name} (bei Bedarf): ${ls.length?ls.length+'× gegeben ('+ls.map(l=>fmtD(l.day)+' '+l.amount).join(', ')+')':'nicht gegeben'}`)});
+  L.push('',`VERHALTEN & BEFINDEN (an ${P.logged} von ${n} Tagen protokolliert)`);
+  if(P.moodN){const good=P.D.filter(x=>x.mood>=4).length, bad=P.D.filter(x=>x.mood&&x.mood<=2).length;
+    L.push(`- Stimmung: Ø ${de1(P.moodAvg)} von 5 (gut/super an ${good} Tagen, schlecht/naja an ${bad} Tagen)${Q.moodAvg?`; Zeitraum davor Ø ${de1(Q.moodAvg)}`:''}`)}
+  if(P.apN) L.push(`- Appetit: alles gefressen an ${P.apAll} Tagen, halb an ${P.apHalf}, kaum/nichts an ${P.apLow}`);
+  if(P.stN) L.push(`- Kot: normal an ${P.stNorm} Tagen, weich an ${P.stSoft}, breiig/flüssig an ${P.stBad}${P.stHard?`, hart an ${P.stHard}`:''}`);
+  const bt=P.D.reduce((s,x)=>s+x.barks,0);
+  if(bt||Q.barksPerDay){const rs={};P.D.forEach(x=>x.bs.forEach(b=>{const l=reasonOf(b.reason).label;rs[l]=(rs[l]||0)+1}));
+    const top=Object.entries(rs).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k,v])=>`${k} (${v}×)`).join(', ');
+    L.push(`- Bellen: Ø ${de1(P.barksPerDay)}× pro Tag${Q.barksPerDay?` (Zeitraum davor Ø ${de1(Q.barksPerDay)}×)`:''}${top?`; häufigste Auslöser: ${top}`:''}`)}
+  if(P.walkPerDay) L.push(`- Spaziergänge: Ø ${Math.round(P.walkPerDay)} Min. pro Tag${P.calm?`, Entspannung unterwegs Ø ${de1(P.calm)} von 5`:''}`);
+  const sy={}; P.D.forEach(x=>x.symptoms.forEach(s=>sy[s]=(sy[s]||0)+1));
+  L.push(`- Auffälligkeiten: ${Object.keys(sy).length?Object.entries(sy).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} (${v} Tag${v>1?'e':''})`).join(', '):'keine eingetragen'}`);
+  const ev=P.D.map(x=>({d:x.day,f:weatherFlags(x.w,x.day).filter(f=>f.lvl==='red')})).filter(x=>x.f.length);
+  const notes=P.D.filter(x=>x.lg?.text).slice(-6);
+  if(ev.length||notes.length){L.push('','BESONDERE TAGE');
+    [...ev.map(x=>({d:x.d,t:x.f.map(f=>f.t).join(', ')})),...notes.map(x=>({d:x.day,t:x.lg.text.replace(/\s+/g,' ').slice(0,160)}))]
+      .sort((a,b)=>a.d.localeCompare(b.d)).forEach(x=>L.push(`- ${fmtD(x.d)} ${x.t}`))}
+  L.push('','Viele Grüße',me.name||'');
+  return L.join('\n');
+}
+
+/* ====== Wetter Köln-Lövenich (Open-Meteo, ohne Schlüssel) – Fokus: Gewitter, Sturm, Starkregen ====== */
 const LOC={lat:50.947,lon:6.832,name:'Lövenich'};
-const EVENTS={'12-31':'🎆 Silvester','01-01':'🎆 Neujahr','11-11':'🎉 Karnevalsauftakt'};
+const EVENTS={'12-31':'Silvester','01-01':'Neujahr','11-11':'Karnevalsauftakt'};
 S.weather={}; let weatherAt=0;
 async function loadWeather(){
   if(Date.now()-weatherAt<36e5) return; weatherAt=Date.now();
   try{
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LOC.lat}&longitude=${LOC.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&timezone=Europe%2FBerlin&past_days=92&forecast_days=2`);
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LOC.lat}&longitude=${LOC.lon}&hourly=weather_code,precipitation,wind_gusts_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&timezone=Europe%2FBerlin&past_days=92&forecast_days=3`);
     if(!r.ok) throw new Error(r.status);
-    const d=(await r.json()).daily;
-    d.time.forEach((t,i)=>S.weather[t]={code:d.weather_code[i],tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],rain:d.precipitation_sum[i],gust:d.wind_gusts_10m_max[i]});
+    const j=await r.json(), d=j.daily, h=j.hourly||{time:[]};
+    d.time.forEach((t,i)=>S.weather[t]={code:d.weather_code[i],tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],rain:d.precipitation_sum[i],gust:d.wind_gusts_10m_max[i],thunder:[],rainMax:0,rainH:null,gustH:null});
+    h.time.forEach((t,i)=>{const day=t.slice(0,10), hr=+t.slice(11,13), w=S.weather[day]; if(!w) return;
+      if(h.weather_code[i]>=95) w.thunder.push(hr);
+      const p=h.precipitation[i]||0; if(p>w.rainMax){w.rainMax=p;w.rainH=hr}
+      const g=h.wind_gusts_10m[i]||0; if(g>=(w.gustMaxH||0)){w.gustMaxH=g;w.gustH=hr}});
     render(true);
   }catch(e){weatherAt=0;console.warn('Wetter',e)}
 }
@@ -851,25 +1110,39 @@ function wmo(c){
   return {i:'⛈️',l:'Gewitter',t:'storm'};
 }
 function weatherOf(day){return S.weather[day]||S.daily_log.find(l=>l.day===day)?.weather||null}
+const hrs=a=>{if(!a||!a.length)return'';const f=Math.min(...a),l=Math.max(...a);return f===l?`gegen ${f} Uhr`:`${f}–${l+1} Uhr`};
+/* Unwetter-Ereignisse eines Tages: {k,i,t,lvl} – lvl 'red' = relevant für ein ängstliches Tier */
 function weatherFlags(w,day){
-  const f=[]; if(EVENTS[day.slice(5)]) f.push(EVENTS[day.slice(5)]);
+  const f=[]; if(EVENTS[day.slice(5)]) f.push({k:'event',i:'🎆',t:EVENTS[day.slice(5)]+' (Feuerwerk/Lärm)',lvl:'red'});
   if(!w) return f;
-  if(w.code>=95) f.push('⛈️ Gewitter');
-  if(w.gust>=62) f.push('💨 Sturmböen'); else if(w.gust>=45) f.push('🌬️ Windig');
-  if(w.rain>=10) f.push('🌧️ Starkregen');
-  if(w.tmax>=28) f.push('🥵 Hitze');
-  if(w.tmin<=-3) f.push('🥶 Frost');
+  const th=w.thunder&&w.thunder.length?w.thunder:(w.code>=95?[]:null);
+  if(th) f.push({k:'thunder',i:'⛈️',t:'Gewitter'+(th.length?' '+hrs(th):''),lvl:'red'});
+  const g=Math.round(w.gust||0), gh=w.gustH!=null?` (gegen ${w.gustH} Uhr)`:'';
+  if(g>=75) f.push({k:'wind',i:'🌪️',t:`Schwere Sturmböen bis ${g} km/h${gh}`,lvl:'red'});
+  else if(g>=62) f.push({k:'wind',i:'💨',t:`Sturmböen bis ${g} km/h${gh}`,lvl:'red'});
+  else if(g>=50) f.push({k:'wind',i:'🌬️',t:`Starker Wind, Böen bis ${g} km/h${gh}`,lvl:'warn'});
+  const rm=w.rainMax||0;
+  if(rm>=10) f.push({k:'rain',i:'🌧️',t:`Starkregen: ${n1(rm)} mm/h gegen ${w.rainH} Uhr`,lvl:'red'});
+  else if(rm>=5||(w.rain||0)>=20) f.push({k:'rain',i:'🌧️',t:`Kräftiger Regen: ${n1(w.rain)} mm am Tag`,lvl:'warn'});
   return f;
 }
+const flagIcons=(w,day)=>weatherFlags(w,day).map(x=>x.i).join('');
 const n1=x=>Number(x||0).toLocaleString('de-DE',{maximumFractionDigits:1});
 function weatherCard(day){
   const w=weatherOf(day), fl=weatherFlags(w,day);
-  if(!w) return `<div class="wx wx-none">📍 ${LOC.name} · ${daysBetween(day,today())>90?'Kein Wetter für diesen Tag':'Wetter wird geladen …'}${fl.length?' · '+fl.join(' · '):''}</div>`;
-  const x=wmo(w.code);
-  return `<div class="wx wx-${x.t}"><div class="wx-ic">${x.i}</div>
-    <div class="grow"><div class="wx-t">${Math.round(w.tmax)}°<span> / ${Math.round(w.tmin)}°</span></div><div class="wx-l">${x.l} · 📍 ${LOC.name}</div></div>
-    <div class="wx-side"><div>💧 ${n1(w.rain)} mm</div><div>💨 ${Math.round(w.gust||0)} km/h</div></div>
-    ${fl.length?`<div class="wx-flags">${fl.map(t=>`<span>${t}</span>`).join('')}</div>`:''}</div>`;
+  if(!w&&!fl.length) return `<div class="wx2 calm"><span class="wi">📍</span><span class="grow muted small">${daysBetween(day,today())>90?'Kein Wetter für diesen Tag':'Wetter Lövenich wird geladen …'}</span></div>`;
+  const x=wmo(w?.code), temp=w?`${Math.round(w.tmax)}° / ${Math.round(w.tmin)}°`:'';
+  if(!fl.length) return `<div class="wx2 calm"><span class="wi">${x.i}</span><span class="grow"><b>Ruhiges Wetter</b><span class="muted small"> · kein Gewitter, Sturm oder Starkregen</span></span><span class="muted small">${temp}</span></div>`;
+  const red=fl.some(f=>f.lvl==='red');
+  return `<div class="wx2 ${red?'red':'warn'}"><div class="row"><b class="grow">${red?'⚠️ Unwetter in Lövenich':'Wetter-Hinweis Lövenich'}</b><span class="muted small">${x.i} ${temp}</span></div>
+    ${fl.map(f=>`<div class="wf ${f.lvl}"><span class="wi">${f.i}</span><span>${esc(f.t)}</span></div>`).join('')}</div>`;
+}
+/* Vorwarnung: Unwetter heute oder morgen (für die Startseite) */
+function weatherWarnings(){
+  const out=[];
+  [today(),addDays(today(),1)].forEach((d,i)=>{const fl=weatherFlags(S.weather[d],d).filter(f=>f.lvl==='red');
+    if(fl.length) out.push({c:'red',i:fl[0].i,t:`${i?'Morgen':'Heute'}: ${fl.map(f=>f.t.split(' (')[0].replace(/ \d.*$/,'')).join(', ')}`,s:fl.map(f=>f.t).join(' · '),go:'data-go="log"'})});
+  return out;
 }
 
 /* ====== Tablettenvorrat ====== */
@@ -911,7 +1184,7 @@ function stockText(s,st){
 }
 function lowStock(){return S.stock.map(s=>({s,st:stockStatus(s)})).filter(x=>x.st.lvl==='red')}
 function todayCard(){
-  const rows=[...alerts().map(a=>({c:'red',i:'⚠️',t:a,s:'2 Tage in Folge – ggf. Tierärztin informieren',go:'data-go="log"'})),
+  const rows=[...weatherWarnings(),...alerts().map(a=>({c:'red',i:'⚠️',t:a,s:'2 Tage in Folge – ggf. Tierärztin informieren',go:'data-go="log"'})),
     ...lowStock().map(({s,st})=>({c:'warn',i:'📦',t:`${st.m?.name||'?'} · ${s.label}`,s:stockText(s,st),go:'data-a="stock"'})),
     ...S.appointments.filter(a=>{const n=daysBetween(today(),a.day);return n>=0&&n<=1}).sort((a,b)=>(a.day+(a.time||'99')).localeCompare(b.day+(b.time||'99'))).map(a=>({c:'info',i:'📅',t:a.title,s:apptWhen(a)+(a.place?' · '+a.place:''),go:'data-a="openAppt" data-id="'+a.id+'"'}))];
   if(!rows.length) return '';
@@ -963,8 +1236,8 @@ function linkRow(l){
 }
 function vNotes(){
   const t=ui.notesTab||'notes';
-  const seg=`<div class="seg">${[['notes','📝 Notizen'],['appts','📅 Termine'],['links','🔗 Links']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="notesTab" data-k="${k}">${l}</button>`).join('')}</div>`;
-  const add={notes:'noteEdit',appts:'apptEdit',links:'linkEdit'}[t];
+  const seg=`<div class="seg">${[['notes','📝 Notizen'],['appts','📅 Termine'],['links','🔗 Links'],['docs','📄 Doks']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="notesTab" data-k="${k}">${l}</button>`).join('')}</div>`;
+  const add={notes:'noteEdit',appts:'apptEdit',links:'linkEdit',docs:'docNew'}[t];
   let body='';
   if(t==='notes'){
     const list=[...S.notes].sort((a,b)=>(b.pinned-a.pinned)||(b.updated_at||b.created_at).localeCompare(a.updated_at||a.created_at));
@@ -978,6 +1251,8 @@ function vNotes(){
     const up=sorted.filter(a=>a.day>=td), past=sorted.filter(a=>a.day<td).reverse();
     body=(up.length?up.map(a=>apptRow(a,false)).join(''):'<div class="card empty">Keine anstehenden Termine 🎉</div>')
       +(past.length?`<button class="medsec" data-a="togglePast" style="width:100%"><h2>Vergangen (${past.length})</h2><span class="muted small">${ui.showPast?'ausblenden ⌃':'anzeigen ⌄'}</span></button>${ui.showPast?past.map(a=>apptRow(a,true)).join(''):''}`:'');
+  } else if(t==='docs'){
+    body=vDocs();
   } else {
     body=wuffCard()+`<div class="medsec"><h2>Linksammlung</h2></div>`
       +(S.links.length?[...S.links].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))).map(linkRow).join(''):'<div class="card empty">Noch keine Links.<br>Z. B. Tierarzt, Futter-Shop, Trainingsvideos …</div>');
@@ -1239,15 +1514,15 @@ const ACT = {
   async exportXlsx(){
     const sh=openSheet(`<h3>Excel-Export</h3><div class="muted" id="xs">Wird erstellt …</div>`);
     try{
-      if(!window.XLSX) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+      if(!window.XLSX?.style_version){try{await loadScript('https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js')}catch(e){await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js')}}
       let mlogs=S.med_logs, barks=S.barks;
       if(!DEMO){ // alles holen, nicht nur die letzten 60 Tage
         const [a,b]=await Promise.all([sb.from('med_logs').select('*').order('created_at'),sb.from('barks').select('*').order('created_at')]);
         if(a.error||b.error) throw a.error||b.error;
         mlogs=a.data; barks=b.data;
       }
-      const {file,stats}=buildExport(S.daily_log,S.meds,mlogs,barks);
-      sh.querySelector('#xs').innerHTML=`${stats.days} Tage · ${stats.logs} Protokolle · ${stats.meds} Medi-Einträge · ${stats.barks}× gebellt
+      const {file,stats}=buildExport(S.daily_log,S.meds,mlogs,barks,S.walks,S.appointments);
+      sh.querySelector('#xs').innerHTML=`${stats.days} Tage · ${stats.logs} Protokolle · ${stats.meds} Medi-Einträge · ${stats.walks} Gassi-Runden · ${stats.barks}× gebellt<div class="muted small" style="margin-top:6px">6 Blätter: Übersicht, Protokoll, Medikamente, Gassi, Bellistima, Termine</div>
         <button class="btn block" id="xsh" style="margin-top:16px">Teilen / In Dateien sichern</button>`;
       sh.querySelector('#xsh').onclick=async()=>{
         if(navigator.canShare&&navigator.canShare({files:[file]})){
@@ -1260,6 +1535,122 @@ const ACT = {
   },
   openLog(d){ui.logDay=d.day;ui.logForm=null;ui.logDirty=false;render();window.scrollTo(0,0)},
   openAppt(d){go('notes');ui.notesTab='appts';render();ACT.apptEdit(d)},
+  docNew(){
+    let cat='Befund';
+    openSheet(`<h3>Neues Dokument</h3>
+      <label class="f">Titel</label><input type="text" id="dt" placeholder="z. B. Behandlungsempfehlung Dr. Feist">
+      <label class="f">Kategorie</label><div class="chips" id="dc">${DOC_CATS.map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${c}">${c}</button>`).join('')}</div>
+      <label class="btn block" style="display:block;text-align:center;margin-top:16px">📎 Foto oder PDF auswählen<input type="file" id="df" accept="image/*,application/pdf" hidden></label>
+      <div id="ds" class="muted small" style="text-align:center;margin-top:8px"></div>`, sh=>{
+      const q=x=>sh.querySelector(x);
+      q('#dc').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;q('#dc').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b))});
+      q('#df').onchange=async e=>{
+        const f=e.target.files[0]; if(!f) return;
+        if(f.size>20*1024*1024){toast('Datei ist zu groß (max. 20 MB)');return}
+        q('#ds').textContent='Wird hochgeladen …';
+        try{
+          const isPdf=/pdf/.test(f.type)||/\.pdf$/i.test(f.name);
+          const blob=isPdf?f:await shrink(f,2400);
+          const ext=isPdf?'pdf':'jpg', path=`${Date.now()}-${Math.random().toString(36).slice(2,7)}.${ext}`;
+          const title=q('#dt').value.trim()||f.name.replace(/\.[^.]+$/,'');
+          if(DEMO){await ins('documents',{title,category:cat,path,mime:isPdf?'application/pdf':'image/jpeg',size:blob.size,demoUrl:URL.createObjectURL(blob)})}
+          else{
+            const {error}=await sb.storage.from('dokumente').upload(path,blob,{contentType:isPdf?'application/pdf':'image/jpeg'}); if(error) throw error;
+            const r=await ins('documents',{title,category:cat,path,mime:isPdf?'application/pdf':'image/jpeg',size:blob.size}); if(!r) throw new Error('db');
+          }
+          closeSheet(); toast('Dokument gespeichert 📄');
+        }catch(err){console.error(err);q('#ds').textContent='Hochladen fehlgeschlagen – SQL-Update schon ausgeführt?'}
+      };
+    });
+  },
+  async docOpen(d){
+    const doc=S.documents.find(x=>x.id===d.id); if(!doc) return;
+    const w=window.open('','_blank');
+    try{const u=await docUrl(doc); if(w) w.location=u; else location.href=u}catch(e){if(w)w.close();toast('Öffnen fehlgeschlagen')}
+  },
+  async docDel(d){
+    const doc=S.documents.find(x=>x.id===d.id); if(!doc||!confirm(`„${doc.title}“ löschen?`)) return;
+    if(!DEMO) await sb.storage.from('dokumente').remove([doc.path]);
+    await del('documents',doc.id);
+  },
+  notfall(){
+    const d=notfallData();
+    const val=(k,t)=>t==='tel'?`<a href="tel:${esc(d[k].replace(/[^\d+]/g,''))}">${esc(d[k])}</a>`:esc(d[k]).replace(/\n/g,'<br>');
+    const meds=S.meds.filter(m=>m.active!==false);
+    openSheet(`<div class="nf-h"><span>🆘</span><div><h3 style="margin:0">Notfall-Karte</h3><div class="muted small">Alles Wichtige für Tierarzt, Hundesitter & Wuffotel</div></div></div>
+      ${NOTFALL_FIELDS.map(([sec,fs])=>{const rows=fs.filter(([k])=>d[k]);return rows.length?`<div class="nf-sec">${sec}</div>${rows.map(([k,l,t])=>`<div class="nf-r"><span>${l}</span><b>${val(k,t)}</b></div>`).join('')}`:''}).join('')}
+      ${meds.length?`<div class="nf-sec">Medikamente (heute)</div>${meds.map(m=>`<div class="nf-r"><span>${esc(m.name)}</span><b>${esc(m.kind==='bedarf'?'nur bei Bedarf'+(m.dose?' · '+m.dose:''):(sollOf(m,today())||m.dose||'–'))}</b></div>`).join('')}`:''}
+      <div class="actions" style="margin-top:16px"><button class="btn" id="nfs">📤 Teilen</button><button class="btn ghost" id="nfe">✏️ Bearbeiten</button></div>`, sh=>{
+      sh.querySelector('#nfe').onclick=()=>ACT.notfallEdit();
+      sh.querySelector('#nfs').onclick=async()=>{const t=notfallText();
+        if(navigator.share){try{await navigator.share({title:'Notfall-Karte '+DOG,text:t});return}catch(e){if(e.name==='AbortError')return}}
+        try{await navigator.clipboard.writeText(t);toast('Kopiert 📋')}catch(e){}};
+    });
+  },
+  notfallEdit(){
+    const d=notfallData();
+    openSheet(`<h3>Notfall-Karte bearbeiten</h3>
+      ${NOTFALL_FIELDS.map(([sec,fs])=>`<div class="nf-sec">${sec}</div>${fs.map(([k,l,t])=>`<label class="f">${l}</label>${t==='area'?`<textarea data-k="${k}" style="min-height:70px">${esc(d[k]||'')}</textarea>`:`<input type="${t==='tel'?'tel':'text'}" data-k="${k}" value="${esc(d[k]||'')}">`}`).join('')}`).join('')}
+      <div class="muted small" style="margin-top:10px">Medikamente kommen automatisch aus eurem Plan.</div>
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>`, sh=>{
+      sh.querySelector('#save').onclick=async()=>{
+        const data={}; sh.querySelectorAll('[data-k]').forEach(el=>data[el.dataset.k]=el.value.trim());
+        const ex=S.info.find(i=>i.id==='notfall');
+        if(DEMO){if(ex) ex.data=data; else S.info.push({id:'notfall',data})}
+        else{const {data:row,error}=await sb.from('info').upsert({id:'notfall',data,author:me.name,updated_at:new Date().toISOString()}).select().single();
+          if(error){console.error(error);toast('Speichern fehlgeschlagen – SQL-Update schon ausgeführt?');return} putLocal('info',row)}
+        toast('Notfall-Karte gespeichert 🆘'); ACT.notfall();
+      };
+    });
+  },
+  logView(d){ui.logView=d.k;render();window.scrollTo(0,0)},
+  trendN(d){ui.trendN=+d.n;render()},
+  trendDay(d){ui.trendDay=ui.trendDay===d.day?null:d.day;render()},
+  vetReport(){
+    let n=14;
+    const mail=(CFG.vetMail||(S.info.find(i=>i.id==='notfall')?.data?.feistMail)||'alpinvet@bluewin.ch');
+    openSheet(`<h3>✉️ Tierarzt-Update</h3><div class="muted small">Automatisch aus euren Einträgen erstellt – vor dem Senden kurz drüberlesen und ggf. ergänzen.</div>
+      <div class="chips" id="vn" style="margin:12px 0">${[14,21,28].map(k=>`<button class="chip ${k===n?'on':''}" data-vn="${k}">${k} Tage</button>`).join('')}</div>
+      <textarea id="vt" style="min-height:340px;font-size:14px;line-height:1.45">${esc(vetReport(n))}</textarea>
+      <div class="actions" style="margin-top:12px"><button class="btn" id="vm">✉️ Per Mail</button><button class="btn ghost" id="vc">📋 Kopieren</button></div>`, sh=>{
+      const q=x=>sh.querySelector(x);
+      sh.addEventListener('click',e=>{const b=e.target.closest('[data-vn]');if(!b)return;n=+b.dataset.vn;q('#vt').value=vetReport(n);q('#vn').querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===b))});
+      q('#vc').onclick=async()=>{try{await navigator.clipboard.writeText(q('#vt').value);toast('Kopiert 📋')}catch(e){q('#vt').select();document.execCommand('copy');toast('Kopiert 📋')}};
+      q('#vm').onclick=()=>{location.href=`mailto:${mail}?subject=${encodeURIComponent(`Update ${DOG} – ${fmtD(addDays(today(),-(n-1)))} bis ${fmtD(today())}`)}&body=${encodeURIComponent(q('#vt').value)}`};
+    });
+  },
+  walkEdit(d){
+    const w=d.id?S.walks.find(x=>x.id===d.id):{day:d.day||ui.logDay,time:hm(new Date()),minutes:30,calm:null,place:'',note:''};
+    let mins=+w.minutes||30, calm=w.calm;
+    const places=[...new Set(S.walks.map(x=>x.place).filter(Boolean))].slice(-6).reverse();
+    const minChips=()=>[15,30,45,60,90,120].map(m=>`<button class="chip ${mins===m?'on':''}" data-min="${m}">${m}</button>`).join('');
+    const calmChips=()=>CALM.map(c=>`<button class="chip ${calm===c.v?'on':''}" data-calm="${c.v}">${c.e} ${c.l}</button>`).join('');
+    openSheet(`<h3>${d.id?'Gassi-Runde':'Neue Gassi-Runde'}</h3><div class="muted">${dayLabel(w.day)}</div>
+      <div class="row" style="gap:10px"><div style="width:130px"><label class="f">Start</label><input type="time" id="wt" value="${esc(w.time||'')}"></div>
+        <div class="grow"><label class="f">Dauer (Min.)</label><input type="text" inputmode="numeric" id="wm" value="${mins}"></div></div>
+      <div class="chips" id="mc" style="margin-top:8px">${minChips()}</div>
+      <label class="f">Wie entspannt war sie?</label><div class="chips" id="cc">${calmChips()}</div>
+      <label class="f">Wo? (optional)</label><input type="text" id="wp" value="${esc(w.place||'')}" placeholder="z. B. Feld, Stadtwald, Kiesgrube">
+      ${places.length?`<div class="chips" style="margin-top:8px">${places.map(p=>`<button class="chip" data-pl="${esc(p)}">📍 ${esc(p)}</button>`).join('')}</div>`:''}
+      <label class="f">Besonderes (optional)</label><input type="text" id="wn" value="${esc(w.note||'')}" placeholder="z. B. Hundebegegnung, Jogger, Knall">
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      ${d.id?'<button class="btn block danger" id="del" style="margin-top:4px">Löschen</button>':''}`, sh=>{
+      const q=s=>sh.querySelector(s);
+      sh.addEventListener('click',e=>{
+        const m=e.target.closest('[data-min]'),c=e.target.closest('[data-calm]'),p=e.target.closest('[data-pl]');
+        if(m){mins=+m.dataset.min;q('#wm').value=mins;q('#mc').innerHTML=minChips()}
+        if(c){calm=calm===+c.dataset.calm?null:+c.dataset.calm;q('#cc').innerHTML=calmChips()}
+        if(p) q('#wp').value=p.dataset.pl;
+      });
+      q('#wm').addEventListener('input',()=>{mins=parseInt(q('#wm').value,10)||0;q('#mc').innerHTML=minChips()});
+      q('#save').onclick=async()=>{
+        const row={day:w.day,time:q('#wt').value||null,minutes:parseInt(q('#wm').value,10)||null,calm,place:q('#wp').value.trim()||null,note:q('#wn').value.trim()||null};
+        if(d.id) await upd('walks',d.id,row); else await ins('walks',row);
+        closeSheet(); toast('Gassi gespeichert 🐕');
+      };
+      const dl=q('#del'); if(dl) dl.onclick=()=>{if(confirm('Runde löschen?')){del('walks',d.id);closeSheet()}};
+    });
+  },
   notesTab(d){ui.notesTab=d.k;render();window.scrollTo(0,0)},
   togglePast(){ui.showPast=!ui.showPast;render()},
   apptEdit(d){
@@ -1515,35 +1906,98 @@ async function deletePhoto(name){
   if(error){toast('Löschen fehlgeschlagen');await loadPhotos()}
 }
 
-/* ====== Excel-Export ====== */
-function buildExport(dlogs,meds,mlogs,barks){
+/* ====== Excel-Export (formatiert) ====== */
+const XC={accent:'CF6A2E',zebra:'FFF8F1',line:'E8DDCD',ok:'DFF1E4',okT:'2F7D47',warn:'FBEFD2',warnT:'8A5E08',bad:'F9DCD7',badT:'B23B2B',muted:'73685D',ink:'2B2520'};
+const XB={top:{style:'thin',color:{rgb:XC.line}},bottom:{style:'thin',color:{rgb:XC.line}},left:{style:'thin',color:{rgb:XC.line}},right:{style:'thin',color:{rgb:XC.line}}};
+function xSheet(rows,cols,opt={}){
+  // rows: Array von Objekten; cols: [[Spaltenname, Breite, {wrap,rule}]]
+  const names=cols.map(c=>c[0]);
+  const ws=XLSX.utils.json_to_sheet(rows.length?rows:[Object.fromEntries(names.map(n=>[n,'']))],{header:names,cellDates:true,dateNF:'dd.mm.yyyy'});
+  ws['!cols']=cols.map(c=>({wch:c[1]}));
+  ws['!rows']=[{hpt:30}];
+  const R=Math.max(1,rows.length);
+  cols.forEach((c,ci)=>{
+    const h=ws[XLSX.utils.encode_cell({r:0,c:ci})];
+    if(h) h.s={font:{bold:true,color:{rgb:'FFFFFF'},sz:11},fill:{fgColor:{rgb:XC.accent}},alignment:{vertical:'center',horizontal:'center',wrapText:true},border:XB};
+    for(let r=1;r<=R;r++){
+      const ref=XLSX.utils.encode_cell({r,c:ci}); let cell=ws[ref]; if(!cell){cell=ws[ref]={t:'s',v:''}}
+      const st={font:{sz:11,color:{rgb:XC.ink}},alignment:{vertical:'top',wrapText:!!c[2]?.wrap},border:XB};
+      if(r%2===0) st.fill={fgColor:{rgb:XC.zebra}};
+      if(cell.t==='d'||cell.v instanceof Date){cell.z='dd.mm.yyyy';st.alignment.horizontal='left'}
+      const lvl=c[2]?.rule?c[2].rule(cell.v):null;
+      if(lvl){st.fill={fgColor:{rgb:XC[lvl]}};st.font={...st.font,bold:true,color:{rgb:XC[lvl+'T']}}}
+      if(c[2]?.muted) st.font={...st.font,color:{rgb:XC.muted}};
+      cell.s=st;
+    }
+  });
+  if(rows.length) ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:rows.length,c:cols.length-1}})};
+  return ws;
+}
+const ruleMood=v=>{const n=parseInt(v,10);return !n?null:n<=2?'bad':n===3?'warn':'ok'};
+const ruleAp=v=>!v?null:v==='Alles'?'ok':v==='Halb'?'warn':'bad';
+const ruleSt=v=>!v?null:v==='Normal'?'ok':v==='Weich'?'warn':'bad';
+const ruleNonEmpty=v=>v?'bad':null;
+const ruleStatus=v=>!v?null:v==='wie geplant'?'ok':v==='abweichend'?'warn':'bad';
+const ruleCalm=v=>{const n=parseInt(v,10);return !n?null:n<=2?'bad':n===3?'warn':'ok'};
+function buildExport(dlogs,meds,mlogs,barks,walks,appts){
   const D=day=>new Date(day+'T12:00:00'), medById=Object.fromEntries(meds.map(m=>[m.id,m]));
   const usedKeys=new Set(barks.map(b=>b.reason));
   const RS=allReasons().filter(r=>r.active!==false||usedKeys.has(r.key));
-  const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at))])].sort();
+  const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at)),...walks.map(w=>w.day)])].sort();
   const protokoll=days.map(day=>{
-    const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood);
-    const bs=barks.filter(b=>dayOf(b.created_at)===day);
-    const w=lg?.weather||S.weather[day], ap=APPETITE.find(a=>a.v===lg?.appetite);
-    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Kot':(STOOL.find(x=>x.v===lg?.stool)||{}).l||'','Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
-      'Wetter':w?wmo(w.code).l:'','Temp. max (°C)':w?Math.round(w.tmax):'','Regen (mm)':w?w.rain:'','Böen (km/h)':w?Math.round(w.gust||0):'','Ereignis':weatherFlags(w,day).join(', '),'Gebellt':bs.length};
-    RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length);
+    const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood), w=lg?.weather||S.weather[day];
+    const ap=APPETITE.find(a=>a.v===lg?.appetite), st=STOOL.find(x=>x.v===lg?.stool), bs=barks.filter(b=>dayOf(b.created_at)===day), ws=walks.filter(x=>x.day===day);
+    const row={'Datum':D(day),'Tag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Kot':st?st.l:'',
+      'Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
+      'Gassi (Min.)':ws.length?ws.reduce((a,x)=>a+(+x.minutes||0),0):'','Gebellt':bs.length};
+    RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length||'');
     row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
+    row['Unwetter Lövenich']=weatherFlags(w,day).map(f=>f.t).join('; ');
     row['Eingetragen von']=lg?.author||'';
     return row;
-  });
-  const medis=[...mlogs].sort((a,b)=>(a.day+a.slot).localeCompare(b.day+b.slot)).map(l=>{const m=medById[l.med_id];const soll=m?sollOf(m,l.day):'';
+  }).reverse();
+  const pcols=[['Datum',11],['Tag',5],['Stimmung',13,{rule:ruleMood}],['Appetit',9,{rule:ruleAp}],['Kot',9,{rule:ruleSt}],['Auffälligkeiten',24,{wrap:1,rule:ruleNonEmpty}],
+    ['Merkmale',22,{wrap:1}],['Beschreibung',40,{wrap:1}],['Gassi (Min.)',8],['Gebellt',8],...RS.map(r=>['davon: '+r.label,12]),['Medikamente gegeben',40,{wrap:1}],['Unwetter Lövenich',30,{wrap:1,rule:ruleNonEmpty}],['Eingetragen von',11,{muted:1}]];
+  const medis=[...mlogs].sort((a,b)=>(b.day+b.slot).localeCompare(a.day+a.slot)).map(l=>{const m=medById[l.med_id];const soll=m?sollOf(m,l.day):'';
     return {'Datum':D(l.day),'Medikament':m?.name||'(gelöscht)','Zeitpunkt':slotLabel(l.slot),'Soll':soll||'','Ist':l.skipped?'nicht gegeben':l.amount,
-      'Status':l.skipped?'ausgelassen':l.amount===soll?'wie geplant':'abweichend','Notiz':l.note||'','Von':l.author||'','Eingetragen um':hm(l.created_at)}});
-  const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason).label,'Von':b.author||''}));
-  const sheet=(rows,widths)=>{const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true,dateNF:'dd.mm.yyyy'});ws['!cols']=widths.map(w=>({wch:w}));return ws};
+      'Status':l.skipped?'ausgelassen':l.amount===soll||m?.kind==='bedarf'?'wie geplant':'abweichend','Notiz':l.note||'','Von':l.author||'','Uhrzeit':hm(l.created_at)}});
+  const bell=[...barks].sort((a,b)=>b.created_at.localeCompare(a.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason).label,'Von':b.author||''}));
+  const gassi=[...walks].sort((a,b)=>(b.day+(b.time||'')).localeCompare(a.day+(a.time||''))).map(x=>{const c=CALM.find(k=>k.v===x.calm);
+    return {'Datum':D(x.day),'Start':x.time||'','Dauer (Min.)':x.minutes||'','Entspannung':c?`${c.v} – ${c.l}`:'','Ort':x.place||'','Besonderes':x.note||'','Von':x.author||''}});
+  const termine=[...appts].sort((a,b)=>(b.day+(b.time||'')).localeCompare(a.day+(a.time||''))).map(a=>({'Datum':D(a.day),'Uhrzeit':a.time||'','Termin':a.title,'Ort':a.place||'','Notiz':a.note||''}));
+  // Übersicht
+  const from=days[0]||today(), P=periodStats(from,today()), P14=periodStats(addDays(today(),-13),today()), adA=medAdherence(from,today()), ad14=medAdherence(addDays(today(),-13),today());
+  const f1=x=>x==null?'–':Math.round(x*10)/10;
+  const ov=[[`🐾 ${DOG} – Protokoll-Export`],[],['Zeitraum',`${fmtD(from)}${from.slice(0,4)} – ${fmtD(today())}${today().slice(0,4)}`],['Exportiert am',new Date().toLocaleString('de-DE')],['Protokollierte Tage',P.logged],[],
+    ['Kennzahl','Gesamt','Letzte 14 Tage'],
+    ['Stimmung Ø (1–5)',f1(P.moodAvg),f1(P14.moodAvg)],
+    ['Alles gefressen',P.apN?pct(P.apAll,P.apN)+' %':'–',P14.apN?pct(P14.apAll,P14.apN)+' %':'–'],
+    ['Kot normal',P.stN?pct(P.stNorm,P.stN)+' %':'–',P14.stN?pct(P14.stNorm,P14.stN)+' %':'–'],
+    ['Bellen pro Tag',f1(P.barksPerDay),f1(P14.barksPerDay)],
+    ['Gassi pro Tag (Min.)',Math.round(P.walkPerDay),Math.round(P14.walkPerDay)],
+    ['Medi-Gaben eingetragen',adA.exp?`${adA.given} / ${adA.exp}`:'–',ad14.exp?`${ad14.given} / ${ad14.exp}`:'–'],
+    ['Tage mit Unwetter',P.D.filter(x=>weatherFlags(x.w,x.day).some(f=>f.lvl==='red')).length,P14.D.filter(x=>weatherFlags(x.w,x.day).some(f=>f.lvl==='red')).length],
+    [],['Aktuelle Medikation','Dosis heute'],
+    ...meds.filter(m=>m.active!==false).map(m=>[m.name,m.kind==='bedarf'?'bei Bedarf'+(m.dose?' · '+m.dose:''):(sollOf(m,today())||m.dose||'–')])];
+  const ows=XLSX.utils.aoa_to_sheet(ov); ows['!cols']=[{wch:26},{wch:24},{wch:16}]; ows['!merges']=[{s:{r:0,c:0},e:{r:0,c:2}}];
+  ows['!rows']=[{hpt:34}];
+  const sec=new Set([6,ov.findIndex(r=>r[0]==='Aktuelle Medikation')]);
+  ov.forEach((r,ri)=>r.forEach((v,ci)=>{const c=ows[XLSX.utils.encode_cell({r:ri,c:ci})]; if(!c) return;
+    if(ri===0) c.s={font:{bold:true,sz:18,color:{rgb:XC.accent}}};
+    else if(sec.has(ri)) c.s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:XC.accent}},border:XB,alignment:{horizontal:ci?'center':'left'}};
+    else if(ri>6) c.s={border:XB,font:{bold:ci===0},alignment:{horizontal:ci?'center':'left'},fill:ri%2?{fgColor:{rgb:XC.zebra}}:undefined};
+    else c.s={font:{bold:ci===0,color:{rgb:ci===0?XC.muted:XC.ink}}};
+  }));
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,8,9,30,28,45,14,12,10,11,22,8,...RS.map(()=>14),40,14]),'Protokoll');
-  XLSX.utils.book_append_sheet(wb,sheet(medis,[11,16,12,12,14,13,30,10,14]),'Medikamente');
-  XLSX.utils.book_append_sheet(wb,sheet(bell,[11,8,22,10]),'Bellistima');
-  const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});
+  XLSX.utils.book_append_sheet(wb,ows,'Übersicht');
+  XLSX.utils.book_append_sheet(wb,xSheet(protokoll,pcols),'Protokoll');
+  XLSX.utils.book_append_sheet(wb,xSheet(medis,[['Datum',11],['Medikament',16],['Zeitpunkt',11],['Soll',14],['Ist',14],['Status',13,{rule:ruleStatus}],['Notiz',30,{wrap:1}],['Von',10,{muted:1}],['Uhrzeit',8]]),'Medikamente');
+  XLSX.utils.book_append_sheet(wb,xSheet(gassi,[['Datum',11],['Start',7],['Dauer (Min.)',9],['Entspannung',16,{rule:ruleCalm}],['Ort',18],['Besonderes',34,{wrap:1}],['Von',10,{muted:1}]]),'Gassi');
+  XLSX.utils.book_append_sheet(wb,xSheet(bell,[['Datum',11],['Uhrzeit',8],['Grund',24],['Von',10,{muted:1}]]),'Bellistima');
+  XLSX.utils.book_append_sheet(wb,xSheet(termine,[['Datum',11],['Uhrzeit',8],['Termin',26],['Ort',30,{wrap:1}],['Notiz',30,{wrap:1}]]),'Termine');
+  const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true,cellStyles:true});
   const file=new File([buf],`${DOG}_Protokoll_${today()}.xlsx`,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  return {file,stats:{days:days.length,logs:dlogs.length,meds:mlogs.length,barks:barks.length}};
+  return {file,stats:{days:days.length,logs:dlogs.length,meds:mlogs.length,barks:barks.length,walks:walks.length}};
 }
 
 /* ====== Login & Start ====== */
@@ -1626,6 +2080,16 @@ function seedDemo(){
   S.stock.push({id:uid(),med_id:m1.id,label:'0,5 mg Tabletten',unit:'Tbl.',count:40,use_key:'0.5',counted_at:iso(now-4*864e5)});
   S.stock.push({id:uid(),med_id:m1.id,label:'0,25 mg Tabletten',unit:'Tbl.',count:30,use_key:'0.25',counted_at:iso(now-4*864e5)});
   const b12=S.meds.find(m=>m.name==='Vitamin B12'); S.stock.push({id:uid(),med_id:b12.id,label:'1 pro Tag',unit:'Kps.',count:6,per_day:1,counted_at:iso(now-864e5)});
+  // Demo-Verlauf über ~6 Wochen
+  let seed=7; const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+  for(let i=3;i<=42;i++){const d=addDays(t,-i);
+    S.daily_log.push({id:uid(),day:d,mood:Math.max(1,Math.min(5,Math.round(3.4+rnd()*2-1-(i>20?0.6:0)))),appetite:rnd()<.15?1:rnd()<.3?2:3,stool:rnd()<.12?4:rnd()<.2?3:2,
+      symptoms:rnd()<.12?['Unruhe']:[],tags:[],text:i===9?'Besuch da, sehr aufgeregt.':'',author:'Jana',created_at:iso(now-i*864e5)});
+    const nb=Math.round(rnd()*(i>20?5:3)); for(let k=0;k<nb;k++) S.barks.push({id:uid(),reason:rnd()<.6?'hausflur':'draussen',author:'Dennis',created_at:iso(now-i*864e5-k*3e6)});
+    S.walks.push({id:uid(),day:d,time:'08:00',minutes:[30,45,60][Math.floor(rnd()*3)],calm:3+Math.round(rnd()*2),place:rnd()<.5?'Feld':'Stadtwald',author:'Dennis',created_at:iso(now-i*864e5)});
+    if(rnd()<.7) S.walks.push({id:uid(),day:d,time:'18:00',minutes:[20,30][Math.floor(rnd()*2)],calm:2+Math.round(rnd()*3),author:'Jana',created_at:iso(now-i*864e5)});
+  }
+  S.walks.push({id:uid(),day:t,time:'07:45',minutes:45,calm:4,place:'Feld',note:'Hundebegegnung, gut gemeistert',author:'Dennis',created_at:iso(now)});
   S.appointments.push({id:uid(),title:'Tierarzt Kontrolle',day:t,time:'17:30',place:'Tierarztpraxis',note:'Impfpass mitnehmen',author:'Jana',created_at:iso(now)},
     {id:uid(),title:'Wuffotel',day:addDays(t,9),time:'09:00',place:'Neusser Straße 95, 41516 Grevenbroich',author:'Dennis',created_at:iso(now)},
     {id:uid(),title:'Hundeschule',day:addDays(t,-5),time:'10:00',author:'Dennis',created_at:iso(now)});
