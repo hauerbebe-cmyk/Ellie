@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=16"></script>
+<script src="config.js?v=17"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -384,6 +384,9 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .nf-r{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
 .nf-r span{color:var(--muted);flex:none;max-width:45%}.nf-r b{text-align:right;font-weight:600;word-break:break-word}
 .nf-r a{color:var(--accent-ink)}
+.trange{padding:12px}
+.trange label span{display:block;font-size:12px;color:var(--muted);font-weight:600;margin:0 2px 4px}
+.trange input[type=date]{padding:9px 10px;font-size:15px}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -447,7 +450,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.16'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.17'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -474,7 +477,7 @@ function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 async function loadTable(t){
   if(DEMO) return;
   let q = sb.from(t).select('*');
-  if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-120);q=q.gte('created_at',d.toISOString())}
+  if(t==='barks'||t==='med_logs'){const d=new Date();d.setDate(d.getDate()-400);q=q.gte('created_at',d.toISOString())}
   const {data,error} = await q.order('created_at',{ascending:true});
   if(error){console.error(error);if(!OPTIONAL.includes(t))toast('Laden fehlgeschlagen');return}
   S[t]=data||[];
@@ -881,6 +884,11 @@ function vLog(){
     <span class="grow"><b>${dayLabel(h.day)}</b>${flagIcons(w,h.day)?` <span class="small">${flagIcons(w,h.day)}</span>`:''}
       <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${h.stool?`<span class="hb">💩 ${STOOL.find(x=>x.v===h.stool)?.l||''}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
 }
+document.addEventListener('change',e=>{
+  if(e.target.id==='tfrom'||e.target.id==='tto'){const v=e.target.value; if(!v) return;
+    if(e.target.id==='tfrom') ui.trendFrom=v; else ui.trendTo=v;
+    const r=trendRange(); ui.trendFrom=r.from; ui.trendTo=r.to; ui.trendDay=null; render()}
+});
 document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true;$('#savebar')?.classList.remove('hide')}});
 
 
@@ -998,7 +1006,7 @@ function trendChart(from,n){
     y=y1+4;
   });
   // Datumsachse
-  const step=n<=14?2:n<=28?7:14; let ax='';
+  const step=n<=8?1:n<=14?2:n<=35?7:n<=100?14:30; let ax='';
   days.forEach((d,i)=>{ if((n-1-i)%step===0) ax+=`<text x="${cx(i)}" y="${H+12}" text-anchor="middle" class="tc-ax">${fmtD(d.day).slice(0,6)}</text>`; });
   // Tipp-Flächen
   let hit=''; days.forEach((d,i)=>{hit+=`<rect x="${X0+cw*i}" y="0" width="${cw}" height="${H}" fill="transparent" data-a="trendDay" data-day="${d.day}"/>`});
@@ -1019,13 +1027,29 @@ function trendDetail(day){
     ${fl.length?row('Wetter',esc(fl.map(f=>f.i+' '+f.t).join(' · '))):''}
     ${d.lg?.text?`<div class="small" style="margin-top:8px">${esc(d.lg.text)}</div>`:''}</div>`;
 }
+function trendPresets(){
+  const t=today(), out=[{k:'7',l:'7 Tage',from:addDays(t,-6),to:t},{k:'14',l:'14 Tage',from:addDays(t,-13),to:t},{k:'28',l:'28 Tage',from:addDays(t,-27),to:t},{k:'90',l:'3 Monate',from:addDays(t,-89),to:t}];
+  const ap=S.meds.find(m=>m.kind==='taper'&&m.taper?.start&&m.taper.start<=t);
+  if(ap) out.push({k:'plan',l:`Seit Plan-Start (${fmtD(ap.taper.start)})`,from:ap.taper.start,to:t});
+  return out;
+}
+function trendRange(){
+  let to=ui.trendTo&&ui.trendTo<=today()?ui.trendTo:today(), from=ui.trendFrom||addDays(to,-27);
+  if(from>to) from=to; if(daysBetween(from,to)>365) from=addDays(to,-365);
+  return {from,to};
+}
 function vTrend(){
-  const n=ui.trendN||28, to=today(), from=addDays(to,-(n-1));
+  const {from,to}=trendRange(), n=daysBetween(from,to)+1;
   const P=periodStats(from,to), Q=periodStats(addDays(from,-n),addDays(from,-1));
+  const presets=trendPresets(), cur=presets.find(x=>x.from===from&&x.to===to);
   const delta=(a,b,inv)=>{if(b==null||!b||a==null)return'';const c=Math.round((a-b)/b*100);if(!c)return'<span class="muted">±0 %</span>';const good=inv?c<0:c>0;return `<span class="${good?'dg':'db'}">${c>0?'+':''}${c} %</span>`};
   const tile=(lbl,val,sub)=>`<div class="ttile"><div class="lbl">${lbl}</div><div class="v">${val}</div><div class="s">${sub||'&nbsp;'}</div></div>`;
   const mAvg=P.moodAvg;
-  return `<div class="chips" style="margin-bottom:12px">${[14,28,56].map(k=>`<button class="chip ${n===k?'on':''}" data-a="trendN" data-n="${k}">${k} Tage</button>`).join('')}</div>
+  return `<div class="card trange">
+    <div class="row" style="gap:8px"><label class="grow"><span>Von</span><input type="date" id="tfrom" value="${from}" max="${to}"></label>
+      <label class="grow"><span>Bis</span><input type="date" id="tto" value="${to}" min="${from}" max="${today()}"></label></div>
+    <div class="chips" style="margin-top:10px">${presets.map(x=>`<button class="chip ${cur&&cur.k===x.k?'on':''}" data-a="trendPreset" data-k="${x.k}">${x.l}</button>`).join('')}</div>
+    <div class="muted small" style="margin-top:8px">${n} Tage · Vergleich mit den ${n} Tagen davor</div></div>
   <div class="ttiles">
     ${tile('Stimmung Ø',mAvg?`${de1(mAvg)}<small>/5</small>`:'–',mAvg?delta(mAvg,Q.moodAvg):'')}
     ${tile('Bellen / Tag',de1(P.barksPerDay),delta(P.barksPerDay,Q.barksPerDay,true))}
@@ -1036,7 +1060,7 @@ function vTrend(){
   </div>
   <div class="card" style="padding:12px 10px 6px">${trendChart(from,n)}
     <div class="tleg"><span><i class="lg-dose"></i>Dosiswechsel</span><span>⛈️ Unwetter</span><span><i class="lg-ok"></i>normal</span><span><i class="lg-warn"></i>weich</span><span><i class="lg-bad"></i>auffällig</span></div></div>
-  ${ui.trendDay&&ui.trendDay>=from?trendDetail(ui.trendDay):'<div class="muted small" style="text-align:center;margin:-2px 0 12px">Tipp auf einen Tag für Details</div>'}
+  ${ui.trendDay&&ui.trendDay>=from&&ui.trendDay<=to?trendDetail(ui.trendDay):'<div class="muted small" style="text-align:center;margin:-2px 0 12px">Tipp auf einen Tag für Details</div>'}
   <button class="btn block" data-a="vetReport" style="margin-top:4px">✉️ Tierarzt-Update erstellen</button>`;
 }
 /* ====== Tierarzt-Update ====== */
@@ -1608,7 +1632,7 @@ const ACT = {
     });
   },
   logView(d){ui.logView=d.k;render();window.scrollTo(0,0)},
-  trendN(d){ui.trendN=+d.n;render()},
+  trendPreset(d){const x=trendPresets().find(p=>p.k===d.k); if(!x) return; ui.trendFrom=x.from; ui.trendTo=x.to; ui.trendDay=null; render()},
   trendDay(d){ui.trendDay=ui.trendDay===d.day?null:d.day;render()},
   vetReport(){
     let n=14;
