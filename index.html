@@ -99,6 +99,7 @@ nav button.on .i{filter:none;opacity:1}
 .med .slot{font-size:13px;color:var(--muted)}
 .sollist{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0 10px;font-size:15px}
 .sollist dt{color:var(--muted)} .sollist dd{margin:0;font-weight:600}
+.stamp{font-size:13px;font-weight:600;color:var(--ok);margin-top:2px}
 .actions{display:flex;gap:8px}
 .taper{background:var(--bg);border-radius:12px;padding:10px 12px;margin:8px 0 4px}
 .prog{height:6px;border-radius:9px;background:var(--line);margin:8px 0;overflow:hidden}
@@ -192,7 +193,10 @@ const MOODS = [
 const TAGS = CFG.dayTags || ['Verspielt','Verschmust','Ruhig','Müde','Aufgedreht','Ängstlich','Gut gefressen','Wenig gefressen','Magen-Darm','Viel gebellt'];
 const NICKS = ['Makrelenöhrchen','Gagafrosch','Schnecke','Schneckenbär','Schneckentiger','Schneckerich','Schnecki Zimtzucker','Schnecki Süßsauer','Fürst von Schneckerich','Kröti','Kröterich','Krötofferus','Elsbeth(i)','Elsbethbär','Eleonore','Elisabeth','Ellie Elsbethson','Mausebär','Ed von Schneck','Krötentiger','Troll','Schneckennudel','Babyratte','Trollnase','Krümelbärchen','Maus','Mauserich','Stinketroll','Torfnase','Supermaus','Zaubermaus','Made','Made im Speckmantel','Quatschbär','Wutz','Zuckermaus','Seehund','Seeigel','Wurst','Wiener Würstchen','Pockenschweinchen','winkelfreund','Winkelenthusiatin','Fauchi 3','Schnuffnase','Quatschkröte','Schneckerinchen','Perfekter kleiner Winkel','Springpferd','El Kröterich','Trüffelnase','Mausezahn','Eierkopf','Zwiebelhexe','Eiertanzbär','Knödelmaus','Kanalratte','Hohle Fritte','Schneckeroncinii'];
 // Ausschleichplan Alprazolam (Dr. Feist, 28.09.2026)
+// Fluoxetin: 30 mg bis Startdatum (noch offen), dann 14 Tage 35 mg, danach dauerhaft 40 mg
+const FLUOX_PLAN = {title:'Aufdosieren',start:null,pre:{mg:30,pieces:''},steps:[{days:14,mg:35,pieces:''},{days:null,mg:40,pieces:''}]};
 const ALPRA_TAPER = {
+  title:'Ausschleichen',
   start:'2026-10-03', pre:{mg:0.5,pieces:'1 Tbl. 0,5 mg'},
   steps:[
     {days:10,mg:0.4375,pieces:'¾ Tbl. 0,5 mg + ¼ Tbl. 0,25 mg'},
@@ -369,16 +373,20 @@ function vStart(){
 /* ====== Medikamente ====== */
 function slotLabel(s){return s==='bedarf'?'bei Bedarf':s==='taeglich'?'1× täglich':s+' Uhr'}
 function slotsOf(m){return m.kind==='bedarf'?[]:(m.times&&m.times.length?[...m.times].sort():['taeglich'])}
-/* Ausschleichplan: welche Stufe gilt an einem Tag? */
+/* Dosisplan (Ausschleichen / Aufdosieren): welche Stufe gilt an einem Tag?
+   Stufe mit days:null = dauerhaft; start:null = Startdatum noch offen (bis dahin gilt "pre") */
 function taperInfo(m,day){
-  const t=m.taper; if(!t||!t.start||!t.steps) return null;
-  const n=daysBetween(t.start,day), totalDays=t.steps.reduce((s,x)=>s+x.days,0);
-  if(n<0) return {before:true,startsIn:-n,step:t.pre||{mg:0,pieces:''},next:t.steps[0],nextStart:t.start,totalDays};
+  const t=m.taper; if(!t||!t.steps) return null;
+  const open=t.steps.some(s=>s.days==null), totalDays=open?null:t.steps.reduce((s,x)=>s+x.days,0);
+  const pre=t.pre||{mg:0,pieces:''};
+  if(!t.start) return {before:true,unscheduled:true,step:pre,next:t.steps[0],nextStart:null,totalDays};
+  const n=daysBetween(t.start,day);
+  if(n<0) return {before:true,startsIn:-n,step:pre,next:t.steps[0],nextStart:t.start,totalDays};
   let acc=0;
   for(let i=0;i<t.steps.length;i++){
-    const s=t.steps[i];
-    if(n<acc+s.days) return {i,step:s,total:t.steps.length,dayInStep:n-acc+1,dayTotal:n+1,totalDays,
-      stepEnd:addDays(t.start,acc+s.days-1),next:t.steps[i+1]||null,nextStart:addDays(t.start,acc+s.days)};
+    const s=t.steps[i], base={i,step:s,total:t.steps.length,dayInStep:n-acc+1,dayTotal:n+1,totalDays};
+    if(s.days==null) return {...base,permanent:true,next:null,nextStart:null};
+    if(n<acc+s.days) return {...base,next:t.steps[i+1]||null,nextStart:addDays(t.start,acc+s.days)};
     acc+=s.days;
   }
   return {done:true,endDay:addDays(t.start,acc),totalDays};
@@ -387,12 +395,36 @@ function sollOf(m,day){
   if(m.kind!=='taper') return m.dose??'';
   const ti=taperInfo(m,day); return ti&&ti.step?fmtMg(ti.step.mg):null;
 }
+function taperBlock(med,ti){
+  if(!ti||!ti.step) return '';
+  const title=med.taper.title||'Dosisplan';
+  let head, right='', prog='<div style="height:4px"></div>', next='';
+  if(ti.unscheduled) head=`${esc(title)}: Start noch offen`;
+  else if(ti.before) head=`${esc(title)} startet in ${ti.startsIn} Tag${ti.startsIn>1?'en':''}`;
+  else if(ti.permanent) head=`Dauerhafte Dosis · Stufe ${ti.i+1}/${ti.total}`;
+  else head=`Stufe ${ti.i+1}/${ti.total} · Tag ${ti.dayInStep} von ${ti.step.days}`;
+  if(!ti.before&&ti.totalDays){right=`<span class="muted">Tag ${ti.dayTotal}/${ti.totalDays}</span>`;prog=`<div class="prog"><i style="width:${Math.round(ti.dayTotal/ti.totalDays*100)}%"></i></div>`}
+  if(ti.unscheduled) next=`Danach ${fmtMg(ti.next.mg)} – Startdatum unter <i>Plan → ${esc(med.name)}</i> eintragen`;
+  else if(ti.nextStart){const l=dayLabel(ti.nextStart);
+    next=`Ab ${l==='Morgen'?'morgen ('+fmtD(ti.nextStart)+')':l}: ${ti.next?fmtMg(ti.next.mg)+(ti.next.days==null?' (dauerhaft)':''):'0 mg – fertig ausgeschlichen 🎉'}`}
+  return `<div class="taper"><div class="row small"><b class="grow">${head}</b>${right}</div>${prog}
+    ${ti.step.pieces?`<div class="pieces">💊 ${esc(ti.step.pieces)}</div>`:''}
+    ${next?`<div class="muted small">${next}</div>`:''}</div>`;
+}
 function taperSteps(m){
-  const t=m.taper,td=today(); let acc=0;
-  return t.steps.map((s,i)=>{const a=addDays(t.start,acc),b=addDays(t.start,acc+s.days-1);acc+=s.days;
-    const cls=b<td?'past':a<=td?'now':'';
-    return `<div class="st ${cls}"><span>${i+1}. ${fmtD(a)}–${fmtD(b)} <span class="muted">(${s.days} T.)</span><div class="muted small">${esc(s.pieces)}</div></span><b>${fmtMg(s.mg)}</b></div>`}).join('')
-    +`<div class="st ${addDays(t.start,acc)<=td?'now':''}"><span>Ende ab ${fmtD(addDays(t.start,acc))}</span><b>0 mg 🎉</b></div>`;
+  const t=m.taper,td=today(),st=t.start; let acc=0;
+  const pre=t.pre?`<div class="st ${!st||td<st?'now':'past'}"><span>Vorher${st?' (bis '+fmtD(addDays(st,-1))+')':''}${t.pre.pieces?`<div class="muted small">${esc(t.pre.pieces)}</div>`:''}</span><b>${fmtMg(t.pre.mg)}</b></div>`:'';
+  const rows=t.steps.map((s,i)=>{
+    let range,cls='';
+    if(!st) range=s.days==null?'danach dauerhaft':`${s.days} Tage`;
+    else{const a=addDays(st,acc);
+      if(s.days==null){range=`ab ${fmtD(a)} dauerhaft`;cls=a<=td?'now':''}
+      else{const b=addDays(st,acc+s.days-1);range=`${fmtD(a)}–${fmtD(b)} <span class="muted">(${s.days} T.)</span>`;cls=b<td?'past':a<=td?'now':''}}
+    if(s.days!=null) acc+=s.days;
+    return `<div class="st ${cls}"><span>${i+1}. ${range}${s.pieces?`<div class="muted small">${esc(s.pieces)}</div>`:''}</span><b>${fmtMg(s.mg)}</b></div>`}).join('');
+  const finite=!t.steps.some(s=>s.days==null);
+  const end=finite&&st?`<div class="st ${addDays(st,acc)<=td?'now':''}"><span>Ende ab ${fmtD(addDays(st,acc))}</span><b>0 mg 🎉</b></div>`:'';
+  return pre+rows+end;
 }
 function medStatus(day){
   const items=[];
@@ -412,18 +444,13 @@ function vMeds(){
   const cards=st.items.map(({med,slot,log,soll})=>{
     const diff=log&&log.amount!==soll;
     const ti=med.kind==='taper'?taperInfo(med,day):null;
-    const taper=ti&&ti.step?`<div class="taper">
-      <div class="row small"><b class="grow">${ti.before?`Ausschleichen startet in ${ti.startsIn} Tagen`:`Stufe ${ti.i+1}/${ti.total} · Tag ${ti.dayInStep} von ${ti.step.days}`}</b>
-        ${ti.before?'':`<span class="muted">Tag ${ti.dayTotal}/${ti.totalDays}</span>`}</div>
-      <div class="prog"><i style="width:${ti.before?0:Math.round(ti.dayTotal/ti.totalDays*100)}%"></i></div>
-      <div class="pieces">💊 ${esc(ti.step.pieces)}</div>
-      <div class="muted small">Ab ${dayLabel(ti.nextStart)==='Morgen'?'morgen ('+fmtD(ti.nextStart)+')':dayLabel(ti.nextStart)}: ${ti.next?fmtMg(ti.next.mg):'0 mg – fertig ausgeschlichen 🎉'}</div></div>`:'';
+    const taper=taperBlock(med,ti);
     return `<div class="card med ${log?'done':''}">
       <div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">${esc(slotLabel(slot))}${med.remind_at?' · 🔔 '+esc(med.remind_at):''}${med.note?' · '+esc(med.note):''}</div></div>
         ${log?`<span class="pill ${log.skipped?'warn':diff?'warn':'ok'}">${log.skipped?'ausgelassen':diff?'abweichend':'gegeben'}</span>`:'<span class="pill">offen</span>'}</div>
       ${taper}
       <dl class="sollist"><dt>Soll</dt><dd>${esc(soll||'–')}</dd>
-        ${log?`<dt>Ist</dt><dd>${log.skipped?'nicht gegeben':esc(log.amount)}</dd><dt></dt><dd class="muted small" style="font-weight:400">${esc(log.author)} um ${hm(log.created_at)}${log.note?' · '+esc(log.note):''}</dd>`:''}</dl>
+        ${log?`<dt>Ist</dt><dd>${log.skipped?'nicht gegeben':esc(log.amount)}</dd><dt></dt><dd class="stamp">🕒 ${hm(log.created_at)} Uhr · ${esc(log.author)}${log.note?' · '+esc(log.note):''}</dd>`:''}</dl>
       ${log?`<div class="actions"><button class="btn plain" data-a="undoLog" data-id="${log.id}">Rückgängig</button></div>`:
       `<div class="actions"><button class="btn ok" data-a="giveAsPlanned" data-med="${med.id}" data-slot="${esc(slot)}">✓ Wie geplant</button>
         <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="${esc(slot)}">Andere Menge</button></div>`}
@@ -432,7 +459,7 @@ function vMeds(){
     const logs=S.med_logs.filter(l=>l.med_id===med.id&&l.day===day);
     return `<div class="card med"><div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">Soll: ${esc(med.dose||'–')}${med.note?' · '+esc(med.note):''}</div></div>
       <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="bedarf">Gegeben</button></div>
-      ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><span class="grow">${esc(l.amount)} <span class="muted small">· ${esc(l.author)} um ${hm(l.created_at)}${l.note?' · '+esc(l.note):''}</span></span><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
+      ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><span class="grow">${esc(l.amount)}<div class="stamp">🕒 ${hm(l.created_at)} Uhr · ${esc(l.author)}${l.note?' · '+esc(l.note):''}</div></span><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
     </div>`}).join('');
   return `<div class="topbar"><h1>Medikamente</h1><button class="btn ghost" data-a="plan">Plan</button></div>
   ${dateNav('medDay',day)}
@@ -449,7 +476,7 @@ function dateNav(key,day){
 function vPlan(){
   const list=S.meds.map(m=>`<div class="card"><div class="row"><div class="grow">
       <div style="font-weight:700">${esc(m.name)} ${m.active===false?'<span class="pill">pausiert</span>':''}</div>
-      <div class="muted small">${m.kind==='taper'?'Ausschleichplan':esc(m.dose||'–')} · ${m.kind==='bedarf'?'bei Bedarf':slotsOf(m).map(slotLabel).join(', ')}</div></div>
+      <div class="muted small">${m.kind==='taper'?esc(m.taper?.title||'Dosisplan'):esc(m.dose||'–')} · ${m.kind==='bedarf'?'bei Bedarf':slotsOf(m).map(slotLabel).join(', ')}</div></div>
       <button class="btn ghost" data-a="medEdit" data-id="${m.id}">Bearbeiten</button></div>
       ${m.kind==='taper'&&m.taper?`<div class="steps">${taperSteps(m)}</div>`:''}</div>`).join('');
   return `<div class="topbar"><h1>Plan</h1><button class="btn ghost" data-a="plan">Fertig</button></div>
@@ -521,16 +548,19 @@ const ACT = {
   },
   dayShift(d){const k=d.k;ui[k]=addDays(ui[k],+d.n);if(ui[k]>today())ui[k]=today();if(k==='logDay'){ui.logForm=null;ui.logDirty=false}render()},
   plan(){ui.editPlan=!ui.editPlan;render()},
-  async giveAsPlanned(d){const m=S.meds.find(x=>x.id===d.med);await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} eingetragen ✅`)},
+  async giveAsPlanned(d){const m=S.meds.find(x=>x.id===d.med);await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} um ${hm(new Date())} eingetragen ✅`)},
   giveOther(d){
     const m=S.meds.find(x=>x.id===d.med), soll=sollOf(m,ui.medDay)||'';
+    const now=hm(new Date());
     openSheet(`<h3>${esc(m.name)}</h3><div class="muted">${esc(slotLabel(d.slot))} · Soll: ${esc(soll||'–')}</div>
       <label class="f">Tatsächlich gegeben</label><input type="text" id="amt" value="${esc(soll)}">
+      <label class="f">Gegeben um</label><input type="time" id="gt" value="${now}" style="max-width:150px">
       <label class="f">Notiz (optional)</label><input type="text" id="nt" placeholder="z. B. halbe Tablette ausgespuckt">
       <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
       ${d.slot!=='bedarf'?'<button class="btn block plain" id="skip" style="margin-top:4px">Heute nicht gegeben</button>':''}`, sh=>{
-      sh.querySelector('#save').onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sh.querySelector('#amt').value.trim()||'–',note:sh.querySelector('#nt').value.trim()||null});closeSheet()};
-      const sk=sh.querySelector('#skip'); if(sk) sk.onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:'0',skipped:true,note:sh.querySelector('#nt').value.trim()||null});closeSheet()};
+      const at=()=>{const v=sh.querySelector('#gt').value||now;return new Date(`${ui.medDay}T${v}:00`).toISOString()};
+      sh.querySelector('#save').onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sh.querySelector('#amt').value.trim()||'–',note:sh.querySelector('#nt').value.trim()||null,created_at:at()});closeSheet()};
+      const sk=sh.querySelector('#skip'); if(sk) sk.onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:'0',skipped:true,note:sh.querySelector('#nt').value.trim()||null,created_at:at()});closeSheet()};
     });
   },
   undoLog(d){del('med_logs',d.id)},
@@ -568,25 +598,28 @@ const ACT = {
   },
   taperEdit(d){
     const m=S.meds.find(x=>x.id===d.id); let times=[...(m.times||[])];
-    const dayNow=daysBetween(m.taper.start,today())+1;
+    const title=m.taper.title||'Dosisplan';
+    const info=s=>{if(!s)return 'Noch offen – bis dahin gilt '+fmtMg((m.taper.pre||{mg:0}).mg);const n=daysBetween(s,today())+1;return n>0?`Heute ist Tag ${n} des Plans`:`Startet in ${1-n} Tag${1-n>1?'en':''}`};
     const timesHtml=()=>times.map((t,i)=>`<div class="row" style="margin-bottom:6px"><input type="time" value="${t}" data-i="${i}" class="tm"><button class="btn plain" data-rm="${i}">✕</button></div>`).join('')||'<div class="muted small" style="margin-bottom:6px">Keine feste Uhrzeit (1× täglich)</div>';
-    openSheet(`<h3>${esc(m.name)} – Ausschleichplan</h3>
-      <label class="f">Heute ist Tag … des Plans</label>
-      <div class="row"><input type="text" inputmode="numeric" id="tday" value="${dayNow}" style="max-width:110px"><span class="muted small grow">Plan-Start: <span id="tstart">${fmtD(m.taper.start)}</span></span></div>
+    openSheet(`<h3>${esc(m.name)} – ${esc(title)}</h3>
+      <label class="f">Start der 1. Stufe (${fmtMg(m.taper.steps[0].mg)})</label>
+      <div class="row"><input type="date" id="tsd" value="${m.taper.start||''}" style="max-width:170px"><button class="btn plain" type="button" id="tclr">Offen</button></div>
+      <div class="muted small" id="tinfo" style="margin:6px 2px 0">${info(m.taper.start)}</div>
       <label class="f">Uhrzeit(en)</label><div id="tl">${timesHtml()}</div><button class="btn ghost" id="addt">+ Uhrzeit</button>
       ${remindField(m)}
       <label class="f">Hinweis</label><input type="text" id="mo" value="${esc(m.note||'')}">
       <label class="row" style="margin-top:14px"><input type="checkbox" id="ma" ${m.active!==false?'checked':''} style="width:22px;height:22px"> <span>Aktiv</span></label>
-      <div class="steps">${taperSteps(m)}</div>
+      <div class="steps" id="tsteps">${taperSteps(m)}</div>
       <button class="btn block" id="save" style="margin-top:16px">Speichern</button>`, sh=>{
       const q=s=>sh.querySelector(s), redraw=()=>{q('#tl').innerHTML=timesHtml()};
-      const startFor=()=>{const n=parseInt(q('#tday').value,10);return n>0?addDays(today(),-(n-1)):null};
-      q('#tday').addEventListener('input',()=>{const s=startFor();q('#tstart').textContent=s?fmtD(s):'–'});
+      const upd8=()=>{const s=q('#tsd').value||null;q('#tinfo').textContent=info(s);q('#tsteps').innerHTML=taperSteps({...m,taper:{...m.taper,start:s}})};
+      q('#tsd').addEventListener('change',upd8); q('#tsd').addEventListener('input',upd8);
+      q('#tclr').onclick=()=>{q('#tsd').value='';upd8()};
       sh.addEventListener('input',e=>{if(e.target.classList.contains('tm'))times[+e.target.dataset.i]=e.target.value});
       sh.addEventListener('click',e=>{const r=e.target.closest('[data-rm]');if(r){times.splice(+r.dataset.rm,1);redraw()}});
       q('#addt').onclick=()=>{times.push('08:00');redraw()};
       q('#save').onclick=async()=>{
-        const start=startFor(); if(!start){toast('Bitte eine Tageszahl ab 1 eingeben');return}
+        const start=q('#tsd').value||null;
         await upd('meds',m.id,{taper:{...m.taper,start},times:[...new Set(times.filter(Boolean))].sort(),note:q('#mo').value.trim()||null,active:q('#ma').checked,...remindPatch(sh,m,'taper')});
         closeSheet();
       };
@@ -945,7 +978,10 @@ function seedDemo(){
   DEFAULT_REASONS.forEach((r,i)=>S.bark_reasons.push({...r,id:uid(),active:true,created_at:iso(now-9e8+i)}));
   NICKS.forEach(name=>S.nicknames.push({id:uid(),name,author:'Dennis',created_at:iso(now)}));
   const m1={id:uid(),name:'Alprazolam',dose:null,kind:'taper',times:[],taper:ALPRA_TAPER,note:'Auffälligkeiten sofort Dr. Feist melden',active:true,author:'Jana'};
-  S.meds.push(m1);
+  S.meds.push(m1,
+    {id:uid(),name:'Fluoxetin',kind:'taper',times:[],taper:FLUOX_PLAN,active:true,author:'Dennis'},
+    {id:uid(),name:'Vitamin B12',dose:'1 Streukapsel',kind:'taeglich',times:[],active:true,author:'Dennis'},
+    {id:uid(),name:'Trazodon',dose:null,kind:'bedarf',times:[],note:'Nur im Notfall (z. B. Tierarzt)',active:true,author:'Dennis'});
   [1,2,3].forEach(i=>{const d=addDays(t,-i);S.med_logs.push({id:uid(),med_id:m1.id,day:d,slot:'taeglich',amount:sollOf(m1,d),author:i%2?'Jana':'Dennis',created_at:iso(now-i*864e5)})});
   const rs=['hausflur','draussen','hausflur','draussen','hausflur'];
   for(let d=0;d<7;d++){const n=[3,1,4,2,0,5,2][d];for(let i=0;i<n;i++)S.barks.push({id:uid(),reason:rs[(i+d)%5],author:i%2?'Jana':'Dennis',created_at:iso(now-d*864e5-i*2400e3)})}
