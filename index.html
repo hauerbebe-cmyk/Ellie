@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=7"></script>
+<script src="config.js?v=13"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -89,7 +89,7 @@ nav button.on .i{background:var(--accent-soft)}
 .hero{text-align:center;padding:30px 10px 26px}
 .hero .hi{color:var(--muted);font-size:15px}
 .hero .nick{font-size:clamp(34px,11vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:10px 0 8px;
-  color:var(--accent);word-break:break-word;transition:opacity .2s,transform .2s}
+  color:var(--accent);word-break:normal;overflow-wrap:break-word;hyphens:auto;transition:opacity .2s,transform .2s}
 .hero .photo,.hero .nick{transition:opacity .18s,transform .18s}
 .hero.swap .photo,.hero.swap .nick{opacity:0;transform:scale(.96)}
 .hero.withphoto{padding-top:6px}
@@ -169,6 +169,19 @@ nav button.on .i{background:var(--accent-soft)}
 .chip .ci{margin-right:5px}
 .chip.sym.on{background:var(--danger);border-color:var(--danger);color:#fff}
 .chip.addchip{border-style:dashed;color:var(--accent);background:transparent}
+.mf{width:100%;max-width:46px;height:auto;display:block}
+.moods button{padding:8px 0 6px}
+.moods button:not(.on) .mf{filter:saturate(.85)}
+.mfbig .mf{width:44px;max-width:44px}
+.li.hist .hm .mf{width:34px}
+.stools{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px 8px;border-radius:14px;background:var(--bg);border:2px solid transparent}
+.sb .st{width:100%;max-width:50px;height:auto}
+.sb small{font-size:12px;color:var(--muted);font-weight:600}
+.sb.on{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}.sb.on small{color:var(--warn)}
+.sb.on.sv2{border-color:var(--ok);background:var(--ok-soft)}.sb.on.sv2 small{color:var(--ok)}
+.sb.on.sv1,.sb.on.sv4,.sb.on.sv5{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.sb.on.sv1 small,.sb.on.sv4 small,.sb.on.sv5 small{color:var(--danger)}
 .bowls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .bw{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;background:var(--bg);border:2px solid transparent;transition:transform .12s}
 .bw:active{transform:scale(.95)}
@@ -364,7 +377,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.12'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-06.13'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -500,7 +513,7 @@ function vStart(){
   <div class="hero ${photo?'withphoto':''}" data-a="reroll">
     ${photo?`<div class="photo"><img src="${esc(photo.url)}" alt="${esc(DOG)}"></div>`:''}
     <div class="hi">${greeting()}, ${esc(me.name)}! Heute ist sie unser</div>
-    <div class="nick" id="nick">${esc(ui.nick)}</div>
+    <div class="nick" id="nick" style="font-size:${Math.round(Math.min(52,Math.max(26,600/Math.max(9,[...ui.nick].length))))}px">${esc(ui.nick)}</div>
     <div class="tip">${S.nicknames.length>1||S.photos.length>1?'Tippen für Neues':'Spitznamen in den Einstellungen ⚙️ hinzufügen'}</div>
   </div>
   ${photo?'':`<button class="card addphoto" data-a="photos">📷 Fotos von ${esc(DOG)} hinzufügen</button>`}
@@ -512,7 +525,7 @@ function vStart(){
       <div class="lbl">${!m.total?'Noch kein Plan angelegt':next?`Als nächstes: ${esc(next.med.name)} · ${esc(slotLabel(next.slot))}`:'Alles gegeben ✅'}</div>
     </button>
     <button class="tile" data-go="bark"><div class="lbl">🗣️ Bellistima</div><div class="big">${b}×</div><div class="lbl">heute gebellt</div></button>
-    <button class="tile" data-go="log"><div class="lbl">📖 Protokoll</div><div class="big">${mood?mood.e:'✍️'}</div><div class="lbl">${mood?mood.l:'noch offen'}</div></button>
+    <button class="tile" data-go="log"><div class="lbl">📖 Protokoll</div><div class="big">${mood?'<span class="mfbig">'+moodFace(mood.v)+'</span>':'✍️'}</div><div class="lbl">${mood?mood.l:'noch offen'}</div></button>
   </div>`;
 }
 
@@ -659,6 +672,51 @@ function vBark(){
 }
 
 /* ====== Protokoll ====== */
+function moodFace(v){
+  // Ellie-Gesicht: graue Stirn, schwarze Schlappohren, dunkle Augenpartien, weiße Schnauze
+  const ear={1:-16,2:-9,3:0,4:5,5:10}[v], ey={1:6,2:3,3:0,4:0,5:-2}[v];             // Ohren hängen bei schlechter Laune mehr
+  const eyes=({
+    1:'<path d="M31 44q6 4 12 0M57 44q6 4 12 0" stroke="#efe9e2" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M33 49q4 3 8 0M59 49q4 3 8 0" stroke="#efe9e2" stroke-width="2" fill="none" stroke-linecap="round" opacity=".0"/>',
+    2:'<circle cx="37" cy="47" r="4.6" fill="#7a5038"/><circle cx="63" cy="47" r="4.6" fill="#7a5038"/><circle cx="37" cy="48" r="3" fill="#1d1410"/><circle cx="63" cy="48" r="3" fill="#1d1410"/><path d="M31 43.5h12M57 43.5h12" stroke="#2e2d33" stroke-width="4.5" stroke-linecap="round"/>',
+    3:'<circle cx="37" cy="46" r="5" fill="#7a5038"/><circle cx="63" cy="46" r="5" fill="#7a5038"/><circle cx="37" cy="46.6" r="3.3" fill="#1d1410"/><circle cx="63" cy="46.6" r="3.3" fill="#1d1410"/><circle cx="35.6" cy="44.6" r="1.4" fill="#fff"/><circle cx="61.6" cy="44.6" r="1.4" fill="#fff"/>',
+    4:'<circle cx="37" cy="46" r="5.4" fill="#7a5038"/><circle cx="63" cy="46" r="5.4" fill="#7a5038"/><circle cx="37" cy="46.6" r="3.6" fill="#1d1410"/><circle cx="63" cy="46.6" r="3.6" fill="#1d1410"/><circle cx="35.4" cy="44.4" r="1.7" fill="#fff"/><circle cx="61.4" cy="44.4" r="1.7" fill="#fff"/>',
+    5:'<path d="M31 48q6-7 12 0M57 48q6-7 12 0" stroke="#efe9e2" stroke-width="2.8" fill="none" stroke-linecap="round"/>',
+  })[v];
+  const mouth=({
+    1:'<path d="M43 75q7-5 14 0" stroke="#3a2c28" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M31 55q-2.6 6 0 8q2.6-2 0-8z" fill="#7cc4f0"/>',
+    2:'<path d="M44 73q6-2 12 0" stroke="#3a2c28" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+    3:'<path d="M50 66v4M44 72h12" stroke="#3a2c28" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+    4:'<path d="M50 66v3M42 69q4 5 8 0q4 5 8 0" stroke="#3a2c28" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+    5:'<path d="M50 66v2M40 68q5 6 10 0q5 6 10 0" stroke="#3a2c28" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M45.5 71h9v6a4.5 4.5 0 0 1-9 0z" fill="#ec7a98"/><path d="M50 72v5" stroke="#c95a7c" stroke-width="1.2"/>',
+  })[v];
+  return `<svg viewBox="-6 -2 112 106" class="mf" aria-hidden="true">
+    <g fill="#2e2d33"><ellipse cx="19" cy="${52+ey}" rx="12" ry="25" transform="rotate(${ear} 19 30)"/><ellipse cx="81" cy="${52+ey}" rx="12" ry="25" transform="rotate(${-ear} 81 30)"/></g>
+    <circle cx="50" cy="52" r="32" fill="#b3b5bd"/>
+    <g fill="#b3b5bd"><circle cx="40" cy="22" r="8"/><circle cx="50" cy="19" r="9"/><circle cx="60" cy="22" r="8"/></g>
+    <g fill="#2e2d33"><ellipse cx="36" cy="45" rx="11" ry="9.5" transform="rotate(-12 36 45)"/><ellipse cx="64" cy="45" rx="11" ry="9.5" transform="rotate(12 64 45)"/></g>
+    <ellipse cx="50" cy="35" rx="5" ry="12" fill="#d6d7dc"/>
+    <ellipse cx="50" cy="66" rx="17" ry="14" fill="#f4f1ec"/>
+    <ellipse cx="38" cy="70" rx="4.5" ry="3.5" fill="#e6d3bd"/><ellipse cx="62" cy="70" rx="4.5" ry="3.5" fill="#e6d3bd"/>
+    ${eyes}
+    <ellipse cx="50" cy="61" rx="6.5" ry="4.8" fill="#1c1c20"/><ellipse cx="48" cy="59.6" rx="2.2" ry="1.1" fill="#6b6b76"/>
+    ${mouth}
+  </svg>`;
+}
+
+function stoolIcon(v){
+  const c={1:'#6b4325',2:'#8b5a2b',3:'#a26b36',4:'#b27c45',5:'#c3935c'}[v];
+  const hi='rgba(255,255,255,.28)';
+  const body={
+    1:`<circle cx="22" cy="34" r="7" fill="${c}"/><circle cx="36" cy="36" r="6.5" fill="${c}"/><circle cx="30" cy="25" r="6" fill="${c}"/><circle cx="46" cy="30" r="6" fill="${c}"/><circle cx="20" cy="32" r="2" fill="${hi}"/><circle cx="34" cy="34" r="2" fill="${hi}"/>`,
+    2:`<path d="M14 40h36a6 6 0 0 0-3-11h-2a6 6 0 0 0-4-9h-1a7 7 0 0 0-11-6q2 4-2 6h-1a6 6 0 0 0-4 9h-2a6 6 0 0 0-6 11z" fill="${c}"/><path d="M22 30h18M25 21h11" stroke="${hi}" stroke-width="2.4" stroke-linecap="round"/>`,
+    3:`<path d="M10 40h44a7 7 0 0 0-6-10h-4a7 7 0 0 0-8-8q-3-5-8-2q-6 0-6 6a7 7 0 0 0-8 4h-2a7 7 0 0 0-2 10z" fill="${c}"/><path d="M20 32h20" stroke="${hi}" stroke-width="2.4" stroke-linecap="round"/>`,
+    4:`<path d="M8 40q-2-8 8-9q2-8 12-7q6-6 13 0q11-1 11 8q8 2 5 8z" fill="${c}"/><circle cx="12" cy="30" r="2.6" fill="${c}"/><circle cx="54" cy="31" r="2.2" fill="${c}"/><path d="M22 33q8-3 16 0" stroke="${hi}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    5:`<ellipse cx="32" cy="38" rx="26" ry="6" fill="${c}"/><path d="M20 22q3 6 0 8q-3-2 0-8zM40 16q3 6 0 8q-3-2 0-8zM48 26q2.5 5 0 6.5q-2.5-1.5 0-6.5z" fill="${c}"/><ellipse cx="26" cy="37" rx="9" ry="2" fill="${hi}"/>`,
+  }[v];
+  return `<svg viewBox="0 0 64 46" class="st" aria-hidden="true">${body}</svg>`;
+}
+
+const STOOL=[{v:1,l:'Hart'},{v:2,l:'Normal'},{v:3,l:'Weich'},{v:4,l:'Breiig'},{v:5,l:'Flüssig'}];
 const APPETITE=[{v:3,l:'Alles'},{v:2,l:'Halb'},{v:1,l:'Kaum'},{v:0,l:'Nichts'}];
 const DEFAULT_OPTS={
   symptom:[['Unruhe','😰'],['Schlecht geschlafen','😴'],['Starkes Hecheln','🥵'],['Zittern','🫨'],['Erbrechen','🤢'],['Durchfall','💩'],['Viel getrunken','💧'],['Lecken / Kratzen','🐾'],['Verstecken','🙈'],['Wackelig / benommen','😵‍💫'],['Gereizt','😠']],
@@ -693,6 +751,7 @@ function alerts(){
   if(!a||!b) return [];
   const out=(a.symptoms||[]).filter(s=>(b.symptoms||[]).includes(s)).map(s=>`${optIcon('symptom',s)} ${s}`);
   if(a.appetite!=null&&b.appetite!=null&&a.appetite<=1&&b.appetite<=1) out.push('🥣 Wenig Appetit');
+  if(a.stool>=4&&b.stool>=4) out.push('💩 Breiiger/flüssiger Kot');
   return out;
 }
 function alertBanner(){
@@ -701,7 +760,7 @@ function alertBanner(){
 }
 function vLog(){
   const day=ui.logDay, lg=S.daily_log.find(l=>l.day===day);
-  const f=ui.logForm&&ui.logForm.day===day?ui.logForm:(ui.logForm={day,mood:lg?.mood||0,appetite:lg?.appetite??null,symptoms:[...(lg?.symptoms||[])],tags:[...(lg?.tags||[])],text:lg?.text||''});
+  const f=ui.logForm&&ui.logForm.day===day?ui.logForm:(ui.logForm={day,mood:lg?.mood||0,appetite:lg?.appetite??null,stool:lg?.stool??null,symptoms:[...(lg?.symptoms||[])],tags:[...(lg?.tags||[])],text:lg?.text||''});
   const opts=kind=>{const sel=kind==='symptom'?f.symptoms:f.tags, act=optActive(kind);
     return [...act,...sel.filter(s=>!act.some(o=>o.label===s)).map(label=>({label,icon:optIcon(kind,label)}))]};
   const shown=kind=>{const all=opts(kind), sel=kind==='symptom'?f.symptoms:f.tags;
@@ -712,16 +771,18 @@ function vLog(){
       +(more?`<button class="chip more" data-a="showAll" data-k="${kind}">+ ${more} mehr</button>`:'')
       +`<button class="chip addchip" data-a="optNew" data-k="${kind}">＋ Neu</button>`};
   const chip=(kind,o,on)=>`<button class="chip ${kind==='symptom'?'sym':''} ${on?'on':''}" data-a="opt" data-k="${kind}" data-t="${esc(o.label)}">${o.icon?`<span class="ci">${o.icon}</span>`:''}${esc(o.label)}</button>`;
-  const ap=APPETITE.find(a=>a.v===f.appetite);
+  const ap=APPETITE.find(a=>a.v===f.appetite), stl=STOOL.find(x=>x.v===f.stool);
   const hist=[...S.daily_log].sort((a,b)=>b.day.localeCompare(a.day)).slice(0,21);
   return `<div class="topbar pagehead"><h1>Protokoll</h1><button class="btn ghost" data-a="exportXlsx">📊 Excel</button></div>
   ${dateNav('logDay',day)}
   ${day===today()?alertBanner():''}
   ${weatherCard(day)}
   <div class="card lsec"><div class="sec-h"><span>Stimmung</span><span class="muted small">${f.mood?MOODS.find(m=>m.v===f.mood).l:'Wie war sie drauf?'}</span></div>
-    <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${m.e}<small>${m.l}</small></button>`).join('')}</div></div>
+    <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${moodFace(m.v)}<small>${m.l}</small></button>`).join('')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Appetit</span><span class="muted small">${ap?ap.l+' gefressen':'Wie viel hat sie gefressen?'}</span></div>
     <div class="bowls">${APPETITE.map(a=>`<button class="bw ${f.appetite===a.v?'on':''} lv${a.v}" data-a="appetite" data-v="${a.v}">${bowl(a.v)}<small>${a.l}</small></button>`).join('')}</div></div>
+  <div class="card lsec"><div class="sec-h"><span>Kot</span><span class="muted small">${stl?stl.l:'Wie war die Konsistenz?'}</span></div>
+    <div class="stools">${STOOL.map(x=>`<button class="sb ${f.stool===x.v?'on':''} sv${x.v}" data-a="stool" data-v="${x.v}">${stoolIcon(x.v)}<small>${x.l}</small></button>`).join('')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Auffälligkeiten</span><button class="btn plain small" data-a="optEdit" data-k="symptom">Bearbeiten</button></div>
     <div class="chips">${chipsOf('symptom')}</div>
     <div class="muted small" style="margin-top:10px">${f.symptoms.length?`${f.symptoms.length} ausgewählt`:'Nichts auffällig? Super – einfach leer lassen ✨'}</div></div>
@@ -733,9 +794,9 @@ function vLog(){
   <div class="savebar"><button class="btn block ${lg&&!ui.logDirty?'saved':''}" id="savebtn" data-a="saveLog">${lg&&!ui.logDirty?'✓ Gespeichert':lg?'Änderungen speichern':'Protokoll speichern'}</button></div>
   ${hist.length?`<h2>Verlauf</h2><div class="card list">${hist.map(h=>{const m=MOODS.find(x=>x.v===h.mood), w=weatherOf(h.day), a=APPETITE.find(x=>x.v===h.appetite);
     const syms=(h.symptoms||[]).map(s=>optIcon('symptom',s)||'•').join('');
-    return `<button class="li hist" data-a="openLog" data-day="${h.day}"><span class="hm">${m?m.e:'·'}</span>
+    return `<button class="li hist" data-a="openLog" data-day="${h.day}"><span class="hm">${m?moodFace(m.v):'·'}</span>
     <span class="grow"><b>${dayLabel(h.day)}</b>${w?` <span class="muted small">${wmo(w.code).i} ${Math.round(w.tmax)}°</span>`:''}
-      <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
+      <div class="hsub">${a?`<span class="hb">🥣 ${a.l}</span>`:''}${h.stool?`<span class="hb">💩 ${STOOL.find(x=>x.v===h.stool)?.l||''}</span>`:''}${syms?`<span class="hs">${syms}</span>`:''}<span class="ht">${esc((h.tags||[]).join(', ')||h.text||'')}</span></div></span><span class="muted">›</span></button>`}).join('')}</div>`:''}`;
 }
 document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui.logForm.text=e.target.value;ui.logDirty=true;const b=$('#savebtn');if(b&&b.classList.contains('saved')){b.classList.remove('saved');b.textContent='Änderungen speichern'}}});
 
@@ -968,6 +1029,7 @@ const ACT = {
   },
   delBark(d){del('barks',d.id)},
   mood(d){ui.logForm.mood=ui.logForm.mood===+d.v?0:+d.v;ui.logDirty=true;render()},
+  stool(d){ui.logForm.stool=ui.logForm.stool===+d.v?null:+d.v;ui.logDirty=true;render()},
   appetite(d){ui.logForm.appetite=ui.logForm.appetite===+d.v?null:+d.v;ui.logDirty=true;render()},
   showAll(d){ui.showAll={...(ui.showAll||{}),[d.k]:true};render()},
   opt(d){const arr=d.k==='symptom'?ui.logForm.symptoms:ui.logForm.tags,i=arr.indexOf(d.t);i>=0?arr.splice(i,1):arr.push(d.t);ui.logDirty=true;render()},
@@ -1009,8 +1071,8 @@ const ACT = {
   },
   async saveLog(){
     const f=ui.logForm, lg=S.daily_log.find(l=>l.day===f.day);
-    if(!f.mood&&f.appetite==null&&!f.symptoms.length&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
-    const row={mood:f.mood||null,appetite:f.appetite,symptoms:f.symptoms,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
+    if(!f.mood&&f.appetite==null&&f.stool==null&&!f.symptoms.length&&!f.tags.length&&!f.text.trim()){toast('Noch nichts eingetragen');return}
+    const row={mood:f.mood||null,appetite:f.appetite,stool:f.stool,symptoms:f.symptoms,tags:f.tags,text:f.text.trim(),author:me.name,updated_at:new Date().toISOString()};
     const w=S.weather[f.day]||lg?.weather; if(w) row.weather=w;
     ui.logDirty=false;
     if(lg) await upd('daily_log',lg.id,row); else await ins('daily_log',{day:f.day,...row});
@@ -1326,7 +1388,7 @@ function buildExport(dlogs,meds,mlogs,barks){
     const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood);
     const bs=barks.filter(b=>dayOf(b.created_at)===day);
     const w=lg?.weather||S.weather[day], ap=APPETITE.find(a=>a.v===lg?.appetite);
-    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
+    const row={'Datum':D(day),'Wochentag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Kot':(STOOL.find(x=>x.v===lg?.stool)||{}).l||'','Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
       'Wetter':w?wmo(w.code).l:'','Temp. max (°C)':w?Math.round(w.tmax):'','Regen (mm)':w?w.rain:'','Böen (km/h)':w?Math.round(w.gust||0):'','Ereignis':weatherFlags(w,day).join(', '),'Gebellt':bs.length};
     RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length);
     row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
@@ -1339,7 +1401,7 @@ function buildExport(dlogs,meds,mlogs,barks){
   const bell=[...barks].sort((a,b)=>a.created_at.localeCompare(b.created_at)).map(b=>({'Datum':D(dayOf(b.created_at)),'Uhrzeit':hm(b.created_at),'Grund':reasonOf(b.reason).label,'Von':b.author||''}));
   const sheet=(rows,widths)=>{const ws=XLSX.utils.json_to_sheet(rows,{cellDates:true,dateNF:'dd.mm.yyyy'});ws['!cols']=widths.map(w=>({wch:w}));return ws};
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,8,30,28,45,14,12,10,11,22,8,...RS.map(()=>14),40,14]),'Protokoll');
+  XLSX.utils.book_append_sheet(wb,sheet(protokoll,[11,10,13,8,9,30,28,45,14,12,10,11,22,8,...RS.map(()=>14),40,14]),'Protokoll');
   XLSX.utils.book_append_sheet(wb,sheet(medis,[11,16,12,12,14,13,30,10,14]),'Medikamente');
   XLSX.utils.book_append_sheet(wb,sheet(bell,[11,8,22,10]),'Bellistima');
   const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true});
@@ -1422,8 +1484,8 @@ function seedDemo(){
   [1,2,3].forEach(i=>{const d=addDays(t,-i);S.med_logs.push({id:uid(),med_id:m1.id,day:d,slot:'taeglich',amount:sollOf(m1,d),author:i%2?'Jana':'Dennis',created_at:iso(now-i*864e5)})});
   const rs=['hausflur','draussen','hausflur','draussen','hausflur'];
   for(let d=0;d<7;d++){const n=[3,1,4,2,0,5,2][d];for(let i=0;i<n;i++)S.barks.push({id:uid(),reason:rs[(i+d)%5],author:i%2?'Jana':'Dennis',created_at:iso(now-d*864e5-i*2400e3)})}
-  S.daily_log.push({id:uid(),day:addDays(t,-1),mood:3,appetite:1,symptoms:['Unruhe','Starkes Hecheln'],tags:['Müde'],text:'Langer Spaziergang im Wald, danach total platt.',author:'Jana',created_at:iso(now-864e5)});
-  S.daily_log.push({id:uid(),day:addDays(t,-2),mood:2,appetite:1,symptoms:['Unruhe'],tags:['Ängstlich','Viel gebellt'],text:'Handwerker im Haus.',author:'Dennis',created_at:iso(now-2*864e5)});
+  S.daily_log.push({id:uid(),day:addDays(t,-1),mood:3,appetite:1,stool:4,symptoms:['Unruhe','Starkes Hecheln'],tags:['Müde'],text:'Langer Spaziergang im Wald, danach total platt.',author:'Jana',created_at:iso(now-864e5)});
+  S.daily_log.push({id:uid(),day:addDays(t,-2),mood:2,appetite:1,stool:4,symptoms:['Unruhe'],tags:['Ängstlich','Viel gebellt'],text:'Handwerker im Haus.',author:'Dennis',created_at:iso(now-2*864e5)});
   S.stock.push({id:uid(),med_id:m1.id,label:'0,5 mg Tabletten',unit:'Tbl.',count:40,use_key:'0.5',counted_at:iso(now-4*864e5)});
   S.stock.push({id:uid(),med_id:m1.id,label:'0,25 mg Tabletten',unit:'Tbl.',count:30,use_key:'0.25',counted_at:iso(now-4*864e5)});
   const b12=S.meds.find(m=>m.name==='Vitamin B12'); S.stock.push({id:uid(),med_id:b12.id,label:'1 pro Tag',unit:'Kps.',count:6,per_day:1,counted_at:iso(now-864e5)});
