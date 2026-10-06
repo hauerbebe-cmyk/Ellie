@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js"></script>
+<script src="config.js?v=5"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#8a7f74; --line:#ece3d6;
@@ -220,6 +220,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
+const APP_VERSION = '2026-10-06.5'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -969,9 +970,21 @@ async function boot(){
 }
 // Beim Zurückkehren in die App alles neu laden (iOS trennt die Live-Verbindung im Hintergrund)
 document.addEventListener('visibilitychange',async()=>{
-  if(document.visibilityState!=='visible'||DEMO||!sb||!me.name) return;
+  if(document.visibilityState!=='visible') return;
+  if(await checkUpdate()) return;
+  if(DEMO||!sb||!me.name) return;
   await loadAll(); render(true);
 });
+// Selbst-Update: gibt es auf GitHub eine neuere Version, lädt die App neu (nur wenn gerade nichts offen ist)
+async function checkUpdate(){
+  try{
+    const r=await fetch('version.txt?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return false;
+    const v=(await r.text()).trim();
+    if(v&&v!==APP_VERSION&&!document.querySelector('.sheet')&&!ui.logDirty){location.reload();return true}
+  }catch(e){}
+  return false;
+}
+setInterval(checkUpdate,15*60*1000);
 
 function seedDemo(){
   const now=Date.now(), iso=ms=>new Date(ms).toISOString(), t=today();
