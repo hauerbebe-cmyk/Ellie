@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=23"></script>
+<script src="config.js?v=24"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -485,7 +485,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-07.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-07.2'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -519,8 +519,9 @@ async function loadTable(t){
 }
 async function loadAll(){ loadWeather(); await Promise.all([...TABLES.map(loadTable),loadPhotos()]); }
 function putLocal(t,row){const i=S[t].findIndex(r=>r.id===row.id); if(i>=0) S[t][i]=row; else S[t].push(row)}
+const NO_AUTHOR=new Set(['game_scores']); // Tabellen ohne Spalte "author"
 async function ins(t,row){
-  row = {author:me.name, ...row};
+  row = NO_AUTHOR.has(t)?{...row}:{author:me.name, ...row};
   if(DEMO){row.id=uid();row.created_at=row.created_at||new Date().toISOString();S[t].push(row);render();return row}
   const {data,error} = await sb.from(t).insert(row).select().single();
   if(error){console.error(error);toast('Speichern fehlgeschlagen');return null}
@@ -1075,8 +1076,17 @@ async function gameOver(){
     <div class="actions" style="margin-top:16px"><button class="btn" id="gagain">Nochmal</button><button class="btn ghost" id="gend">Leaderboard</button></div></div>`;
   go.querySelector('#gagain').onclick=()=>{go.hidden=true;Object.assign(G,{score:0,level:1,lives:3,over:false,hitT:0,saved:false});gameNewLevel()};
   go.querySelector('#gend').onclick=closeGame;
-  if(score>0&&!G.saved){G.saved=true; const r=await ins('game_scores',{player:me.name,score,level});
-    const el=document.getElementById('gsave'); if(el) el.textContent=r?'✓ Im Leaderboard gespeichert':'Speichern fehlgeschlagen – SQL-Update schon ausgeführt?'}
+  if(score>0&&!G.saved){G.saved=true; const ok=await saveScore({player:me.name,score,level});
+    const el=document.getElementById('gsave'); if(el) el.textContent=ok===true?'✓ Im Leaderboard gespeichert':ok}
+}
+async function saveScore(row){
+  if(DEMO){row.id=uid();row.created_at=new Date().toISOString();S.game_scores.push(row);return true}
+  const {data,error}=await sb.from('game_scores').insert(row).select().single();
+  if(error){console.error(error);
+    return /does not exist|PGRST205|42P01|schema cache/i.test((error.code||'')+' '+(error.message||''))
+      ?'Leaderboard-Tabelle fehlt noch – bitte das SQL-Update ausführen.'
+      :'Speichern fehlgeschlagen: '+(error.message||'unbekannter Fehler')}
+  putLocal('game_scores',data); return true;
 }
 function vGame(){
   const all=[...S.game_scores].sort((a,b)=>b.score-a.score||String(a.created_at).localeCompare(String(b.created_at)));
