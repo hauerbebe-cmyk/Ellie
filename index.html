@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=7">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=22"></script>
+<script src="config.js?v=23"></script>
 <style>
 :root{
   --bg:#fbf6ee; --card:#ffffff; --ink:#2b2520; --muted:#73685d; --line:#ebe2d4;
@@ -397,6 +397,31 @@ h1{font-size:30px;font-weight:800;margin:4px 0 14px}
 .fact{margin-top:10px;background:linear-gradient(135deg,var(--accent-soft),var(--card) 70%)}
 .fact .btn.plain{padding:2px 4px;font-size:13px;color:var(--accent-ink)}
 .fact-t{margin-top:6px;font-size:15px;line-height:1.45}
+.seg.five button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;padding:6px 2px}
+.seg.five button span{font-size:18px;line-height:1.1}
+body.noscroll{overflow:hidden}
+#game{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);touch-action:none;user-select:none;-webkit-user-select:none}
+.g-top{display:flex;align-items:center;gap:6px;padding:8px 12px}
+.g-x{width:42px;height:42px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:16px;flex:none}
+.g-hud{flex:1;text-align:center;line-height:1.1}.g-hud span{display:block;font-weight:800;font-size:20px}.g-hud small{font-size:11px;color:var(--muted)}
+.g-wrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0;padding:0 8px}
+#gc{border-radius:14px;touch-action:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.g-pad{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 12px}
+.g-pad>div{display:flex;gap:6px}
+.g-pad button{width:70px;height:54px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:22px;color:var(--accent-ink);box-shadow:var(--shadow)}
+.g-pad button:active{background:var(--accent-soft);transform:scale(.95)}
+.g-over{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45)}
+.g-over[hidden]{display:none}
+.g-card{background:var(--card);border-radius:22px;padding:22px;width:min(300px,86%);text-align:center}
+.g-card .mf{width:68px;max-width:68px;margin:0 auto}.g-card h3{margin:6px 0 2px}
+.g-score{font-size:46px;font-weight:800;color:var(--accent);line-height:1.1}
+.g-hero{text-align:center;padding:18px}
+.g-hero-img .mf{width:84px;max-width:84px;margin:0 auto 8px}
+.g-hero .g-title{font-size:24px;display:block;margin-bottom:4px}
+.g-best{margin-top:12px;font-size:14px}
+.lb .md{width:32px;font-size:22px;text-align:center;flex:none}.lb .rk{font-size:15px;color:var(--muted);font-weight:700}
+.lb .pts{font-size:19px}.lb.me .pts{color:var(--accent-ink)}
+.duel .du{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:16px}.duel .du:first-child{border-top:0}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -446,8 +471,8 @@ const ALPRA_TAPER = {
     {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg',use:{'0.5':0.25}},
     {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg',use:{'0.25':0.25}},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info'];
-const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores'];
+const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const NAV_ICONS = {"start": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3.5 10.5 12 4l8.5 6.5\"/><path d=\"M5.5 9v10.5h13V9\"/><path d=\"M10 19.5v-5h4v5\"/></svg>", "meds": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2.8\" y=\"8.2\" width=\"18.4\" height=\"7.6\" rx=\"3.8\" transform=\"rotate(-40 12 12)\"/><path d=\"m9.2 9.6 5.2 4.8\"/></svg>", "bark": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 20 17h-8l-4.5 3.5V17H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z\"/><path d=\"M8 11.2h.01M12 11.2h.01M16 11.2h.01\" stroke-width=\"2.6\"/></svg>", "log": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4.5 5.5A1.5 1.5 0 0 1 6 4h12.5v14H6a1.5 1.5 0 0 0-1.5 1.5Z\"/><path d=\"M4.5 19.5A1.5 1.5 0 0 0 6 21h12.5v-3\"/><path d=\"M8.5 8.5h6M8.5 12h4\"/></svg>", "notes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-10Z\"/><path d=\"M14.5 3.5v5h5\"/><path d=\"M8.5 13h7M8.5 16.5h5\"/></svg>"};
 const TABS = [
   {id:'start', l:'Start'},
@@ -460,7 +485,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-06.22'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-07.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -927,6 +952,146 @@ document.addEventListener('input',e=>{if(e.target.id==='logText'&&ui.logForm){ui
 
 
 
+/* ====== Spiel: Ellie Crossing (Frogger) ====== */
+const GC=9, GR=11;                               // Spalten, Reihen (0 = Ziel, 10 = Start)
+const ROAD_ROWS=[1,2,3,4,6,7,8,9];
+const VEH={car:{em:['🚗','🚕','🚙','🚓'],len:1,size:1.0},bus:{em:['🚌','🚚'],len:1.8,size:1.55},bike:{em:['🛵','🚲'],len:0.9,size:0.9}};
+const LANES=[ // Grund-Setup, wird pro Level schneller
+  {row:1,dir:-1,v:1.5,type:'car',gap:2.6},{row:2,dir:1,v:1.0,type:'bus',gap:3.4},{row:3,dir:-1,v:2.0,type:'bike',gap:2.4},{row:4,dir:1,v:1.3,type:'car',gap:2.2},
+  {row:6,dir:1,v:1.2,type:'car',gap:2.4},{row:7,dir:-1,v:0.9,type:'bus',gap:3.2},{row:8,dir:1,v:1.8,type:'car',gap:2.8},{row:9,dir:-1,v:1.1,type:'bike',gap:2.0}];
+let G=null;
+const ellieImgs={};
+function ellieImg(v){
+  if(!ellieImgs[v]){const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(moodFace(v).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '));ellieImgs[v]=i}
+  return ellieImgs[v];
+}
+function gameLanes(level){
+  const f=1+0.16*(level-1);
+  return LANES.map(l=>{const t=VEH[l.type], vs=[]; let x=Math.random()*2;
+    while(x<GC+2){vs.push({x,em:t.em[Math.floor(Math.random()*t.em.length)]}); x+=t.len+l.gap*(0.75+Math.random()*0.6)}
+    return {...l,v:l.v*f*(0.9+Math.random()*0.2),len:t.len,size:t.size,vs}});
+}
+function gameNewLevel(){
+  G.lanes=gameLanes(G.level); G.ex=4; G.ey=10; G.maxRow=10; G.hop=0;
+  const r=ROAD_ROWS.concat([5])[Math.floor(Math.random()*9)];
+  G.bone={x:Math.floor(Math.random()*GC),y:r};
+  G.msg=`Level ${G.level}`; G.msgT=1.2;
+}
+function openGame(){
+  const ov=document.createElement('div'); ov.id='game';
+  ov.innerHTML=`<div class="g-top"><button class="g-x" id="gx" aria-label="Beenden">✕</button>
+      <div class="g-hud"><span id="gs">0</span><small>Punkte</small></div><div class="g-hud"><span id="gl">1</span><small>Level</small></div><div class="g-hud"><span id="gh">🐾🐾🐾</span><small>Leben</small></div></div>
+    <div class="g-wrap"><canvas id="gc"></canvas><div class="g-over" id="go" hidden></div></div>
+    <div class="g-pad"><button data-d="up" aria-label="Hoch">▲</button><div><button data-d="left" aria-label="Links">◀</button><button data-d="down" aria-label="Runter">▼</button><button data-d="right" aria-label="Rechts">▶</button></div></div>`;
+  document.body.append(ov); document.body.classList.add('noscroll');
+  G={score:0,level:1,lives:3,over:false,paused:false,hitT:0,t:performance.now(),saved:false};
+  gameNewLevel(); gameResize();
+  const cv=ov.querySelector('#gc');
+  ov.querySelector('#gx').onclick=closeGame;
+  ov.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();gameMove(b.dataset.d)}));
+  let sx=0,sy=0;
+  cv.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY},{passive:true});
+  cv.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<18) gameMove('up'); else if(Math.abs(dx)>Math.abs(dy)) gameMove(dx>0?'right':'left'); else gameMove(dy>0?'down':'up')},{passive:true});
+  window.addEventListener('keydown',gameKey); window.addEventListener('resize',gameResize);
+  G.raf=requestAnimationFrame(gameLoop);
+}
+function closeGame(){
+  if(!G) return; cancelAnimationFrame(G.raf); G=null;
+  window.removeEventListener('keydown',gameKey); window.removeEventListener('resize',gameResize);
+  document.getElementById('game')?.remove(); document.body.classList.remove('noscroll'); render();
+}
+function gameKey(e){const m={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key]; if(m){e.preventDefault();gameMove(m)}}
+function gameResize(){
+  const cv=document.getElementById('gc'); if(!cv||!G) return;
+  const wrap=cv.parentNode, W=wrap.clientWidth, H=wrap.clientHeight;
+  G.cs=Math.floor(Math.min(W/GC,H/GR)); const dpr=window.devicePixelRatio||1;
+  cv.style.width=G.cs*GC+'px'; cv.style.height=G.cs*GR+'px'; cv.width=G.cs*GC*dpr; cv.height=G.cs*GR*dpr;
+  G.ctx=cv.getContext('2d'); G.ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+function gameMove(d){
+  if(!G||G.over||G.hitT>0) return;
+  const nx=G.ex+(d==='left'?-1:d==='right'?1:0), ny=G.ey+(d==='up'?-1:d==='down'?1:0);
+  if(nx<0||nx>=GC||ny<0||ny>=GR) return;
+  G.ex=nx; G.ey=ny; G.hop=1;
+  if(ny<G.maxRow){G.maxRow=ny; G.score+=10}
+  if(G.bone&&G.bone.x===nx&&G.bone.y===ny){G.score+=50; G.bone=null; G.msg='+50 🦴'; G.msgT=0.9}
+  if(ny===0){G.score+=100+G.level*20; G.level++; navigator.vibrate?.(40); gameNewLevel(); G.msg=`Zuhause! 🏠 Level ${G.level}`; G.msgT=1.4}
+}
+function gameHit(){
+  G.lives--; G.hitT=0.8; navigator.vibrate?.([60,40,60]);
+  if(G.lives<=0){G.over=true; setTimeout(gameOver,700)}
+}
+function gameUpdate(dt){
+  G.lanes.forEach(l=>l.vs.forEach(v=>{v.x+=l.dir*l.v*dt;
+    if(l.dir>0&&v.x>GC+0.5) v.x-=GC+l.len+1.5+Math.random(); if(l.dir<0&&v.x<-l.len-0.5) v.x+=GC+l.len+1.5+Math.random()}));
+  if(G.hop>0) G.hop=Math.max(0,G.hop-dt*8);
+  if(G.msgT>0) G.msgT-=dt;
+  if(G.hitT>0){G.hitT-=dt; if(G.hitT<=0&&!G.over){G.ex=4;G.ey=10}; return}
+  const lane=G.lanes.find(l=>l.row===G.ey); if(!lane) return;
+  const a=G.ex+0.2, b=G.ex+0.8;
+  if(lane.vs.some(v=>v.x+0.08<b&&v.x+lane.len-0.08>a)) gameHit();
+}
+function gameDraw(){
+  const c=G.ctx, s=G.cs, W=s*GC;
+  for(let r=0;r<GR;r++){
+    const y=r*s;
+    if(ROAD_ROWS.includes(r)){c.fillStyle='#4b4a52';c.fillRect(0,y,W,s);
+      if(ROAD_ROWS.includes(r+1)){c.strokeStyle='rgba(255,255,255,.55)';c.lineWidth=2;c.setLineDash([s*0.35,s*0.3]);c.beginPath();c.moveTo(0,y+s);c.lineTo(W,y+s);c.stroke();c.setLineDash([])}
+    } else {c.fillStyle=r===0?'#9ccc65':(r%2?'#8bc34a':'#86bd45');c.fillRect(0,y,W,s);
+      c.fillStyle='rgba(0,0,0,.06)';for(let i=0;i<GC*2;i++){c.fillRect((i*0.53+r*0.31)%GC*s,y+((i*7)%10)/10*s,3,6)}}
+  }
+  c.globalAlpha=1;c.fillStyle='#000';c.font=`${s*0.62}px system-ui,"Apple Color Emoji","Noto Color Emoji"`;c.textAlign='center';c.textBaseline='middle';
+  for(let i=0;i<GC;i+=2) c.fillText(i===4?'🏠':i%4===0?'🌳':'🌷',i*s+s/2,s/2);
+  c.fillText('🥣',(GC-0.5)*s,s/2);
+  if(G.bone){c.font=`${s*0.6}px system-ui,"Apple Color Emoji","Noto Color Emoji"`;c.fillText('🦴',G.bone.x*s+s/2,G.bone.y*s+s/2)}
+  G.lanes.forEach(l=>{c.fillStyle='#000';c.font=`${s*0.86*l.size}px system-ui,"Apple Color Emoji","Noto Color Emoji"`;
+    l.vs.forEach(v=>{const cx=(v.x+l.len/2)*s, cy=l.row*s+s*0.54;
+      c.save();c.translate(cx,cy);if(l.dir>0)c.scale(-1,1);c.fillText(v.em,0,0);c.restore()})});
+  const img=ellieImg(G.hitT>0?1:G.over?1:5), sc=1+0.18*Math.sin(G.hop*Math.PI), sz=s*0.92*sc;
+  if(img.complete) c.drawImage(img,G.ex*s+(s-sz)/2,G.ey*s+(s-sz)/2-G.hop*s*0.12,sz,sz);
+  if(G.hitT>0){c.fillStyle=`rgba(220,60,40,${Math.min(.35,G.hitT*.5)})`;c.fillRect(0,0,W,GR*s);
+    c.font=`bold ${s*0.7}px system-ui`;c.fillStyle='#fff';c.fillText('Autsch! 💥',W/2,GR*s/2)}
+  if(G.msgT>0&&G.hitT<=0){c.font=`bold ${s*0.6}px system-ui`;c.fillStyle=`rgba(255,255,255,${Math.min(1,G.msgT*2)})`;c.strokeStyle=`rgba(0,0,0,${Math.min(.5,G.msgT)})`;c.lineWidth=4;
+    c.strokeText(G.msg,W/2,5*s+s/2);c.fillText(G.msg,W/2,5*s+s/2)}
+}
+function gameLoop(now){
+  if(!G) return;
+  const dt=Math.min(0.05,(now-G.t)/1000); G.t=now;
+  if(!G.paused&&!document.hidden){ if(!G.over) gameUpdate(dt); else if(G.hitT>0) G.hitT-=dt; }
+  if(G.ctx) gameDraw();
+  const q=id=>document.getElementById(id);
+  if(q('gs')){q('gs').textContent=G.score;q('gl').textContent=G.level;q('gh').textContent='🐾'.repeat(Math.max(0,G.lives))||'–'}
+  G.raf=requestAnimationFrame(gameLoop);
+}
+async function gameOver(){
+  if(!G) return;
+  const go=document.getElementById('go'); const score=G.score, level=G.level;
+  const best=Math.max(0,...S.game_scores.filter(x=>x.player===me.name).map(x=>x.score));
+  go.hidden=false;
+  go.innerHTML=`<div class="g-card"><div style="font-size:44px">${moodFace(score>best?5:1)}</div><h3>${score>best&&best>0?'Neuer Rekord! 🎉':'Game over'}</h3>
+    <div class="g-score">${score}</div><div class="muted small">Punkte · Level ${level}</div>
+    <div id="gsave" class="muted small" style="margin-top:8px">${score?'Wird im Leaderboard gespeichert …':''}</div>
+    <div class="actions" style="margin-top:16px"><button class="btn" id="gagain">Nochmal</button><button class="btn ghost" id="gend">Leaderboard</button></div></div>`;
+  go.querySelector('#gagain').onclick=()=>{go.hidden=true;Object.assign(G,{score:0,level:1,lives:3,over:false,hitT:0,saved:false});gameNewLevel()};
+  go.querySelector('#gend').onclick=closeGame;
+  if(score>0&&!G.saved){G.saved=true; const r=await ins('game_scores',{player:me.name,score,level});
+    const el=document.getElementById('gsave'); if(el) el.textContent=r?'✓ Im Leaderboard gespeichert':'Speichern fehlgeschlagen – SQL-Update schon ausgeführt?'}
+}
+function vGame(){
+  const all=[...S.game_scores].sort((a,b)=>b.score-a.score||String(a.created_at).localeCompare(String(b.created_at)));
+  const top=all.slice(0,10), mine=all.filter(x=>x.player===me.name), best=mine[0];
+  const players=[...new Set(all.map(x=>x.player))].map(p=>({p,best:all.find(x=>x.player===p)})).sort((a,b)=>b.best.score-a.best.score);
+  const medal=i=>['🥇','🥈','🥉'][i]||`<span class="rk">${i+1}.</span>`;
+  return `<div class="card g-hero"><div class="g-hero-img">${moodFace(5)}</div>
+      <div><b class="g-title">Ellie Crossing</b><div class="muted small">Bring Ellie sicher über die Straßen nach Hause! Wischen oder Pfeiltasten. Knochen 🦴 = Bonus.</div></div>
+      <button class="btn block" data-a="playGame" style="margin-top:14px;font-size:18px">▶ Spielen</button>
+      <div class="g-best">${best?`Dein Rekord: <b>${best.score}</b> Punkte (Level ${best.level})`:'Noch kein Rekord – leg los!'}</div></div>
+    ${players.length>1?`<div class="medsec"><h2>Duell</h2></div><div class="card duel">${players.map((x,i)=>`<div class="du"><span>${i===0?'👑':''} ${esc(x.p)}</span><b>${x.best.score}</b></div>`).join('')}</div>`:''}
+    <div class="medsec"><h2>Leaderboard</h2><span class="muted small">Top 10</span></div>
+    <div class="card list">${top.length?top.map((x,i)=>`<div class="li lb ${x.player===me.name?'me':''}"><span class="md">${medal(i)}</span><span class="grow"><b>${esc(x.player)}</b><div class="muted small">Level ${x.level} · ${fmtD(dayOf(x.created_at))}</div></span><b class="pts">${x.score}</b></div>`).join(''):'<div class="muted small">Noch keine Spiele – wer holt den ersten Platz?</div>'}</div>`;
+}
+
 /* ====== Dokumente (privater Speicher "dokumente") ====== */
 const DOC_CATS=['Befund','Rezept','Impfpass','Versicherung','Rechnung','Sonstiges'];
 function vDocs(){
@@ -1296,7 +1461,7 @@ function linkRow(l){
 }
 function vNotes(){
   const t=ui.notesTab||'notes';
-  const seg=`<div class="seg">${[['notes','📝 Notizen'],['appts','📅 Termine'],['links','🔗 Links'],['docs','📄 Doks']].map(([k,l])=>`<button class="${t===k?'on':''}" data-a="notesTab" data-k="${k}">${l}</button>`).join('')}</div>`;
+  const seg=`<div class="seg five">${[['notes','📝','Notizen'],['appts','📅','Termine'],['links','🔗','Links'],['docs','📄','Doks'],['game','🎮','Spiel']].map(([k,i,l])=>`<button class="${t===k?'on':''}" data-a="notesTab" data-k="${k}"><span>${i}</span>${l}</button>`).join('')}</div>`;
   const add={notes:'noteEdit',appts:'apptEdit',links:'linkEdit',docs:'docNew'}[t];
   let body='';
   if(t==='notes'){
@@ -1311,13 +1476,15 @@ function vNotes(){
     const up=sorted.filter(a=>a.day>=td), past=sorted.filter(a=>a.day<td).reverse();
     body=(up.length?up.map(a=>apptRow(a,false)).join(''):'<div class="card empty">Keine anstehenden Termine 🎉</div>')
       +(past.length?`<button class="medsec" data-a="togglePast" style="width:100%"><h2>Vergangen (${past.length})</h2><span class="muted small">${ui.showPast?'ausblenden ⌃':'anzeigen ⌄'}</span></button>${ui.showPast?past.map(a=>apptRow(a,true)).join(''):''}`:'');
+  } else if(t==='game'){
+    body=vGame();
   } else if(t==='docs'){
     body=vDocs();
   } else {
     body=wuffCard()+`<div class="medsec"><h2>Linksammlung</h2></div>`
       +(S.links.length?[...S.links].sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))).map(linkRow).join(''):'<div class="card empty">Noch keine Links.<br>Z. B. Tierarzt, Futter-Shop, Trainingsvideos …</div>');
   }
-  return `<div class="topbar pagehead"><h1>Notizen</h1><button class="btn" data-a="${add}">+ Neu</button></div>${seg}${body}`;
+  return `<div class="topbar pagehead"><h1>Notizen</h1>${add?`<button class="btn" data-a="${add}">+ Neu</button>`:''}</div>${seg}${body}`;
 }
 function icsFor(a){
   const dt=a.day.replace(/-/g,''), z=n=>String(n).padStart(2,'0');
@@ -1715,6 +1882,7 @@ const ACT = {
     });
   },
   nextFact(){ui.factOff=(ui.factOff||0)+1;render()},
+  playGame(){openGame()},
   notesTab(d){ui.notesTab=d.k;render();window.scrollTo(0,0)},
   togglePast(){ui.showPast=!ui.showPast;render()},
   apptEdit(d){
@@ -2159,6 +2327,7 @@ function seedDemo(){
     if(rnd()<.7) S.walks.push({id:uid(),day:d,time:'18:00',minutes:[20,30][Math.floor(rnd()*2)],calm:2+Math.round(rnd()*3),author:'Jana',created_at:iso(now-i*864e5)});
   }
   S.walks.push({id:uid(),day:t,time:'07:45',minutes:45,calm:4,place:'Feld',note:'Hundebegegnung, gut gemeistert',author:'Dennis',created_at:iso(now)});
+  S.game_scores.push({id:uid(),player:'Jana',score:640,level:4,created_at:iso(now-864e5)},{id:uid(),player:'Dennis',score:410,level:3,created_at:iso(now-2*864e5)},{id:uid(),player:'Jana',score:220,level:2,created_at:iso(now-3*864e5)});
   S.appointments.push({id:uid(),title:'Tierarzt Kontrolle',day:t,time:'17:30',place:'Tierarztpraxis',note:'Impfpass mitnehmen',author:'Jana',created_at:iso(now)},
     {id:uid(),title:'Wuffotel',day:addDays(t,9),time:'09:00',place:'Neusser Straße 95, 41516 Grevenbroich',author:'Dennis',created_at:iso(now)},
     {id:uid(),title:'Hundeschule',day:addDays(t,-5),time:'10:00',author:'Dennis',created_at:iso(now)});
