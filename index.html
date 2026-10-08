@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=8">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=25"></script>
+<script src="config.js?v=26"></script>
 <style>
 :root{
   --bg:#f7f3fb; --card:#ffffff; --ink:#2a2335; --muted:#6b6280; --line:#e8e0f0;
@@ -488,7 +488,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-07.3'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-08.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -755,12 +755,12 @@ function vMeds(){
       <span class="grow"><b>${esc(med.name)}</b><div class="s">${log.skipped?'nicht gegeben':esc(log.amount)}${diff?' (Soll '+esc(soll)+')':''} · 🕒 ${hm(log.created_at)} · ${esc(log.author)}</div></span>
       <span class="muted">${x?'⌃':'⌄'}</span></button>
       ${x?`<div class="medrow-x"><div class="muted small">${esc(slotLabel(slot))}${log.note?' · '+esc(log.note):''}</div>
-        <button class="btn plain" style="padding-left:0" data-a="undoLog" data-id="${log.id}">Rückgängig machen</button></div>`:''}`}).join('');
+        <div class="actions" style="margin-top:8px"><button class="btn ghost" data-a="editLog" data-id="${log.id}">🕒 Uhrzeit ändern</button><button class="btn plain" data-a="undoLog" data-id="${log.id}">Rückgängig</button></div></div>`:''}`}).join('');
   const bed=bedarf.map(med=>{
     const logs=S.med_logs.filter(l=>l.med_id===med.id&&l.day===day);
     return `<div class="card med"><div class="row"><div class="grow"><div class="name">${esc(med.name)}</div><div class="slot">Soll: ${esc(med.dose||'–')}${med.note?' · '+esc(med.note):''}</div></div>
       <button class="btn ghost" data-a="giveOther" data-med="${med.id}" data-slot="bedarf">Gegeben</button></div>
-      ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><span class="grow">${esc(l.amount)}<div class="stamp">🕒 ${hm(l.created_at)} Uhr · ${esc(l.author)}${l.note?' · '+esc(l.note):''}</div></span><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
+      ${logs.length?`<div class="list" style="margin-top:8px">${logs.map(l=>`<div class="li"><button class="grow" style="text-align:left" data-a="editLog" data-id="${l.id}">${esc(l.amount)}<div class="stamp">🕒 ${hm(l.created_at)} Uhr · ${esc(l.author)}${l.note?' · '+esc(l.note):''} <span class="muted">✎</span></div></button><button class="btn plain" data-a="undoLog" data-id="${l.id}">✕</button></div>`).join('')}</div>`:''}
     </div>`}).join('');
   return `<div class="topbar pagehead"><h1>Medikamente</h1><div class="row" style="gap:6px"><button class="btn ghost" data-a="stock">📦 Vorrat</button><button class="btn ghost" data-a="plan">Plan</button></div></div>
   ${stockBanner()}
@@ -1520,22 +1520,42 @@ const ACT = {
   dayShift(d){const k=d.k;ui[k]=addDays(ui[k],+d.n);if(ui[k]>today())ui[k]=today();if(k==='logDay'){ui.logForm=null;ui.logDirty=false}render()},
   plan(){ui.editPlan=!ui.editPlan;render()},
   toggleRow(d){ui.openRow=ui.openRow===d.id?null:d.id;render()},
-  async giveAsPlanned(d,el){const m=S.meds.find(x=>x.id===d.med);const c=el&&el.closest('.card');if(c){c.classList.add('pop');navigator.vibrate?.(25);await new Promise(r=>setTimeout(r,480))}await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} um ${hm(new Date())} eingetragen ✅`)},
+  async giveAsPlanned(d,el){if(ui.medDay!==today()) return ACT.giveOther(d); const m=S.meds.find(x=>x.id===d.med);const c=el&&el.closest('.card');if(c){c.classList.add('pop');navigator.vibrate?.(25);await new Promise(r=>setTimeout(r,480))}await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sollOf(m,ui.medDay)||'✓'});toast(`${m.name} um ${hm(new Date())} eingetragen ✅`)},
   giveOther(d){
     const m=S.meds.find(x=>x.id===d.med), soll=sollOf(m,ui.medDay)||'';
-    const now=hm(new Date());
-    openSheet(`<h3>${esc(m.name)}</h3><div class="muted">${esc(slotLabel(d.slot))} · Soll: ${esc(soll||'–')}</div>
+    const now=ui.medDay===today()?hm(new Date()):(/^\d\d:\d\d$/.test(d.slot)?d.slot:'');
+    openSheet(`<h3>${esc(m.name)}</h3><div class="muted">${ui.medDay!==today()?esc(dayLabel(ui.medDay))+' · ':''}${esc(slotLabel(d.slot))} · Soll: ${esc(soll||'–')}</div>
       <label class="f">Tatsächlich gegeben</label><input type="text" id="amt" value="${esc(soll)}">
       <label class="f">Gegeben um</label><input type="time" id="gt" value="${now}" style="max-width:150px">
       <label class="f">Notiz (optional)</label><input type="text" id="nt" placeholder="z. B. halbe Tablette ausgespuckt">
       <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
       ${d.slot!=='bedarf'?'<button class="btn block plain" id="skip" style="margin-top:4px">Heute nicht gegeben</button>':''}`, sh=>{
-      const at=()=>{const v=sh.querySelector('#gt').value||now;return new Date(`${ui.medDay}T${v}:00`).toISOString()};
-      sh.querySelector('#save').onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sh.querySelector('#amt').value.trim()||'–',note:sh.querySelector('#nt').value.trim()||null,created_at:at()});closeSheet()};
+      const at=()=>{const v=sh.querySelector('#gt').value||now||'12:00';return new Date(`${ui.medDay}T${v}:00`).toISOString()};
+      sh.querySelector('#save').onclick=async()=>{if(!sh.querySelector('#gt').value&&!now){toast('Bitte die Uhrzeit eintragen');return}await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:sh.querySelector('#amt').value.trim()||'–',note:sh.querySelector('#nt').value.trim()||null,created_at:at()});closeSheet()};
       const sk=sh.querySelector('#skip'); if(sk) sk.onclick=async()=>{await ins('med_logs',{med_id:m.id,day:ui.medDay,slot:d.slot,amount:'0',skipped:true,note:sh.querySelector('#nt').value.trim()||null,created_at:at()});closeSheet()};
     });
   },
   undoLog(d){del('med_logs',d.id)},
+  editLog(d){
+    const l=S.med_logs.find(x=>x.id===d.id); if(!l) return;
+    const m=S.meds.find(x=>x.id===l.med_id), soll=m?sollOf(m,l.day)||'':'';
+    openSheet(`<h3>${esc(m?.name||'Medikament')}</h3><div class="muted">${esc(dayLabel(l.day))} · ${esc(slotLabel(l.slot))}${soll?' · Soll: '+esc(soll):''}</div>
+      <label class="f">Gegeben um</label><input type="time" id="et" value="${hm(l.created_at)}" style="max-width:150px">
+      ${l.skipped?'<div class="muted small" style="margin-top:10px">Als „nicht gegeben“ eingetragen</div>':`<label class="f">Tatsächlich gegeben</label><input type="text" id="ea" value="${esc(l.amount||'')}">`}
+      <label class="f">Notiz (optional)</label><input type="text" id="en" value="${esc(l.note||'')}">
+      <div class="muted small" style="margin-top:10px">Eingetragen von ${esc(l.author||'–')}</div>
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      <button class="btn block danger" id="del" style="margin-top:4px">Eintrag löschen</button>`, sh=>{
+      const q=x=>sh.querySelector(x);
+      q('#save').onclick=async()=>{
+        const t=q('#et').value; if(!t){toast('Bitte eine Uhrzeit eintragen');return}
+        const patch={created_at:new Date(`${l.day}T${t}:00`).toISOString(),note:q('#en').value.trim()||null};
+        if(!l.skipped) patch.amount=q('#ea').value.trim()||'–';
+        await upd('med_logs',l.id,patch); closeSheet(); toast(`Auf ${t} Uhr geändert 🕒`);
+      };
+      q('#del').onclick=()=>{if(confirm('Eintrag löschen?')){del('med_logs',l.id);closeSheet()}};
+    });
+  },
   medEdit(d){
     if(d.id&&S.meds.find(x=>x.id===d.id)?.kind==='taper') return ACT.taperEdit(d);
     const m=d.id?S.meds.find(x=>x.id===d.id):{name:'',dose:'',kind:'taeglich',times:['08:00'],note:'',active:true};
