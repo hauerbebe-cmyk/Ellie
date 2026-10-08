@@ -186,7 +186,7 @@ nav button.on .i{background:var(--accent-soft)}
 .sb.on.sv2{border-color:var(--ok);background:var(--ok-soft)}.sb.on.sv2 small{color:var(--ok)}
 .sb.on.sv1,.sb.on.sv4,.sb.on.sv5{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
 .sb.on.sv1 small,.sb.on.sv4 small,.sb.on.sv5 small{color:var(--danger)}
-.bowls{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bowls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .bw{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;background:var(--bg);border:2px solid transparent;transition:transform .12s}
 .bw:active{transform:scale(.95)}
 .bw small{font-size:12px;color:var(--muted);font-weight:600}
@@ -635,7 +635,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-08.5'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-08.6'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -1003,7 +1003,7 @@ function stoolIcon(v){
 
 const CALM=[{v:1,e:'😣',l:'Sehr gestresst'},{v:2,e:'😟',l:'Gestresst'},{v:3,e:'😐',l:'Okay'},{v:4,e:'🙂',l:'Entspannt'},{v:5,e:'😌',l:'Sehr entspannt'}];
 const STOOL=[{v:1,l:'Hart'},{v:2,l:'Normal'},{v:3,l:'Weich'},{v:4,l:'Breiig'},{v:5,l:'Flüssig'}];
-const APPETITE=[{v:3,l:'Alles'},{v:2,l:'Halb'},{v:1,l:'Kaum'},{v:0,l:'Nichts'}];
+const APPETITE=[{v:3,l:'Alles'},{v:2.5,l:'Fast alles'},{v:2,l:'Halb'},{v:1,l:'Kaum'},{v:0,l:'Nichts'}];
 const DEFAULT_OPTS={
   symptom:[['Unruhe','😰'],['Schlecht geschlafen','😴'],['Starkes Hecheln','🥵'],['Zittern','🫨'],['Erbrechen','🤢'],['Durchfall','💩'],['Viel getrunken','💧'],['Lecken / Kratzen','🐾'],['Verstecken','🙈'],['Wackelig / benommen','😵‍💫'],['Gereizt','😠']],
   tag:[['Verspielt','🎾'],['Verschmust','🥰'],['Entspannt','😌'],['Ruhig','🤫'],['Müde','💤'],['Aufgedreht','⚡'],['Ängstlich','😟'],['Neugierig','👀'],['Viel gebellt','🗣️']],
@@ -1023,7 +1023,7 @@ async function seedOpts(kind){ // Standardliste einmalig in die DB schreiben, be
   await insMany('log_options',DEFAULT_OPTS[kind].map(([label,icon],i)=>({kind,label,icon,active:true,created_at:new Date(t0+i*1000).toISOString()})));
 }
 function bowl(level){
-  const h=[0,6,12,19][level], y=34-h, id='bc'+level;
+  const h={0:0,1:6,2:12,2.5:16,3:19}[level]??12, y=34-h, id='bc'+String(level).replace('.','_');
   return `<svg viewBox="0 0 64 40" class="bowl" aria-hidden="true"><defs><clipPath id="${id}"><path d="M6 13 H58 Q56 36 32 36 Q8 36 6 13 Z"/></clipPath></defs>
     <path d="M6 13 H58 Q56 36 32 36 Q8 36 6 13 Z" class="bin"/>
     <g clip-path="url(#${id})"><rect x="0" y="${y}" width="64" height="${h+4}" class="food"/>${h?`<circle cx="21" cy="${y+1.5}" r="2.6" class="kib"/><circle cx="32" cy="${y+.5}" r="2.8" class="kib"/><circle cx="43" cy="${y+1.5}" r="2.6" class="kib"/><circle cx="27" cy="${y+4}" r="2.2" class="kib"/><circle cx="38" cy="${y+4}" r="2.2" class="kib"/>`:''}</g>
@@ -1076,7 +1076,7 @@ function vLog(){
   <div class="card lsec"><div class="sec-h"><span>Stimmung</span><span class="muted small">${f.mood?MOODS.find(m=>m.v===f.mood).l:'Wie war sie drauf?'}</span></div>
     <div class="moods">${MOODS.map(m=>`<button class="${f.mood===m.v?'on':''}" data-a="mood" data-v="${m.v}">${moodFace(m.v)}<small>${m.l}</small></button>`).join('')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Appetit</span><span class="muted small">${ap?ap.l+' gefressen':'Wie viel hat sie gefressen?'}</span></div>
-    <div class="bowls">${APPETITE.map(a=>`<button class="bw ${f.appetite===a.v?'on':''} lv${a.v}" data-a="appetite" data-v="${a.v}">${bowl(a.v)}<small>${a.l}</small></button>`).join('')}</div></div>
+    <div class="bowls">${APPETITE.map(a=>`<button class="bw ${f.appetite===a.v?'on':''} lv${String(a.v).replace('.','_')}" data-a="appetite" data-v="${a.v}">${bowl(a.v)}<small>${a.l}</small></button>`).join('')}</div></div>
   <div class="card lsec"><div class="sec-h"><span>Kot</span><span class="muted small">${stl?stl.l:'Wie war die Konsistenz?'}</span></div>
     <div class="stools">${STOOL.map(x=>`<button class="sb ${f.stool===x.v?'on':''} sv${x.v}" data-a="stool" data-v="${x.v}">${stoolIcon(x.v)}<small>${x.l}</small></button>`).join('')}</div></div>
   ${walkSection(day)}
@@ -1333,7 +1333,7 @@ function periodStats(from,to){
   const cnt=(arr,f)=>arr.filter(f).length;
   return {n,D,logged:logged.length,moodAvg:avg(moods),moodN:moods.length,
     barksPerDay:D.reduce((s,x)=>s+x.barks,0)/n, walkPerDay:D.reduce((s,x)=>s+x.walk,0)/n,
-    apN:cnt(D,x=>x.appetite!=null), apAll:cnt(D,x=>x.appetite===3), apHalf:cnt(D,x=>x.appetite===2), apLow:cnt(D,x=>x.appetite!=null&&x.appetite<=1),
+    apN:cnt(D,x=>x.appetite!=null), apAll:cnt(D,x=>x.appetite===3), apMost:cnt(D,x=>x.appetite===2.5), apHalf:cnt(D,x=>x.appetite===2), apLow:cnt(D,x=>x.appetite!=null&&x.appetite<=1),
     stN:cnt(D,x=>x.stool!=null), stNorm:cnt(D,x=>x.stool===2), stSoft:cnt(D,x=>x.stool===3), stBad:cnt(D,x=>x.stool>=4), stHard:cnt(D,x=>x.stool===1),
     calm:avg(D.flatMap(x=>x.ws.map(w=>w.calm).filter(Boolean)))};
 }
@@ -1456,7 +1456,7 @@ function vetReport(n){
   L.push('',`VERHALTEN & BEFINDEN (an ${P.logged} von ${n} Tagen protokolliert)`);
   if(P.moodN){const good=P.D.filter(x=>x.mood>=4).length, bad=P.D.filter(x=>x.mood&&x.mood<=2).length;
     L.push(`- Stimmung: Ø ${de1(P.moodAvg)} von 5 (gut/super an ${good} Tagen, schlecht/naja an ${bad} Tagen)${Q.moodAvg?`; Zeitraum davor Ø ${de1(Q.moodAvg)}`:''}`)}
-  if(P.apN) L.push(`- Appetit: alles gefressen an ${P.apAll} Tagen, halb an ${P.apHalf}, kaum/nichts an ${P.apLow}`);
+  if(P.apN) L.push(`- Appetit: alles gefressen an ${P.apAll} Tagen,${P.apMost?` fast alles an ${P.apMost},`:''} halb an ${P.apHalf}, kaum/nichts an ${P.apLow}`);
   if(P.stN) L.push(`- Kot: normal an ${P.stNorm} Tagen, weich an ${P.stSoft}, breiig/flüssig an ${P.stBad}${P.stHard?`, hart an ${P.stHard}`:''}`);
   const bt=P.D.reduce((s,x)=>s+x.barks,0);
   if(bt||Q.barksPerDay){const rs={};P.D.forEach(x=>x.bs.forEach(b=>{const l=reasonOf(b.reason).label;rs[l]=(rs[l]||0)+1}));
