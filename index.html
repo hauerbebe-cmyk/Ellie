@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=8">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=26"></script>
+<script src="config.js?v=27"></script>
 <style>
 :root{
   --bg:#f7f3fb; --card:#ffffff; --ink:#2a2335; --muted:#6b6280; --line:#e8e0f0;
@@ -425,6 +425,60 @@ body.noscroll{overflow:hidden}
 .lb .md{width:32px;font-size:22px;text-align:center;flex:none}.lb .rk{font-size:15px;color:var(--muted);font-weight:700}
 .lb .pts{font-size:19px}.lb.me .pts{color:var(--hot-ink)}
 .duel .du{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:16px}.duel .du:first-child{border-top:0}
+.r3-teaser{position:relative;overflow:hidden;padding:0;border:0;color:#fff;background:linear-gradient(150deg,#6a43ad,#8459c4 45%,#e4501f)}
+.r3t-bg{position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(255,255,255,.25),transparent 40%),repeating-linear-gradient(100deg,transparent 0 38px,rgba(255,255,255,.06) 38px 40px)}
+.r3t-in{position:relative;padding:20px 18px 16px}
+.r3t-title{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1}.r3t-title span{background:#fff;color:#e4501f;border-radius:8px;padding:0 6px;margin-left:4px;font-size:22px;vertical-align:4px}
+.r3t-sub{font-size:13px;opacity:.9;margin-top:6px}
+.r3t-play{background:#fff!important;color:#6a43ad!important;margin-top:14px;font-size:18px;font-weight:800}
+.r3t-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
+.r3t-stats div{background:rgba(255,255,255,.14);border-radius:12px;padding:8px}.r3t-stats small{display:block;font-size:11px;opacity:.85}.r3t-stats b{font-size:14px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-hero.small{padding:12px 14px}.g-hero.small .g-hero-img .mf{width:44px;max-width:44px;margin:0}
+#r3{position:fixed;inset:0;z-index:70;background:#000;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+#r3c{display:block;position:absolute;inset:0}
+.r3-hud{position:absolute;inset:0;pointer-events:none;padding:calc(env(safe-area-inset-top) + 10px) 12px 0;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.r3-hud button{pointer-events:auto}
+.r3-top{display:flex;align-items:center;gap:10px}
+.r3-ib{width:42px;height:42px;border-radius:14px;background:rgba(30,20,45,.45);color:#fff;font-size:17px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.r3-score{flex:1;text-align:center;line-height:1}.r3-score b{font-size:30px;font-weight:900;display:block}.r3-score small{font-size:12px;opacity:.9}
+.r3-treats{background:rgba(30,20,45,.45);border-radius:14px;padding:9px 12px;font-size:16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.r3-anx{display:flex;align-items:center;gap:8px;margin:10px auto 0;max-width:330px;background:rgba(30,20,45,.4);border-radius:99px;padding:4px 12px 4px 4px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.r3-anx span .mf{width:30px}.r3-anx small{font-size:11px;opacity:.9}
+.r3-bar{flex:1;height:9px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden}
+.r3-bar i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#b192ec,#e4501f);transition:width .15s}
+.r3-bar i.mid{background:linear-gradient(90deg,#e8b34a,#e4501f)}.r3-bar i.hi{background:#ff3b30;animation:r3pulse .5s infinite alternate}
+@keyframes r3pulse{to{opacity:.55}}
+.r3-pw{display:flex;gap:6px;justify-content:center;margin-top:8px}.r3-pw span{background:rgba(132,89,196,.85);border-radius:99px;padding:4px 10px;font-size:13px;font-weight:700}
+.r3-ghost{text-align:center;font-size:12px;margin-top:6px;opacity:.95}
+.r3-msg{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:30px;font-weight:900;opacity:0;transform:scale(.8);transition:all .2s;letter-spacing:-.02em}
+.r3-msg.show{opacity:1;transform:scale(1)}.r3-msg.bad{color:#ffd2c4}.r3-msg.good{color:#e6dbff}
+.r3-zone{position:absolute;left:50%;top:22%;transform:translate(-50%,-10px);background:rgba(30,20,45,.6);padding:8px 16px;border-radius:99px;font-weight:800;opacity:0;white-space:nowrap}
+.r3-zone.on{animation:r3zone 3s ease forwards}@keyframes r3zone{10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.r3-hint{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 28px);text-align:center;font-size:14px;font-weight:600;transition:opacity .6s}
+.r3-flash{position:absolute;inset:0;pointer-events:none;opacity:0}.r3-flash.on{animation:r3fl .45s ease-out}@keyframes r3fl{0%{opacity:1}100%{opacity:0}}
+.r3-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(180deg,rgba(23,19,29,.15),rgba(23,19,29,.55))}
+.r3-panel[hidden]{display:none}
+.r3-card{position:relative;width:min(360px,100%);max-height:88vh;overflow:auto;background:rgba(255,255,255,.94);color:#2a2335;border-radius:26px;padding:22px 18px 18px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+@media (prefers-color-scheme: dark){.r3-card{background:rgba(34,28,43,.95);color:#f2edf8}}
+.r3-panel.bottom{align-items:flex-end;padding-bottom:calc(env(safe-area-inset-bottom) + 16px)}
+.r3-menu{margin-top:0}
+.r3-x{position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:50%;background:rgba(132,89,196,.15);font-size:16px}
+.r3-title{font-size:32px;font-weight:900;letter-spacing:-.03em;color:#8459c4}.r3-title span{color:#e4501f}.r3-title.sm{font-size:24px}
+.r3-sub{font-size:13px;opacity:.75;margin:4px 0 12px}
+.r3-btn{display:block;width:100%;margin-top:8px;padding:14px;border-radius:16px;background:#8459c4;color:#fff;font-size:17px;font-weight:800}
+.r3-btn small{display:block;font-size:12px;font-weight:600;opacity:.85;margin-top:2px}
+.r3-btn.hot{background:linear-gradient(135deg,#e4501f,#ff7a3d)}
+.r3-btn.ghost{background:rgba(132,89,196,.14);color:#8459c4}
+@media (prefers-color-scheme: dark){.r3-btn.ghost{color:#cdb6f5}}
+.r3-row{display:flex;gap:8px}.r3-row .r3-btn{flex:1}.r3-btn.sq{flex:0 0 60px}
+.r3-meta{font-size:12px;opacity:.75;margin-top:10px}
+.r3-how{text-align:left;font-size:13px;margin-top:10px;opacity:.85}.r3-how summary{font-weight:700;cursor:pointer;text-align:center}.r3-how p{margin:8px 0}
+.r3-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center}
+.r3-item{border-radius:16px;padding:12px 6px;background:rgba(132,89,196,.1);border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px}
+.r3-item .e{font-size:30px}.r3-item small{font-size:12px;opacity:.75}.r3-item.on{border-color:#e4501f;background:rgba(228,80,31,.1)}
+.r3-face .mf{width:70px;max-width:70px;margin:0 auto}
+.r3-big{font-size:52px;font-weight:900;color:#e4501f;line-height:1.05;letter-spacing:-.03em}
+.r3-ghosttxt{font-weight:800;margin:6px 0 4px;color:#8459c4}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
 .savebar .btn{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -488,7 +542,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-08.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-08.2'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -1092,17 +1146,27 @@ async function saveScore(row){
   putLocal('game_scores',data); return true;
 }
 function vGame(){
-  const all=[...S.game_scores].sort((a,b)=>b.score-a.score||String(a.created_at).localeCompare(String(b.created_at)));
-  const top=all.slice(0,10), mine=all.filter(x=>x.player===me.name), best=mine[0];
+  const gk=ui.lbGame||'run3d', gameOf=x=>x.game||'crossing';
+  const all=S.game_scores.filter(x=>gameOf(x)===gk).sort((a,b)=>b.score-a.score||String(a.created_at).localeCompare(String(b.created_at)));
+  const top=all.slice(0,10), best=all.find(x=>x.player===me.name);
   const players=[...new Set(all.map(x=>x.player))].map(p=>({p,best:all.find(x=>x.player===p)})).sort((a,b)=>b.best.score-a.best.score);
   const medal=i=>['🥇','🥈','🥉'][i]||`<span class="rk">${i+1}.</span>`;
-  return `<div class="card g-hero"><div class="g-hero-img">${moodFace(5)}</div>
-      <div><b class="g-title">Ellie Crossing</b><div class="muted small">Bring Ellie sicher über die Straßen nach Hause! Wischen oder Pfeiltasten. Knochen 🦴 = Bonus.</div></div>
-      <button class="btn block" data-a="playGame" style="margin-top:14px;font-size:18px">▶ Spielen</button>
-      <div class="g-best">${best?`Dein Rekord: <b>${best.score}</b> Punkte (Level ${best.level})`:'Noch kein Rekord – leg los!'}</div></div>
-    ${players.length>1?`<div class="medsec"><h2>Duell</h2></div><div class="card duel">${players.map((x,i)=>`<div class="du"><span>${i===0?'👑':''} ${esc(x.p)}</span><b>${x.best.score}</b></div>`).join('')}</div>`:''}
-    <div class="medsec"><h2>Leaderboard</h2><span class="muted small">Top 10</span></div>
-    <div class="card list">${top.length?top.map((x,i)=>`<div class="li lb ${x.player===me.name?'me':''}"><span class="md">${medal(i)}</span><span class="grow"><b>${esc(x.player)}</b><div class="muted small">Level ${x.level} · ${fmtD(dayOf(x.created_at))}</div></span><b class="pts">${x.score}</b></div>`).join(''):'<div class="muted small">Noch keine Spiele – wer holt den ersten Platz?</div>'}</div>`;
+  const run=S.game_scores.filter(x=>x.game==='run3d'), myRun=run.filter(x=>x.player===me.name).sort((a,b)=>b.score-a.score)[0];
+  const mon=addDays(today(),-((new Date().getDay()+6)%7)), week=run.filter(x=>dayOf(x.created_at)>=mon).sort((a,b)=>b.score-a.score)[0];
+  const daily=run.filter(x=>x.seed==='daily-'+today()).sort((a,b)=>b.score-a.score)[0];
+  const n=x=>Number(x).toLocaleString('de-DE');
+  return `<div class="card r3-teaser"><div class="r3t-bg"></div>
+      <div class="r3t-in"><div class="r3t-title">Ellie Run <span>3D</span></div>
+      <div class="r3t-sub">Endless Runner durch Köln: Lövenich · Stadtwald · Hohenzollernbrücke · Dom</div>
+      <button class="btn block r3t-play" data-a="playRun3d">▶ Spielen</button>
+      <div class="r3t-stats"><div><small>Dein Rekord</small><b>${myRun?n(myRun.score):'–'}</b></div><div><small>Wochen-Champion</small><b>${week?esc(week.player):'–'}</b></div><div><small>Tages-Challenge</small><b>${daily?esc(daily.player)+' · '+n(daily.score):'offen'}</b></div></div></div></div>
+    <div class="card g-hero small"><div class="row" style="gap:12px;text-align:left"><div class="g-hero-img">${moodFace(5)}</div>
+      <div class="grow"><b>Ellie Crossing</b><div class="muted small">Der Klassiker: über die Straße nach Hause.</div></div>
+      <button class="btn ghost" data-a="playGame">▶</button></div></div>
+    <div class="seg" style="margin-top:14px">${[['run3d','🏃 Run 3D'],['crossing','🚗 Crossing']].map(([k,l])=>`<button class="${gk===k?'on':''}" data-a="lbGame" data-k="${k}">${l}</button>`).join('')}</div>
+    ${players.length>1?`<div class="medsec"><h2>Duell</h2></div><div class="card duel">${players.map((x,i)=>`<div class="du"><span>${i===0?'👑':''} ${esc(x.p)}</span><b>${n(x.best.score)}</b></div>`).join('')}</div>`:''}
+    <div class="medsec"><h2>Leaderboard</h2><span class="muted small">${best?`Dein Rekord: ${n(best.score)}`:'Top 10'}</span></div>
+    <div class="card list">${top.length?top.map((x,i)=>`<div class="li lb ${x.player===me.name?'me':''}"><span class="md">${medal(i)}</span><span class="grow"><b>${esc(x.player)}</b><div class="muted small">${gk==='run3d'?`${n(x.meta?.d||x.level||0)} m · 🦴 ${x.meta?.treats??'–'}${x.seed?.startsWith('daily-')?' · 📅':''}`:`Level ${x.level}`} · ${fmtD(dayOf(x.created_at))}</div></span><b class="pts">${n(x.score)}</b></div>`).join(''):'<div class="muted small">Noch keine Runden – wer holt den ersten Platz?</div>'}</div>`;
 }
 
 /* ====== Dokumente (privater Speicher "dokumente") ====== */
@@ -1916,6 +1980,13 @@ const ACT = {
   },
   nextFact(){ui.factOff=(ui.factOff||0)+1;render()},
   playGame(){openGame()},
+  lbGame(d){ui.lbGame=d.k;render()},
+  async playRun3d(){
+    if(window.Run3D) return Run3D.open();
+    toast('Ellie Run 3D lädt … 🐾');
+    try{ if(!window.THREE) await loadScript('vendor/three.min.js?v=128'); await loadScript('run3d.js?v='+APP_VERSION); Run3D.open() }
+    catch(e){console.error(e);toast('Laden fehlgeschlagen – Internet prüfen')}
+  },
   notesTab(d){ui.notesTab=d.k;render();window.scrollTo(0,0)},
   togglePast(){ui.showPast=!ui.showPast;render()},
   apptEdit(d){
