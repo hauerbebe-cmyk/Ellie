@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="splash/splash-750x1334-dark.png?v=8">
 <link rel="manifest" href="manifest.json">
 <title>Ellie</title>
-<script src="config.js?v=27"></script>
+<script src="config.js?v=28"></script>
 <style>
 :root{
   --bg:#f7f3fb; --card:#ffffff; --ink:#2a2335; --muted:#6b6280; --line:#e8e0f0;
@@ -478,6 +478,21 @@ body.noscroll{overflow:hidden}
 .r3-item .e{font-size:30px}.r3-item small{font-size:12px;opacity:.75}.r3-item.on{border-color:#e4501f;background:rgba(228,80,31,.1)}
 .r3-face .mf{width:70px;max-width:70px;margin:0 auto}
 .r3-big{font-size:52px;font-weight:900;color:#e4501f;line-height:1.05;letter-spacing:-.03em}
+.r3-zone small{display:block;font-size:12px;font-weight:600;opacity:.85;text-align:center}
+.r3-msg.small{font-size:20px}
+.r3-row .r3-btn small{font-size:11px}
+.r3-mis{text-align:left;margin-top:12px;background:rgba(132,89,196,.08);border-radius:16px;padding:10px 12px}
+.r3-mis-h{font-weight:800;font-size:13px;display:flex;justify-content:space-between;margin-bottom:4px}.r3-mis-h span{color:#e4501f}
+.r3-mis-i{display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 0}.r3-mis-i span{flex:1}.r3-mis-i small{opacity:.7;font-size:11px;white-space:nowrap}
+.r3-mis-i i{flex:0 0 18px;height:18px;border-radius:50%;border:2px solid #b192ec;font-style:normal;font-size:11px;display:flex;align-items:center;justify-content:center;color:#fff}
+.r3-mis-i.done i{background:#8459c4;border-color:#8459c4}.r3-mis-i.done span{text-decoration:line-through;opacity:.6}
+.r3-tabs{display:flex;gap:4px;margin:0 0 10px;overflow-x:auto}.r3-tabs button{flex:1;padding:8px 2px;border-radius:12px;font-size:12.5px;white-space:nowrap;font-weight:700;background:rgba(132,89,196,.1);color:inherit}
+.r3-tabs button.on{background:#8459c4;color:#fff}
+.r3-item em{font-size:10.5px;font-style:normal;opacity:.6;line-height:1.2}.r3-item.lock{opacity:.55}
+.r3-vbar{height:8px;border-radius:8px;background:rgba(132,89,196,.15);overflow:hidden;margin:0 0 12px}.r3-vbar i{display:block;height:100%;background:linear-gradient(90deg,#8459c4,#e4501f)}
+.r3-bez{text-align:left;margin-bottom:10px}.r3-bez-h{font-weight:800;font-size:13px;margin-bottom:4px}.r3-bez-h span{color:#e4501f;font-weight:700}
+.r3-vs{display:flex;flex-wrap:wrap;gap:4px}.r3-vs span{font-size:11.5px;padding:3px 8px;border-radius:99px;background:rgba(132,89,196,.08);opacity:.5}
+.r3-vs span.on{background:#f6c400;color:#111;opacity:1;font-weight:700}
 .r3-ghosttxt{font-weight:800;margin:6px 0 4px;color:#8459c4}
 .savebar.hide{display:none}
 .savebar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 76px);z-index:5;margin:4px 0 12px}
@@ -542,7 +557,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-08.2'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-08.3'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
