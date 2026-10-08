@@ -99,8 +99,10 @@ function trkSave(){ if(!TRK) return; const {start,pts,paused,pauseAcc,pauseAt,ma
 function trkElapsed(){ if(!TRK) return 0; const now=Date.now(); return (now-TRK.start-TRK.pauseAcc-(TRK.paused&&TRK.pauseAt?now-TRK.pauseAt:0))/1000 }
 function trkDist(){return TRK?routeDist(TRK.pts):0}
 async function wake(on){
-  try{ if(on&&'wakeLock' in navigator&&document.visibilityState==='visible'){ TRK.wl=await navigator.wakeLock.request('screen') }
-       else if(!on&&TRK?.wl){ await TRK.wl.release(); TRK.wl=null } }catch(e){}
+  try{ if(on&&document.visibilityState==='visible'){ if(!('wakeLock' in navigator)) throw 0; TRK.wl=await navigator.wakeLock.request('screen'); TRK.wlFail=false;
+         TRK.wl.addEventListener?.('release',()=>{ if(TRK) TRK.wl=null }) }
+       else if(!on&&TRK?.wl){ await TRK.wl.release(); TRK.wl=null } }catch(e){ if(on&&TRK) TRK.wlFail=true }
+  trkTip()
 }
 function onPos(p){
   if(!TRK) return; const c=p.coords, ll=[c.latitude,c.longitude];
@@ -151,19 +153,23 @@ async function gassiOpen(){
   const ov=document.createElement('div'); ov.id='gt'; ov.className='gfull';
   ov.innerHTML=`<div class="gt-map" id="gtm"><div class="gt-load">Karte lädt …</div></div>
     <div class="gt-top"><button class="gt-ib" data-g="min" aria-label="Minimieren">⌄</button><div class="gt-gps" id="gtg">GPS …</div><button class="gt-ib" data-g="center" aria-label="Zentrieren">◎</button></div>
+    <div class="gpocket" id="gpk" hidden><div class="gp-box" id="gpb"><b id="gpt">0:00</b><span id="gpd">0,00 km</span><small>Taschen-Modus · 2× tippen zum Entsperren</small></div></div>
     <div class="gt-panel">
       <div class="gt-stats"><div><small>Zeit</small><b id="gtt">0:00</b></div><div class="mid"><small>Distanz</small><b id="gtd">0,00</b><small>km</small></div><div><small>Tempo</small><b id="gtp">–</b><small>/km</small></div></div>
       <div class="gt-marks">${Object.entries(MARKS).map(([k,m])=>`<button data-g="mark" data-k="${k}"><span>${m.e}</span>${m.l}</button>`).join('')}<button data-g="photo"><span>📷</span>Foto</button></div>
       <div class="gt-ctl" id="gtc"></div>
-      <div class="gt-tip">Tipp: Lass den Bildschirm an – das iPhone pausiert GPS, wenn die App im Hintergrund ist. Lücken werden mit einer geraden Linie überbrückt.</div>
+      <button class="gt-pocketbtn" data-g="pocket">🌙 Taschen-Modus – Bildschirm schwarz, Aufzeichnung läuft weiter</button>
+      <div class="gt-tip" id="gtip"></div>
     </div>`;
   document.body.append(ov); document.body.classList.add('noscroll'); trkPill();
   ov.addEventListener('click',e=>{const b=e.target.closest('[data-g]'); if(!b) return; const a=b.dataset.g;
-    if(a==='min'){gassiMin()} else if(a==='center'){TRK.follow=true;trkDrawLive(true)}
+    if(a==='min'){gassiMin()} else if(a==='center'){TRK.follow=true;trkDrawLive(true)} else if(a==='pocket'){pocket(true)}
     else if(a==='pause') trkPause(true); else if(a==='resume') trkPause(false); else if(a==='stop') trkStop();
     else if(a==='mark') trkMark(b.dataset.k); else if(a==='photo') trkPhoto() });
   if(TRK.watch==null&&!TRK.paused) trkWatch();
-  trkHud();
+  const pk=ov.querySelector('#gpk'); let lastTap=0;
+  pk.addEventListener('pointerdown',e=>{ e.preventDefault(); const n=Date.now(); if(n-lastTap<450){pocket(false);lastTap=0} else lastTap=n });
+  trkHud(); trkTip();
   try{ await loadLeaflet(); if(!document.getElementById('gt')) return;
     const el=ov.querySelector('#gtm'); el.innerHTML='';
     TRK.map=baseMap(el,{attributionControl:true}); TRK.follow=true;
@@ -172,9 +178,17 @@ async function gassiOpen(){
     TRK.line=null; trkDrawLive(true);
   }catch(e){ ov.querySelector('#gtm').innerHTML='<div class="gt-load">Karte offline – Aufzeichnung läuft trotzdem 🐾</div>' }
 }
-function gassiMin(){ const ov=document.getElementById('gt'); if(ov) ov.remove(); document.body.classList.remove('noscroll'); if(TRK){TRK.map=null;TRK.me=null} trkPill() }
+function trkTip(){ const t=document.getElementById('gtip'); if(!t||!TRK) return;
+  t.innerHTML=TRK.wlFail?'⚠️ Dein iPhone erlaubt der App nicht, den Bildschirm anzulassen. Stell während der Runde <b>Einstellungen › Anzeige & Helligkeit › Automatische Sperre</b> auf „Nie“ – sonst stoppt das GPS beim Sperren.'
+    :'Nicht sperren! Das iPhone stoppt GPS für Web-Apps im Sperrbildschirm. Nimm lieber den 🌙 Taschen-Modus – schwarzer Bildschirm braucht kaum Akku.' }
+function pocket(on){
+  const pk=document.getElementById('gpk'); if(!pk||!TRK) return; pk.hidden=!on; TRK.pocket=on;
+  if(on){ wake(true); pocketMove() } else trkDrawLive(true);
+}
+function pocketMove(){ const b=document.getElementById('gpb'); if(b) b.style.transform=`translate(${Math.round((Math.random()-.5)*80)}px,${Math.round((Math.random()-.5)*240)}px)` }
+function gassiMin(){ const ov=document.getElementById('gt'); if(ov) ov.remove(); document.body.classList.remove('noscroll'); if(TRK){TRK.map=null;TRK.me=null;TRK.pocket=false} trkPill() }
 function trkDrawLive(force){
-  if(!TRK||!TRK.map) return; const m=TRK.map;
+  if(!TRK||!TRK.map||TRK.pocket) return; const m=TRK.map;
   if(TRK.lyr) TRK.lyr.remove(); TRK.lyr=L.layerGroup().addTo(m);
   const segs=segments(TRK.pts);
   L.polyline(segs,{color:'#fff',weight:9,opacity:.9}).addTo(TRK.lyr); L.polyline(segs,{color:'#e4501f',weight:5}).addTo(TRK.lyr);
@@ -188,6 +202,7 @@ function trkHud(){
   const ov=document.getElementById('gt'); if(!ov||!TRK) return; const q=s=>ov.querySelector(s);
   const s=trkElapsed(), d=trkDist();
   q('#gtt').textContent=fmtDur(s); q('#gtd').textContent=fmtKm(d,false); q('#gtp').textContent=fmtPace(s,d);
+  if(TRK.pocket){ q('#gpt').textContent=fmtDur(s); q('#gpd').textContent=fmtKm(d)+(TRK.paused?' · pausiert':''); if(Math.floor(s)%60===0) pocketMove() }
   const g=q('#gtg'), age=TRK.lastFix?(Date.now()-TRK.lastFix)/1000:999;
   g.className='gt-gps '+(TRK.err&&age>20?'bad':TRK.acc&&TRK.acc<=20&&age<15?'ok':TRK.acc&&age<15?'mid':'bad');
   g.textContent=TRK.paused?'⏸ Pausiert':TRK.err&&age>20?TRK.err:TRK.acc&&age<15?`GPS ±${Math.round(TRK.acc)} m`:'GPS wird gesucht …';
@@ -214,6 +229,32 @@ function trkStop(){
 }
 function gassiDiscard(){ trkUnwatch(); TRK=null; lsSet(TRK_KEY,''); trkPill(); render() }
 
+/* ---------- GPX-Import (Route aus Strava, Komoot, Apple-Watch-Apps …) ---------- */
+function pickFile(accept){return new Promise(ok=>{const i=document.createElement('input');i.type='file';if(accept)i.accept=accept;i.onchange=()=>ok(i.files[0]||null);i.click()})}
+function parseGpx(txt){
+  const doc=new DOMParser().parseFromString(txt,'application/xml'); if(doc.querySelector('parsererror')) throw new Error('Keine gültige GPX-Datei');
+  let pts=[...doc.getElementsByTagName('trkpt')]; if(!pts.length) pts=[...doc.getElementsByTagName('rtept')];
+  if(pts.length<2) throw new Error('In der Datei ist keine Route');
+  const raw=pts.map(p=>{const t=p.getElementsByTagName('time')[0]?.textContent;return {lat:+p.getAttribute('lat'),lng:+p.getAttribute('lon'),t:t?Date.parse(t):NaN}}).filter(p=>isFinite(p.lat)&&isFinite(p.lng));
+  const hasT=raw.every(p=>isFinite(p.t)), t0=hasT?raw[0].t:Date.now();
+  const route=[]; let pseudo=0;
+  raw.forEach((p,i)=>{ const pt=[+p.lat.toFixed(6),+p.lng.toFixed(6),0], last=route[route.length-1];
+    if(last){ const d=hav(last,pt); if(d<4&&i<raw.length-1) return; pseudo+=d/1.2 }
+    pt[2]=Math.round(hasT?(p.t-t0)/1000:pseudo);
+    if(last&&hasT&&pt[2]-last[2]>300&&hav(last,pt)<50) pt.push(1);   // lange Standpause → Lücke
+    route.push(pt) });
+  const name=doc.querySelector('trk > name, metadata > name, rte > name')?.textContent?.trim();
+  return {route,start:new Date(t0),hasT,name};
+}
+async function gassiImport(){
+  const f=await pickFile('.gpx,application/gpx+xml,application/xml,text/xml'); if(!f) return;
+  try{ const g=parseGpx(await f.text()), st=g.start, dur=g.route[g.route.length-1][2], dist=Math.round(routeDist(g.route));
+    gassiSaveSheet({_gpx:true,day:dayOf(st.toISOString()),time:g.hasT?hm(st):hm(new Date()),start_at:g.hasT?st.toISOString():null,duration_s:dur,minutes:Math.max(1,Math.round(dur/60)),
+      distance_m:dist,route:g.route,marks:[],photos:[],title:g.name&&g.name.length<60?g.name:walkTitle(g.hasT?hm(st):null),calm:null,place:'',note:''});
+    if(!g.hasT) toast('Die Datei hat keine Zeiten – Dauer ist geschätzt');
+  }catch(e){ console.error(e); toast(e.message||'GPX konnte nicht gelesen werden') }
+}
+
 /* ---------- Speichern / Bearbeiten ---------- */
 async function walkSaveRow(id,row){
   if(DEMO){ if(id){Object.assign(S.walks.find(r=>r.id===id),row)} else {row={...row,id:uid(),author:me.name,created_at:new Date().toISOString()};S.walks.push(row)} render(); return row }
@@ -224,13 +265,14 @@ async function walkSaveRow(id,row){
 }
 function gassiSaveSheet(w){
   // für neue getrackte Runden und zum Bearbeiten (auch manuelle Runden)
-  const isNew=!w.id, tracked=(w.route||[]).length>1;
+  const isNew=!w.id, tracked=(w.route||[]).length>1, gpx=!!w._gpx;
   let calm=w.calm, photos=[...(w.photos||[])], mins=+w.minutes||30;
   const places=[...new Set(S.walks.map(x=>x.place).filter(Boolean))].slice(-6).reverse();
   const calmChips=()=>CALM.map(c=>`<button class="chip ${calm===c.v?'on':''}" data-calm="${c.v}">${c.e} ${c.l}</button>`).join('');
   const minChips=()=>[15,30,45,60,90,120].map(m=>`<button class="chip ${mins===m?'on':''}" data-min="${m}">${m}</button>`).join('');
   const phHTML=()=>photos.map((p,i)=>`<div class="gph">${photoUrl(p)?`<img src="${esc(photoUrl(p))}">`:'<span>📷</span>'}<button data-rm="${i}" aria-label="Entfernen">✕</button></div>`).join('')+`<button class="gph add" data-addph="1">＋<small>Foto</small></button>`;
-  openSheet(`<h3>${isNew?(tracked?'Runde speichern':'Neue Gassi-Runde'):'Gassi-Runde bearbeiten'}</h3><div class="muted">${dayLabel(w.day)}</div>
+  openSheet(`<h3>${isNew?(gpx?'Route importieren':tracked?'Runde speichern':'Neue Gassi-Runde'):'Gassi-Runde bearbeiten'}</h3><div class="muted">${dayLabel(w.day)}</div>
+    ${isNew&&!tracked?'<button class="btn ghost block" id="gpx" style="margin-top:10px">📂 Route aus GPX-Datei importieren<small style="display:block;font-weight:500;opacity:.8">z. B. aus Strava, Komoot oder einer Watch-App</small></button>':''}
     ${tracked?`<div class="gs-map">${staticMap(w,340,170)}</div>
       <div class="gs-stats"><div><small>Distanz</small><b>${fmtKm(w.distance_m)}</b></div><div><small>Zeit</small><b>${fmtDur(w.duration_s)}</b></div><div><small>Tempo</small><b>${fmtPace(w.duration_s,w.distance_m)}<small> /km</small></b></div></div>`:''}
     <label class="f">Titel</label><input type="text" id="wti" value="${esc(w.title||walkTitle(w.time))}" placeholder="z. B. Morgenrunde">
@@ -267,6 +309,7 @@ function gassiSaveSheet(w){
       closeSheet(); toast(tracked&&isNew?`🐾 ${fmtKm(row.distance_m)} gespeichert!`:'Gassi gespeichert 🐕');
       if(isNew&&(tracked||photos.length)) setTimeout(()=>gassiDetail(saved.id),300);
     };
+    const gx=q('#gpx'); if(gx) gx.onclick=()=>{ closeSheet(true); gassiImport() };
     const dc=q('#disc'); if(dc) dc.onclick=()=>{ if(confirm('Runde wirklich verwerfen? Die Route geht verloren.')){ gassiDiscard(); closeSheet() } };
     const dl=q('#del'); if(dl) dl.onclick=()=>{ if(confirm('Runde löschen?')){ del('walks',w.id); closeSheet(); document.getElementById('ga')?.remove(); document.body.classList.remove('noscroll') } };
   });
