@@ -158,6 +158,14 @@ nav button.on .i{background:var(--accent-soft)}
 
 /* Protokoll */
 .moods{display:flex;justify-content:space-between;gap:6px}
+.chew-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px}
+.chewcount{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.chewcount.bump{animation:bump .4s ease-out}
+.chewbtn{width:92px;height:92px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:26px;font-weight:800;flex:none;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 40%,transparent);display:grid;place-items:center;align-content:center;line-height:1;transition:transform .12s}
+.chewbtn:active{transform:scale(.92)}.chewbtn span{font-size:18px;margin-top:2px}
+.bars.mini{height:74px;gap:6px}
+.chew-list{margin-top:8px}
 .moods button{flex:1;padding:10px 0 8px;border-radius:14px;background:var(--bg);border:2px solid transparent;font-size:28px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .moods button small{font-size:10px;color:var(--muted)}
 .moods button.on{border-color:var(--accent);background:var(--accent-soft)}
@@ -621,8 +629,8 @@ const ALPRA_TAPER = {
     {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg',use:{'0.5':0.25}},
     {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg',use:{'0.25':0.25}},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores'];
-const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews'];
+const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const NAV_ICONS = {"start": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3.5 10.5 12 4l8.5 6.5\"/><path d=\"M5.5 9v10.5h13V9\"/><path d=\"M10 19.5v-5h4v5\"/></svg>", "meds": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2.8\" y=\"8.2\" width=\"18.4\" height=\"7.6\" rx=\"3.8\" transform=\"rotate(-40 12 12)\"/><path d=\"m9.2 9.6 5.2 4.8\"/></svg>", "bark": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 20 17h-8l-4.5 3.5V17H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z\"/><path d=\"M8 11.2h.01M12 11.2h.01M16 11.2h.01\" stroke-width=\"2.6\"/></svg>", "log": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4.5 5.5A1.5 1.5 0 0 1 6 4h12.5v14H6a1.5 1.5 0 0 0-1.5 1.5Z\"/><path d=\"M4.5 19.5A1.5 1.5 0 0 0 6 21h12.5v-3\"/><path d=\"M8.5 8.5h6M8.5 12h4\"/></svg>", "notes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-10Z\"/><path d=\"M14.5 3.5v5h5\"/><path d=\"M8.5 13h7M8.5 16.5h5\"/></svg>"};
 const TABS = [
   {id:'start', l:'Start'},
@@ -635,7 +643,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-08.6'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-09.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -1045,6 +1053,17 @@ function alertBanner(){
   return `<button class="alert" data-go="log"><div class="alert-h">⚠️ Seit 2 Tagen in Folge</div><div class="alert-b">${a.map(esc).join(' · ')}</div><div class="alert-f">Bei Auffälligkeiten ggf. die Tierärztin informieren.</div></button>`;
 }
 function logSeg(){const v=ui.logView||'entry';return `<div class="seg">${[['entry','✍️ Eintrag'],['trend','📈 Verlauf']].map(([k,l])=>`<button class="${v===k?'on':''}" data-a="logView" data-k="${k}">${l}</button>`).join('')}</div>`}
+function chewSection(day){
+  const cs=S.chews.filter(c=>c.day===day).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  const days=[...Array(7)].map((_,i)=>addDays(day,i-6)), counts=days.map(d=>S.chews.filter(c=>c.day===d).length), max=Math.max(1,...counts);
+  const bump=ui.bumpChew; ui.bumpChew=false;
+  return `<div class="card lsec chew"><div class="sec-h"><span>Kaustangen</span><span class="muted small">${day===today()?'heute':fmtD(day)}</span></div>
+    <div class="chew-top"><div><div class="chewcount ${bump?'bump':''}">${cs.length}×</div><div class="muted small">${cs.length?`zuletzt ${hm(cs[0].created_at)} · ${esc(cs[0].author||'')}`:'Noch keine Kaustange'}</div></div>
+      <button class="chewbtn" data-a="chew" data-day="${day}">+1<span>🦴</span></button></div>
+    <div class="bars mini">${days.map((d,i)=>`<div class="b ${d===day?'today':''}"><em>${counts[i]||''}</em><i style="height:${counts[i]/max*80}%"></i>${d===today()?'heute':wd(d)}</div>`).join('')}</div>
+    ${cs.length?`<div class="list chew-list">${cs.map(c=>`<div class="li"><span>🦴</span><span class="grow">${hm(c.created_at)} Uhr<span class="muted small"> · ${esc(c.author||'')}</span></span><button class="btn plain" data-a="delChew" data-id="${c.id}" aria-label="Löschen">✕</button></div>`).join('')}</div>`:''}
+  </div>`;
+}
 function walkSection(day){
   const ws=S.walks.filter(w=>w.day===day).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));
   const tot=ws.reduce((a,w)=>a+(+w.minutes||0),0), km=ws.reduce((a,w)=>a+(w.distance_m||0),0);
@@ -1080,6 +1099,7 @@ function vLog(){
   <div class="card lsec"><div class="sec-h"><span>Kot</span><span class="muted small">${stl?stl.l:'Wie war die Konsistenz?'}</span></div>
     <div class="stools">${STOOL.map(x=>`<button class="sb ${f.stool===x.v?'on':''} sv${x.v}" data-a="stool" data-v="${x.v}">${stoolIcon(x.v)}<small>${x.l}</small></button>`).join('')}</div></div>
   ${walkSection(day)}
+  ${chewSection(day)}
   <div class="card lsec"><div class="sec-h"><span>Auffälligkeiten</span><button class="btn plain small" data-a="optEdit" data-k="symptom">Bearbeiten</button></div>
     <div class="chips">${chipsOf('symptom')}</div>
     <div class="muted small" style="margin-top:10px">${f.symptoms.length?`${f.symptoms.length} ausgewählt`:'Nichts auffällig? Super – einfach leer lassen ✨'}</div></div>
@@ -1806,6 +1826,15 @@ const ACT = {
     });
   },
   delBark(d){del('barks',d.id)},
+  async chew(d){
+    const day=d.day||today(), now=new Date();
+    // für vergangene Tage: Uhrzeit von jetzt auf den gewählten Tag legen
+    const ts=day===today()?now:new Date(`${day}T${hm(now)}:00`);
+    if(navigator.vibrate) navigator.vibrate(30); ui.bumpChew=true;
+    const row=await ins('chews',{day,created_at:ts.toISOString()});
+    if(row) toast('Kaustange gezählt 🦴'); else toast('Bitte zuerst update_12.sql ausführen');
+  },
+  delChew(d){del('chews',d.id)},
   mood(d){ui.logForm.mood=ui.logForm.mood===+d.v?0:+d.v;ui.logDirty=true;render()},
   stool(d){ui.logForm.stool=ui.logForm.stool===+d.v?null:+d.v;ui.logDirty=true;render()},
   appetite(d){ui.logForm.appetite=ui.logForm.appetite===+d.v?null:+d.v;ui.logDirty=true;render()},
@@ -2272,7 +2301,7 @@ const urlCache={};
 async function loadPhotos(){
   if(DEMO) return;
   const {data,error}=await sb.storage.from(BUCKET).list('',{limit:1000,sortBy:{column:'created_at',order:'desc'}});
-  if(error||!data){S.photos=[];return}
+  if(error||!data){console.warn('Fotos',error);return}   // vorhandene Fotos behalten
   const files=data.filter(f=>f.id&&!f.name.startsWith('.'));
   const fresh=c=>c&&Date.now()-c.t<5*864e5; // Links gelten 7 Tage, nach 5 erneuern
   const need=files.filter(f=>!fresh(urlCache[f.name])).map(f=>f.name);
@@ -2345,13 +2374,13 @@ function buildExport(dlogs,meds,mlogs,barks,walks,appts){
   const D=day=>new Date(day+'T12:00:00'), medById=Object.fromEntries(meds.map(m=>[m.id,m]));
   const usedKeys=new Set(barks.map(b=>b.reason));
   const RS=allReasons().filter(r=>r.active!==false||usedKeys.has(r.key));
-  const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at)),...walks.map(w=>w.day)])].sort();
+  const days=[...new Set([...dlogs.map(l=>l.day),...mlogs.map(l=>l.day),...barks.map(b=>dayOf(b.created_at)),...walks.map(w=>w.day),...S.chews.map(c=>c.day)])].sort();
   const protokoll=days.map(day=>{
     const lg=dlogs.find(l=>l.day===day), mood=lg&&MOODS.find(m=>m.v===lg.mood), w=lg?.weather||S.weather[day];
     const ap=APPETITE.find(a=>a.v===lg?.appetite), st=STOOL.find(x=>x.v===lg?.stool), bs=barks.filter(b=>dayOf(b.created_at)===day), ws=walks.filter(x=>x.day===day);
     const row={'Datum':D(day),'Tag':wd(day),'Stimmung':mood?`${mood.v} – ${mood.l}`:'','Appetit':ap?ap.l:'','Kot':st?st.l:'',
       'Auffälligkeiten':(lg?.symptoms||[]).join(', '),'Merkmale':(lg?.tags||[]).join(', '),'Beschreibung':lg?.text||'',
-      'Gassi (Min.)':ws.length?ws.reduce((a,x)=>a+(+x.minutes||0),0):'','Gebellt':bs.length};
+      'Gassi (Min.)':ws.length?ws.reduce((a,x)=>a+(+x.minutes||0),0):'','Kaustangen':S.chews.filter(c=>c.day===day).length||'','Gebellt':bs.length};
     RS.forEach(r=>row['davon: '+r.label]=bs.filter(b=>b.reason===r.key).length||'');
     row['Medikamente gegeben']=mlogs.filter(l=>l.day===day).map(l=>`${medById[l.med_id]?.name||'?'}: ${l.skipped?'nicht gegeben':l.amount}`).join('; ');
     row['Unwetter Lövenich']=weatherFlags(w,day).map(f=>f.t).join('; ');
@@ -2359,7 +2388,7 @@ function buildExport(dlogs,meds,mlogs,barks,walks,appts){
     return row;
   }).reverse();
   const pcols=[['Datum',11],['Tag',5],['Stimmung',13,{rule:ruleMood}],['Appetit',9,{rule:ruleAp}],['Kot',9,{rule:ruleSt}],['Auffälligkeiten',24,{wrap:1,rule:ruleNonEmpty}],
-    ['Merkmale',22,{wrap:1}],['Beschreibung',40,{wrap:1}],['Gassi (Min.)',8],['Gebellt',8],...RS.map(r=>['davon: '+r.label,12]),['Medikamente gegeben',40,{wrap:1}],['Unwetter Lövenich',30,{wrap:1,rule:ruleNonEmpty}],['Eingetragen von',11,{muted:1}]];
+    ['Merkmale',22,{wrap:1}],['Beschreibung',40,{wrap:1}],['Gassi (Min.)',8],['Kaustangen',9],['Gebellt',8],...RS.map(r=>['davon: '+r.label,12]),['Medikamente gegeben',40,{wrap:1}],['Unwetter Lövenich',30,{wrap:1,rule:ruleNonEmpty}],['Eingetragen von',11,{muted:1}]];
   const medis=[...mlogs].sort((a,b)=>(b.day+b.slot).localeCompare(a.day+a.slot)).map(l=>{const m=medById[l.med_id];const soll=m?sollOf(m,l.day):'';
     return {'Datum':D(l.day),'Medikament':m?.name||'(gelöscht)','Zeitpunkt':slotLabel(l.slot),'Soll':soll||'','Ist':l.skipped?'nicht gegeben':l.amount,
       'Status':l.skipped?'ausgelassen':l.amount===soll||m?.kind==='bedarf'?'wie geplant':'abweichend','Notiz':l.note||'','Von':l.author||'','Uhrzeit':hm(l.created_at)}});
