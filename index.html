@@ -158,6 +158,21 @@ nav button.on .i{background:var(--accent-soft)}
 
 /* Protokoll */
 .moods{display:flex;justify-content:space-between;gap:6px}
+.wcard{cursor:pointer}.wcard.due{border-color:color-mix(in srgb,var(--hot) 45%,var(--line))}
+.wrow{display:flex;align-items:center;gap:14px;margin-top:8px}
+.wbig{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.05}.wbig small{font-size:15px;font-weight:700;color:var(--muted)}
+.wspark{width:100%;height:54px;display:block}
+.wdelta{display:inline-block;font-size:12px;font-weight:700;border-radius:99px;padding:1px 7px;margin-left:4px;background:var(--accent-soft);color:var(--accent-ink)}
+
+.wlog{display:flex;align-items:center;gap:8px;width:100%;text-align:left;font-size:18px}.wlog b{font-size:22px}.wlog .muted{margin-left:auto}
+.wsum{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;background:var(--accent-soft);border-radius:14px;padding:10px 4px;margin-top:12px}
+.wsum small{display:block;font-size:11.5px;color:var(--muted)}.wsum b{font-size:18px;color:var(--accent-ink)}
+.wchart{width:100%;height:auto;display:block;margin-top:6px}.wgrid{stroke:var(--line);stroke-width:1}.wax{font-size:10px;fill:var(--muted)}
+.warea{fill:color-mix(in srgb,var(--accent) 14%,transparent)}.wpt{fill:var(--card);stroke:var(--accent);stroke-width:2}.wlast{fill:var(--hot);stroke:var(--card);stroke-width:2}
+.wlist{margin-top:12px}.wlist .li{width:100%;text-align:left}
+.wstep{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
+.wstep>button{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);font-size:26px;font-weight:700}
+.wstep>div{display:flex;align-items:baseline;gap:6px}.wstep input{width:130px;font-size:40px;font-weight:800;text-align:center;padding:8px;letter-spacing:-.02em}.wstep span{font-size:18px;font-weight:700;color:var(--muted)}
 .chew-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px}
 .chewcount{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em}
 .chewcount.bump{animation:bump .4s ease-out}
@@ -629,8 +644,8 @@ const ALPRA_TAPER = {
     {days:14,mg:0.125, pieces:'¼ Tbl. 0,5 mg',use:{'0.5':0.25}},
     {days:14,mg:0.0625,pieces:'¼ Tbl. 0,25 mg',use:{'0.25':0.25}},
   ]};
-const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews'];
-const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
+const TABLES = ['nicknames','meds','med_logs','barks','daily_log','notes','bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews','weights'];
+const OPTIONAL = ['bark_reasons','log_options','stock','appointments','links','walks','documents','info','game_scores','chews','weights']; // fehlt evtl. noch, wenn das SQL-Update nicht gelaufen ist
 const NAV_ICONS = {"start": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3.5 10.5 12 4l8.5 6.5\"/><path d=\"M5.5 9v10.5h13V9\"/><path d=\"M10 19.5v-5h4v5\"/></svg>", "meds": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2.8\" y=\"8.2\" width=\"18.4\" height=\"7.6\" rx=\"3.8\" transform=\"rotate(-40 12 12)\"/><path d=\"m9.2 9.6 5.2 4.8\"/></svg>", "bark": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 20 17h-8l-4.5 3.5V17H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z\"/><path d=\"M8 11.2h.01M12 11.2h.01M16 11.2h.01\" stroke-width=\"2.6\"/></svg>", "log": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4.5 5.5A1.5 1.5 0 0 1 6 4h12.5v14H6a1.5 1.5 0 0 0-1.5 1.5Z\"/><path d=\"M4.5 19.5A1.5 1.5 0 0 0 6 21h12.5v-3\"/><path d=\"M8.5 8.5h6M8.5 12h4\"/></svg>", "notes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.5 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-10Z\"/><path d=\"M14.5 3.5v5h5\"/><path d=\"M8.5 13h7M8.5 16.5h5\"/></svg>"};
 const TABS = [
   {id:'start', l:'Start'},
@@ -643,7 +658,7 @@ const TABS = [
 let sb = null, me = {name:''};
 const S = Object.fromEntries(TABLES.map(t=>[t,[]])); S.photos=[];
 const ui = { tab:(new URLSearchParams(location.search).get('tab')==='meds'?'meds':'start'), medDay:today(), logDay:today(), nick:null, logDirty:false, editPlan:false };
-const APP_VERSION = '2026-10-09.2'; // bei jeder Änderung zusammen mit version.txt hochzählen
+const APP_VERSION = '2026-10-19.1'; // bei jeder Änderung zusammen mit version.txt hochzählen
 const VAPID_PUBLIC = 'BA4VLCa6sqQPoSk9rq8p63oHyH5gLsDJH8YktJs4FlRhqNFpAfMv0PLKS4wT7asnDG45vSjXRje4w3qD_fSZ5SY';
 
 const $ = s => document.querySelector(s);
@@ -818,6 +833,7 @@ function vStart(){
     <button class="tile" data-go="bark"><div class="lbl">🗣️ Bellistima</div><div class="big">${b}×</div><div class="lbl">heute gebellt</div></button>
     <button class="tile" data-go="log"><div class="lbl">📖 Protokoll</div><div class="big">${mood?'<span class="mfbig">'+moodFace(mood.v)+'</span>':'✍️'}</div><div class="lbl">${mood?mood.l:'noch offen'}</div></button>
   </div>
+  ${weightCard()}
   ${gassiStartCard()}
   ${breedCard()}`;
 }
@@ -1100,6 +1116,7 @@ function vLog(){
     <div class="stools">${STOOL.map(x=>`<button class="sb ${f.stool===x.v?'on':''} sv${x.v}" data-a="stool" data-v="${x.v}">${stoolIcon(x.v)}<small>${x.l}</small></button>`).join('')}</div></div>
   ${walkSection(day)}
   ${chewSection(day)}
+  ${weightLogSection(day)}
   <div class="card lsec"><div class="sec-h"><span>Auffälligkeiten</span><button class="btn plain small" data-a="optEdit" data-k="symptom">Bearbeiten</button></div>
     <div class="chips">${chipsOf('symptom')}</div>
     <div class="muted small" style="margin-top:10px">${f.symptoms.length?`${f.symptoms.length} ausgewählt`:'Nichts auffällig? Super – einfach leer lassen ✨'}</div></div>
@@ -1601,6 +1618,7 @@ function stockText(s,st){
 function lowStock(){return S.stock.map(s=>({s,st:stockStatus(s)})).filter(x=>x.st.lvl==='red')}
 function todayCard(){
   const rows=[...weatherWarnings(),...alerts().map(a=>({c:'red',i:'⚠️',t:a,s:'2 Tage in Folge – ggf. Tierärztin informieren',go:'data-go="log"'})),
+    ...weightTodo(),
     ...lowStock().map(({s,st})=>({c:'warn',i:'📦',t:`${st.m?.name||'?'} · ${s.label}`,s:stockText(s,st),go:'data-a="stock"'})),
     ...S.appointments.filter(a=>{const n=daysBetween(today(),a.day);return n>=0&&n<=1}).sort((a,b)=>(a.day+(a.time||'99')).localeCompare(b.day+(b.time||'99'))).map(a=>({c:'info',i:'📅',t:a.title,s:apptWhen(a)+(a.place?' · '+a.place:''),go:'data-a="openAppt" data-id="'+a.id+'"'}))];
   if(!rows.length) return '';
@@ -1609,6 +1627,61 @@ function todayCard(){
 function stockBanner(){
   const l=lowStock(); if(!l.length) return '';
   return `<button class="alert stockalert" data-a="stock"><div class="alert-h">📦 Vorrat wird knapp</div><div class="alert-b">${l.map(({s,st})=>`${esc(st.m?.name||'?')} ${esc(s.label)}: ${st.m?.kind==='bedarf'?fmtQty(st.left)+' übrig':st.daysLeft<=0?'heute leer':'noch '+st.daysLeft+' T.'}`).join(' · ')}</div></button>`;
+}
+
+
+/* ====== Gewicht (jeden Montag wiegen) ====== */
+const fmtKg=(k,d=1)=>Number(k).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:2});
+function weightsSorted(){return [...S.weights].sort((a,b)=>a.day.localeCompare(b.day)||String(a.created_at).localeCompare(String(b.created_at)))}
+function mondayOf(day){const d=new Date(day+'T12:00:00');return addDays(day,-((d.getDay()+6)%7))}
+function isMonday(day){return new Date(day+'T12:00:00').getDay()===1}
+function weightThisWeek(){const mon=mondayOf(today());return S.weights.find(w=>w.day>=mon&&w.day<=today())}
+function weightTodo(){
+  if(weightThisWeek()) return [];
+  const t=today();
+  if(isMonday(t)) return [{c:'warn',i:'⚖️',t:'Wiegetag! '+DOG+' wiegen',s:'Jeden Montag das Gewicht eintragen',go:'data-a="weightAdd"'}];
+  return [{c:'warn',i:'⚖️',t:'Wiegen vom Montag fehlt noch',s:'Gewicht nachtragen – geht auch heute',go:'data-a="weightAdd"'}];
+}
+function weightSpark(ws,W,H){
+  if(ws.length<2) return '';
+  const ks=ws.map(w=>+w.kg), mn=Math.min(...ks), mx=Math.max(...ks), pad=(mx-mn)*.25||.5, lo=mn-pad, hi=mx+pad;
+  const x=i=>4+i*(W-8)/(ws.length-1), y=k=>H-4-(k-lo)/(hi-lo)*(H-8);
+  const pts=ws.map((w,i)=>`${x(i).toFixed(1)},${y(+w.kg).toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" class="wspark" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <circle cx="${x(ws.length-1)}" cy="${y(ks[ks.length-1])}" r="3.6" fill="var(--hot)"/></svg>`;
+}
+function wDelta(cur,prev){ if(!prev) return ''; const d=Math.round((cur.kg-prev.kg)*100)/100;
+  return `<span class="wdelta ${d>0?'up':d<0?'down':''}">${d>0?'▲ +':d<0?'▼ −':'± '}${fmtKg(Math.abs(d))} kg</span>` }
+function weightCard(){
+  const ws=weightsSorted(), last=ws[ws.length-1], prev=ws[ws.length-2], done=weightThisWeek(), t=today();
+  const nextMon=isMonday(t)&&!done?t:addDays(mondayOf(t),7);
+  const due=!done;
+  return `<div class="card wcard ${due?'due':''}" data-a="weightSheet">
+    <div class="row"><b class="grow">⚖️ Gewicht</b><span class="muted small">${due?(isMonday(t)?'Heute ist Wiegetag!':'Montag verpasst'):`nächstes Mal ${dayLabel(nextMon)==='Morgen'?'morgen':'Mo, '+fmtD(nextMon)}`}</span></div>
+    <div class="wrow"><div>${last?`<div class="wbig">${fmtKg(last.kg)}<small> kg</small></div><div class="muted small">${dayLabel(last.day)==='Heute'?'heute':fmtD(last.day)} ${wDelta(last,prev)}</div>`:`<div class="wbig muted">– <small>kg</small></div><div class="muted small">Noch nicht gewogen</div>`}</div>
+      <div class="grow">${weightSpark(ws.slice(-12),160,54)}</div></div>
+    ${due?`<button class="btn hotbtn block" data-a="weightAdd" style="margin-top:10px">⚖️ Jetzt wiegen & eintragen</button>`:''}
+  </div>`;
+}
+function weightLogSection(day){
+  const w=S.weights.filter(x=>x.day===day).slice(-1)[0];
+  if(!w&&!isMonday(day)) return '';
+  const ws=weightsSorted(), i=w?ws.indexOf(w):-1;
+  return `<div class="card lsec"><div class="sec-h"><span>Gewicht</span><span class="muted small">${isMonday(day)?'Wiegetag':''}</span></div>
+    ${w?`<button class="wlog" data-a="weightAdd" data-id="${w.id}"><b>${fmtKg(w.kg)} kg</b>${wDelta(w,ws[i-1])}<span class="muted">›</span></button>`
+      :`<button class="btn hotbtn block" data-a="weightAdd" data-day="${day}">⚖️ Gewicht eintragen</button>`}</div>`;
+}
+function weightChart(ws){
+  if(ws.length<2) return '<div class="muted small" style="text-align:center;padding:18px 0">Ab zwei Messungen siehst du hier den Verlauf 📈</div>';
+  const W=340,H=170,L=34,R=8,T=12,B=24, ks=ws.map(w=>+w.kg), mn=Math.min(...ks), mx=Math.max(...ks);
+  let lo=Math.floor((mn-.3)*2)/2, hi=Math.ceil((mx+.3)*2)/2; if(hi-lo<1){hi+=.5;lo-=.5}
+  const step=hi-lo>4?1:.5, x=i=>L+i*(W-L-R)/(ws.length-1), y=k=>T+(hi-k)/(hi-lo)*(H-T-B);
+  let g=''; for(let v=lo;v<=hi+1e-9;v+=step) g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" class="wgrid"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" class="wax">${fmtKg(v,step<1?1:0)}</text>`;
+  const pts=ws.map((w,i)=>[x(i),y(+w.kg)]), area=`M${pts[0][0]},${H-B} `+pts.map(p=>`L${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0]},${H-B} Z`;
+  const lbl=ws.map((w,i)=>(i===0||i===ws.length-1||(ws.length<=8)||i%Math.ceil(ws.length/5)===0)?`<text x="${x(i)}" y="${H-6}" text-anchor="middle" class="wax">${fmtD(w.day)}</text>`:'').join('');
+  return `<svg viewBox="0 0 ${W} ${H}" class="wchart">${g}<path d="${area}" class="warea"/>
+    <polyline points="${pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===pts.length-1?4.5:3}" class="${i===pts.length-1?'wlast':'wpt'}"/>`).join('')}${lbl}</svg>`;
 }
 
 /* ====== Notizen: Notizen · Termine · Links ====== */
@@ -1835,6 +1908,46 @@ const ACT = {
     if(row) toast('Kaustange gezählt 🦴'); else toast('Bitte zuerst update_12.sql ausführen');
   },
   delChew(d){del('chews',d.id)},
+  weightSheet(){
+    const ws=weightsSorted(), first=ws[0], last=ws[ws.length-1];
+    const range=ui.wRange||'6m', from=range==='all'?'0000':addDays(today(),range==='3m'?-92:range==='1y'?-366:-183);
+    const shown=ws.filter(w=>w.day>=from);
+    openSheet(`<h3>⚖️ Gewicht von ${esc(DOG)}</h3><div class="muted">Jeden Montag wiegen und eintragen</div>
+      ${last?`<div class="wsum"><div><small>Aktuell</small><b>${fmtKg(last.kg)} kg</b></div><div><small>Seit Beginn</small><b>${first&&first!==last?((last.kg-first.kg)>=0?'+':'−')+fmtKg(Math.abs(Math.round((last.kg-first.kg)*100)/100))+' kg':'–'}</b></div><div><small>Messungen</small><b>${ws.length}</b></div></div>`:''}
+      <div class="seg" style="margin:10px 0 6px">${[['3m','3 Mon.'],['6m','6 Mon.'],['1y','1 Jahr'],['all','Alles']].map(([k,l])=>`<button class="${range===k?'on':''}" data-r="${k}">${l}</button>`).join('')}</div>
+      ${weightChart(shown)}
+      <button class="btn hotbtn block" id="wadd" style="margin-top:12px">＋ Gewicht eintragen</button>
+      ${ws.length?`<div class="list wlist">${[...ws].reverse().map((w,i,arr)=>`<button class="li" data-id="${w.id}"><span class="grow"><b>${fmtKg(w.kg)} kg</b> ${wDelta(w,arr[i+1])}<div class="muted small">${new Date(w.day+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})} · ${esc(w.author||'')}${w.note?' · '+esc(w.note):''}</div></span><span class="muted">›</span></button>`).join('')}</div>`:''}`,sh=>{
+      sh.addEventListener('click',e=>{const r=e.target.closest('[data-r]'),li=e.target.closest('[data-id]');
+        if(r){ui.wRange=r.dataset.r;ACT.weightSheet()} if(li) ACT.weightAdd({id:li.dataset.id}) });
+      sh.querySelector('#wadd').onclick=()=>ACT.weightAdd({});
+    });
+  },
+  weightAdd(d){
+    const w=d.id?S.weights.find(x=>x.id===d.id):null, last=weightsSorted().slice(-1)[0];
+    let kg=w?+w.kg:(last?+last.kg:null);
+    const day0=w?w.day:(d.day||today());
+    openSheet(`<h3>${w?'Gewicht bearbeiten':'⚖️ Gewicht eintragen'}</h3><div class="muted">${last&&!w?`Letztes Mal: ${fmtKg(last.kg)} kg am ${fmtD(last.day)}`:'Am besten immer gleich wiegen – z. B. Montag früh vor dem Fressen'}</div>
+      <div class="wstep"><button data-st="-0.1" aria-label="minus">−</button><div><input id="wkg" type="text" inputmode="decimal" placeholder="0,0" value="${kg!=null?fmtKg(kg):''}"><span>kg</span></div><button data-st="0.1" aria-label="plus">＋</button></div>
+      <label class="f">Datum</label><input type="date" id="wday" value="${day0}">
+      <label class="f">Notiz (optional)</label><input type="text" id="wnote" value="${esc(w?.note||'')}" placeholder="z. B. nach dem Fressen, beim Tierarzt">
+      <button class="btn block" id="save" style="margin-top:16px">Speichern</button>
+      ${w?'<button class="btn block danger" id="del" style="margin-top:4px">Löschen</button>':''}`,sh=>{
+      const q=s=>sh.querySelector(s), inp=q('#wkg'), parse=()=>{const v=parseFloat(String(inp.value).replace(',','.'));return isFinite(v)?v:null};
+      sh.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{const v=(parse()??kg??0)+(+b.dataset.st);inp.value=fmtKg(Math.max(0,Math.round(v*10)/10))});
+      if(!w) setTimeout(()=>{inp.focus();inp.select()},300);
+      q('#save').onclick=async()=>{
+        const v=parse(); if(!v||v<=0||v>120){toast('Bitte ein gültiges Gewicht eingeben');return}
+        const row={day:q('#wday').value||today(),kg:Math.round(v*100)/100,note:q('#wnote').value.trim()||null};
+        if(last&&!w&&Math.abs(v-last.kg)>3&&!confirm(`${fmtKg(v)} kg – das sind über 3 kg Unterschied zum letzten Mal. Trotzdem speichern?`)) return;
+        let ok; if(w){ await upd('weights',w.id,row); ok=true } else ok=await ins('weights',row);
+        if(!ok){toast('Bitte zuerst update_13.sql ausführen');return}
+        closeSheet(); toast(`⚖️ ${fmtKg(row.kg)} kg gespeichert`);
+      };
+      const dl=q('#del'); if(dl) dl.onclick=()=>{if(confirm('Messung löschen?')){del('weights',w.id);closeSheet()}};
+    });
+  },
+
   mood(d){ui.logForm.mood=ui.logForm.mood===+d.v?0:+d.v;ui.logDirty=true;render()},
   stool(d){ui.logForm.stool=ui.logForm.stool===+d.v?null:+d.v;ui.logDirty=true;render()},
   appetite(d){ui.logForm.appetite=ui.logForm.appetite===+d.v?null:+d.v;ui.logDirty=true;render()},
@@ -1972,7 +2085,7 @@ const ACT = {
         mlogs=a.data; barks=b.data;
       }
       const {file,stats}=buildExport(S.daily_log,S.meds,mlogs,barks,S.walks,S.appointments);
-      sh.querySelector('#xs').innerHTML=`${stats.days} Tage · ${stats.logs} Protokolle · ${stats.meds} Medi-Einträge · ${stats.walks} Gassi-Runden · ${stats.barks}× gebellt<div class="muted small" style="margin-top:6px">6 Blätter: Übersicht, Protokoll, Medikamente, Gassi, Bellistima, Termine</div>
+      sh.querySelector('#xs').innerHTML=`${stats.days} Tage · ${stats.logs} Protokolle · ${stats.meds} Medi-Einträge · ${stats.walks} Gassi-Runden · ${stats.barks}× gebellt<div class="muted small" style="margin-top:6px">Blätter: Übersicht, Protokoll, Medikamente, Gassi, Bellistima, Gewicht, Termine</div>
         <button class="btn block" id="xsh" style="margin-top:16px">Teilen / In Dateien sichern</button>`;
       sh.querySelector('#xsh').onclick=async()=>{
         if(navigator.canShare&&navigator.canShare({files:[file]})){
@@ -2425,6 +2538,8 @@ function buildExport(dlogs,meds,mlogs,barks,walks,appts){
   XLSX.utils.book_append_sheet(wb,xSheet(medis,[['Datum',11],['Medikament',16],['Zeitpunkt',11],['Soll',14],['Ist',14],['Status',13,{rule:ruleStatus}],['Notiz',30,{wrap:1}],['Von',10,{muted:1}],['Uhrzeit',8]]),'Medikamente');
   XLSX.utils.book_append_sheet(wb,xSheet(gassi,[['Datum',11],['Start',7],['Dauer (Min.)',9],['Distanz (km)',9],['Entspannung',16,{rule:ruleCalm}],['Ort',18],['Besonderes',34,{wrap:1}],['Von',10,{muted:1}]]),'Gassi');
   XLSX.utils.book_append_sheet(wb,xSheet(bell,[['Datum',11],['Uhrzeit',8],['Grund',24],['Von',10,{muted:1}]]),'Bellistima');
+  const gew=[...S.weights].sort((a,b)=>b.day.localeCompare(a.day)).map((w,i,arr)=>({'Datum':D(w.day),'Gewicht (kg)':+w.kg,'Veränderung (kg)':arr[i+1]?Math.round((w.kg-arr[i+1].kg)*100)/100:'','Notiz':w.note||'','Von':w.author||''}));
+  if(gew.length) XLSX.utils.book_append_sheet(wb,xSheet(gew,[['Datum',11],['Gewicht (kg)',11],['Veränderung (kg)',14],['Notiz',30,{wrap:1}],['Von',10,{muted:1}]]),'Gewicht');
   XLSX.utils.book_append_sheet(wb,xSheet(termine,[['Datum',11],['Uhrzeit',8],['Termin',26],['Ort',30,{wrap:1}],['Notiz',30,{wrap:1}]]),'Termine');
   const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',cellDates:true,cellStyles:true});
   const file=new File([buf],`${DOG}_Protokoll_${today()}.xlsx`,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
@@ -2523,6 +2638,7 @@ function seedDemo(){
     S.daily_log.push({id:uid(),day:d,mood:Math.max(1,Math.min(5,Math.round(3.4+rnd()*2-1-(i>20?0.6:0)))),appetite:rnd()<.15?1:rnd()<.3?2:3,stool:rnd()<.12?4:rnd()<.2?3:2,
       symptoms:rnd()<.12?['Unruhe']:[],tags:[],text:i===9?'Besuch da, sehr aufgeregt.':'',author:'Jana',created_at:iso(now-i*864e5)});
     const nb=Math.round(rnd()*(i>20?5:3)); for(let k=0;k<nb;k++) S.barks.push({id:uid(),reason:rnd()<.6?'hausflur':'draussen',author:'Dennis',created_at:iso(now-i*864e5-k*3e6)});
+    if(isMonday(d)&&i>0) S.weights.push({id:uid(),day:d,kg:Math.round((18.9-i*.025+(rnd()-.5)*.25)*10)/10,author:rnd()<.5?'Dennis':'Jana',created_at:iso(now-i*864e5)});
     S.walks.push({id:uid(),day:d,time:'08:00',minutes:[30,45,60][Math.floor(rnd()*3)],calm:3+Math.round(rnd()*2),place:rnd()<.5?'Feld':'Stadtwald',author:'Dennis',created_at:iso(now-i*864e5)});
     if(rnd()<.7) S.walks.push({id:uid(),day:d,time:'18:00',minutes:[20,30][Math.floor(rnd()*2)],calm:2+Math.round(rnd()*3),author:'Jana',created_at:iso(now-i*864e5)});
   }
